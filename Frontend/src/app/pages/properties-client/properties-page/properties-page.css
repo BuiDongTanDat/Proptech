@@ -1,0 +1,46 @@
+
+/* Sidebar cố định */
+.sidebar-fixed {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 20;
+}
+
+/* Header Bộ sưu tập hiện có cố định */
+.properties-header-fixed {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 10;
+  padding-bottom: 8px;
+}
+
+/* Danh sách BĐS scrollable */
+.properties-list-scrollable {
+  overflow-y: auto;
+  height: calc(100vh - 80px); /* 80px là chiều cao header, điều chỉnh nếu cần */
+}
+
+:host {
+  display: block;
+}
+
+/* Custom select arrow */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%231A2B48'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+/* Scrollbar for sidebar */
+aside::-webkit-scrollbar {
+  width: 3px;
+}
+aside::-webkit-scrollbar-track {
+  background: transparent;
+}
+aside::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 2px;
+}

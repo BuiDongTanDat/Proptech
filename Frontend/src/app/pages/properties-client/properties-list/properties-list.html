@@ -1,0 +1,57 @@
+<div class="grid grid-cols-1  lg:grid-cols-3 gap-8 ">
+   @for (property of properties; track property.id) {
+	   <a class="group cursor-pointer block" [routerLink]="['/properties', property.id]">
+			<!-- Hình ảnh -->
+			<div class="relative overflow-hidden bg-gray-100 aspect-4/3">
+				<img
+					[src]="property.image"
+					[alt]="property.title"
+					class="w-full h-full object-cover grayscale-0 group-hover:scale-105 transition duration-700"
+				/>
+				<!-- Nhãn (Badge) -->
+				@if (property.badge) {
+					<div [class]="'absolute top-3 right-3 px-2.5 py-1 text-[10px] uppercase tracking-wider ' + (property.badge === 'Featured' ? 'bg-orange-600 text-white' : 'bg-white text-primary')">
+						{{ property.badge === 'Featured' ? 'Nổi bật' : property.badge }}
+					</div>
+				}
+				<!-- Phủ mờ khi hover -->
+				<div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition duration-500"></div>
+			</div>
+
+			<!-- Thông tin bất động sản -->
+			<div class="pt-4 pb-2">
+				<div class="flex items-baseline justify-between gap-3 mb-1">
+					<h3 class="text-xl text-primary leading-tight">{{ property.title }}</h3>
+					<span class="text-base text-primary whitespace-nowrap">${{ property.price }}</span>
+				</div>
+				<p class="text-xs uppercase text-gray-400 mb-3">{{ property.location }}</p>
+
+				<!-- Thông số chi tiết -->
+				<div class="flex items-center gap-4 mb-3">
+					<div class="flex items-center gap-1.5">
+						<svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 12 12" fill="none"><rect x="1" y="4" width="10" height="7" rx="0.5" stroke="currentColor" stroke-width="0.8"/><path d="M4 4V3a2 2 0 014 0v1" stroke="currentColor" stroke-width="0.8"/></svg>
+						<span class="text-xs text-gray-500">{{ property.suites }} Phòng ngủ</span>
+					</div>
+					<div class="flex items-center gap-1.5">
+						<svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 12 12" fill="none"><path d="M1 7h10M1 7V9h10V7M3 7V5.5a1 1 0 012 0V7" stroke="currentColor" stroke-width="0.8"/></svg>
+						<span class="text-xs text-gray-500">{{ property.baths }} Phòng tắm</span>
+					</div>
+					<div class="flex items-center gap-1.5">
+						<svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="0.5" stroke="currentColor" stroke-width="0.8"/></svg>
+						<span class="text-xs text-gray-500">{{ property.sqft.toLocaleString() }} m²</span>
+					</div>
+				</div>
+
+				<!-- Chân trang thẻ -->
+				<div class="flex items-center justify-between pt-3 border-t border-gray-100">
+					<p class="text-[10px] uppercase text-gray-400">
+						CHỦ ĐẦU TƯ: <span class="text-primary">{{ property.architect }}</span>
+					</p>
+					<button class="text-[10px] uppercase text-primary border-b border-primary hover:text-orange-600 hover:border-orange-600 transition pb-0.5">
+						Xem chi tiết
+					</button>
+				</div>
+			</div>
+	   </a>
+	}
+</div>

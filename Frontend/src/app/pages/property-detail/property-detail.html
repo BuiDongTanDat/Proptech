@@ -1,0 +1,320 @@
+<div class="min-h-screen bg-[#F8F7F4] font-body">
+
+
+  <!-- ============================================================ -->
+  <!-- SECTION: HERO GALLERY -->
+  <!-- ============================================================ -->
+  <section class="max-w-7xl mx-auto px-6 pt-8 pb-0">
+    <div class="grid grid-cols-3 grid-rows-2 gap-2 h-130">
+      <!-- Main large image -->
+      <div class="col-span-2 row-span-2 relative overflow-hidden group">
+        <img
+          [src]="property.images.main"
+          alt="Main property"
+          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <!-- Gradient overlay -->
+        <div class="absolute inset-0 bg-linear-to-t from-stone-900/40 via-transparent to-transparent"></div>
+
+        <!-- Overlay pill badges -->
+        <div class="absolute bottom-6 left-6 flex gap-3">
+          <span class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 ">
+            3D Tour
+          </span>
+          <span class="bg-amber-500 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 ">
+            Featured
+          </span>
+        </div>
+      </div>
+
+      <!-- Top right images -->
+      <div class="relative overflow-hidden group">
+        <img [src]="property.images.top1" alt="Interior" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+      </div>
+      <div class="relative overflow-hidden group">
+        <img [src]="property.images.top2" alt="Interior 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <!-- View all overlay -->
+        <div class="absolute inset-0 bg-stone-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <span class="text-white text-sm font-semibold tracking-widest uppercase">View All Photos</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION: PROPERTY HEADER -->
+  <!-- ============================================================ -->
+  <section class="max-w-7xl mx-auto px-6 pt-8 pb-6 border-b border-stone-200">
+
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs text-stone-400 mb-4 tracking-wider uppercase">
+      <ng-container *ngFor="let crumb of property.breadcrumb; let last = last">
+        <a href="#" class="hover:text-amber-500 transition-colors">{{ crumb }}</a>
+        <span *ngIf="!last" class="text-stone-300">›</span>
+      </ng-container>
+    </nav>
+
+    <div class="flex items-start justify-between gap-6">
+      <div class="flex-1">
+        <!-- Property Name -->
+        <h1 class="font-display text-5xl font-bold text-stone-900 leading-tight tracking-tight mb-4">
+          {{ property.name }}
+        </h1>
+
+        <!-- Price + Stats Row -->
+        <div class="flex flex-wrap items-center gap-6">
+          <div>
+            <p class="text-xs text-stone-400 uppercase tracking-widest mb-1">Asking Price</p>
+            <p class="font-display text-3xl font-bold text-stone-900">{{ property.price }}</p>
+          </div>
+
+          <div class="w-px h-10 bg-stone-200"></div>
+
+          <div class="flex items-center gap-6 text-stone-600">
+            <div class="text-center">
+              <p class="text-xs text-stone-400 uppercase tracking-widest mb-1">Area</p>
+              <p class="text-sm font-semibold">{{ property.stats.area }}</p>
+            </div>
+            <div class="text-center">
+              <p class="text-xs text-stone-400 uppercase tracking-widest mb-1">Beds</p>
+              <p class="text-sm font-semibold">{{ property.stats.beds }}</p>
+            </div>
+            <div class="text-center">
+              <p class="text-xs text-stone-400 uppercase tracking-widest mb-1">Baths</p>
+              <p class="text-sm font-semibold">{{ property.stats.baths }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3 mt-4">
+        <!-- Share -->
+        <button class="w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center hover:border-amber-400 hover:text-amber-500 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+          </svg>
+        </button>
+        <!-- Wishlist -->
+        <button
+          (click)="toggleWishlist()"
+          [class]="isWishlisted
+            ? 'w-10 h-10 rounded-full bg-rose-50 border border-rose-300 flex items-center justify-center text-rose-500 transition-all'
+            : 'w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center hover:border-rose-300 hover:text-rose-400 transition-all'"
+        >
+          <svg class="w-4 h-4" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+        </button>
+
+        <!-- Enquire CTA -->
+        <button class="bg-stone-900 text-white text-xs font-bold tracking-widest uppercase px-6 py-3 hover:bg-amber-500 transition-colors duration-300 ml-2">
+          Enquire Now
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION: DESCRIPTION + AGENT SIDEBAR -->
+  <!-- ============================================================ -->
+  <section class="max-w-7xl mx-auto px-6 py-12">
+    <div class="grid grid-cols-3 gap-16">
+
+      <!-- Left: Description -->
+      <div class="col-span-2 space-y-6">
+
+        <!-- Pull Quote -->
+        <blockquote class="relative pl-8 border-l-4 border-amber-400">
+          <p class="font-display text-xl italic text-stone-700 leading-relaxed">{{ property.quote }}</p>
+          <cite class="block mt-3 text-xs text-stone-400 tracking-widest uppercase not-italic">{{ property.quoteAuthor }}</cite>
+        </blockquote>
+
+        <!-- Body paragraphs -->
+        <div class="space-y-4">
+          <p *ngFor="let para of property.description" class="text-stone-500 text-base leading-relaxed">
+            {{ para }}
+          </p>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2 pt-2">
+          <span *ngFor="let tag of ['Malibu', 'Oceanfront', 'Luxury', 'Sustainable', 'Architect-Designed', 'Smart Home']"
+            class="text-xs border border-stone-200 text-stone-500 px-3 py-1.5 tracking-wider uppercase hover:border-amber-400 hover:text-amber-600 transition-colors cursor-pointer">
+            {{ tag }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Right: Agent Card + CTA -->
+      <div class="col-span-1 space-y-4">
+        <!-- Agent Card -->
+        <div class="bg-white border border-stone-100 shadow-sm p-6">
+          <p class="text-xs text-stone-400 uppercase tracking-widest mb-4">Listed by</p>
+          <div class="flex items-center gap-4 mb-5">
+            <div class="w-14 h-14 rounded-full overflow-hidden bg-stone-200 flex-shrink-0">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80" alt="Agent" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p class="font-display font-bold text-stone-900">{{ property.agentName }}</p>
+              <p class="text-xs text-stone-400 mt-0.5">{{ property.agentTitle }}</p>
+            </div>
+          </div>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-1 mb-5">
+            <span *ngFor="let s of [1,2,3,4,5]" class="text-amber-400 text-sm">★</span>
+            <span class="text-xs text-stone-400 ml-2">4.9 · 138 closings</span>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="space-y-2.5">
+            <button class="w-full bg-stone-900 text-white text-xs font-bold tracking-widest uppercase py-3 hover:bg-amber-500 transition-colors duration-300">
+              Schedule Viewing
+            </button>
+            <button class="w-full border border-stone-200 text-stone-700 text-xs font-bold tracking-widest uppercase py-3 hover:border-stone-900 transition-colors">
+              Send Message
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Info -->
+        <div class="bg-stone-900 text-white p-5 space-y-3">
+          <p class="text-xs uppercase tracking-widest text-stone-400 mb-3">Property Info</p>
+          <div class="flex justify-between text-sm"><span class="text-stone-400">Property Type</span><span class="font-medium">Villa Estate</span></div>
+          <div class="flex justify-between text-sm"><span class="text-stone-400">Year Built</span><span class="font-medium">2023</span></div>
+          <div class="flex justify-between text-sm"><span class="text-stone-400">Lot Size</span><span class="font-medium">2.4 acres</span></div>
+          <div class="flex justify-between text-sm"><span class="text-stone-400">Garage</span><span class="font-medium">12 cars</span></div>
+          <div class="flex justify-between text-sm"><span class="text-stone-400">Status</span>
+            <span class="text-amber-400 font-semibold">Available</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION : AMENITIES GRID -->
+  <!-- ============================================================ -->
+  <section class="max-w-7xl mx-auto px-6 py-12 border-t border-stone-200">
+
+    <!-- Section Header -->
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <p class="text-xs uppercase tracking-widest text-amber-500 mb-2">The Pavilion Experience</p>
+        <h2 class="font-display text-3xl font-bold text-stone-900">Exceptional Amenities</h2>
+      </div>
+      <a href="#" class="text-xs font-semibold tracking-widest uppercase text-stone-400 hover:text-amber-500 transition-colors border-b border-stone-200 hover:border-amber-500 pb-0.5">
+        View Full List →
+      </a>
+    </div>
+
+    <!-- 4-col Amenities Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-stone-200">
+      <div
+        *ngFor="let amenity of property.amenities"
+        class="bg-[#F8F7F4] p-6 group hover:bg-stone-900 transition-colors duration-300 cursor-default"
+      >
+        <div class="text-2xl text-amber-500 mb-4 group-hover:text-amber-400 transition-colors">
+          {{ amenity.icon }}
+        </div>
+        <h3 class="font-display font-bold text-stone-900 group-hover:text-white text-sm mb-2 transition-colors">
+          {{ amenity.title }}
+        </h3>
+        <p class="text-xs text-stone-400 group-hover:text-stone-400 leading-relaxed transition-colors">
+          {{ amenity.desc }}
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION : LOCATION MAP PLACEHOLDER -->
+  <!-- ============================================================ -->
+  <section class="max-w-7xl mx-auto px-6 py-12 border-t border-stone-200">
+    <div class="grid grid-cols-3 gap-12 items-center">
+      <div class="col-span-1">
+        <p class="text-xs uppercase tracking-widest text-amber-500 mb-2">Location</p>
+        <h2 class="font-display text-3xl font-bold text-stone-900 mb-4">Malibu, California</h2>
+        <p class="text-stone-400 text-sm leading-relaxed mb-6">
+          Perched on 2.4 acres of exclusive blufftop land, the Pavilion commands unobstructed views of the Santa Monica Mountains and the Pacific.
+        </p>
+        <div class="space-y-2">
+          <div *ngFor="let place of [['PCH Malibu', '0.3 mi'], ['Nobu Malibu', '1.2 mi'], ['LAX Airport', '32 mi'], ['Beverly Hills', '23 mi']]"
+            class="flex items-center justify-between text-sm border-b border-stone-100 pb-2">
+            <span class="text-stone-600">{{ place[0] }}</span>
+            <span class="text-stone-400 text-xs tracking-wider">{{ place[1] }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-2 h-[340px] bg-stone-200 relative overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=900&q=80" alt="Map" class="w-full h-full object-cover opacity-30" />
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="bg-white shadow-xl px-6 py-4 text-center">
+            <div class="w-3 h-3 rounded-full bg-amber-500 mx-auto mb-2 animate-ping"></div>
+            <p class="font-display font-bold text-stone-900 text-sm">The Obsidian Pavilion</p>
+            <p class="text-xs text-stone-400">Malibu, CA 90265</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION : SIMILAR PROPERTIES STRIP -->
+  <!-- ============================================================ -->
+  <section class="max-w-7xl mx-auto px-6 py-12 border-t border-stone-200">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <p class="text-xs uppercase tracking-widest text-amber-500 mb-2">Continue Exploring</p>
+        <h2 class="font-display text-3xl font-bold text-stone-900">Similar Properties</h2>
+      </div>
+      <a href="#" class="text-xs font-semibold tracking-widest uppercase text-stone-400 hover:text-amber-500 transition-colors border-b border-stone-200 hover:border-amber-500 pb-0.5">
+        View All →
+      </a>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <div *ngFor="let card of [
+        {img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80', name: 'Casa Meridian', loc: 'Santa Barbara, CA', price: '$11.2M'},
+        {img: 'https://images.unsplash.com/photo-1600047509782-20d39509f26d?w=600&q=80', name: 'The Glass Bower', loc: 'Pacific Palisades, CA', price: '$22.8M'},
+        {img: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80', name: 'Ventana Ridge', loc: 'Big Sur, CA', price: '$9.4M'}
+      ]" class="group cursor-pointer">
+        <div class="overflow-hidden h-56 mb-4 relative">
+          <img [src]="card.img" [alt]="card.name" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+          <div class="absolute inset-0 bg-gradient-to-t from-stone-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </div>
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="font-display font-bold text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">{{ card.name }}</h3>
+            <p class="text-xs text-stone-400 tracking-wider">{{ card.loc }}</p>
+          </div>
+          <p class="font-display font-bold text-stone-900 text-sm">{{ card.price }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION : FOOTER CTA BAND -->
+  <!-- ============================================================ -->
+  <section class="bg-stone-900 py-16 px-6 text-center">
+    <p class="text-xs uppercase tracking-widest text-amber-400 mb-3">Private Enquiry</p>
+    <h2 class="font-display text-4xl font-bold text-white mb-4">Interested in The Obsidian Pavilion?</h2>
+    <p class="text-stone-400 text-sm max-w-xl mx-auto mb-8 leading-relaxed">
+      Our team of dedicated advisors is available to arrange a private tour, provide due diligence documentation, or discuss acquisition terms.
+    </p>
+    <div class="flex items-center justify-center gap-4">
+      <button class="bg-amber-500 text-white text-xs font-bold tracking-widest uppercase px-8 py-4 hover:bg-amber-400 transition-colors duration-300">
+        Schedule Private Tour
+      </button>
+      <button class="border border-stone-600 text-white text-xs font-bold tracking-widest uppercase px-8 py-4 hover:border-white transition-colors">
+        Download Brochure
+      </button>
+    </div>
+  </section>
+
+
+</div>

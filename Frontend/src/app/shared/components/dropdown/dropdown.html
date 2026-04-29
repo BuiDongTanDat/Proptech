@@ -1,0 +1,22 @@
+<div class="relative w-full">
+	<select
+		class="w-full text-xs border border-gray-300 px-3 py-2 bg-white outline-none text-primary appearance-none pr-8 cursor-pointer rounded transition"
+		[ngClass]="className + (disabled ? ' opacity-50 cursor-not-allowed' : '')"
+		[disabled]="disabled"
+		[value]="value"
+		(change)="onSelect($any($event.target).value)"
+	>
+		<option value="" disabled selected hidden>{{ placeholder }}</option>
+        @for(opt of options; track opt.label){
+            <ng-container >
+			<option [value]="opt.value" [selected]="opt.value === value">{{ opt.label }}</option>
+		</ng-container>
+        }
+		
+	</select>
+	<div class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
+		<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+		</svg>
+	</div>
+</div>

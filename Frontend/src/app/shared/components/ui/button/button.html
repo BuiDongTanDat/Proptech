@@ -1,0 +1,22 @@
+<button type="button" (click)="onClick($event)" [disabled]="disabled" [ngClass]="
+    'cursor-pointer inline-flex items-center justify-center gap-2  transition ' +
+    sizeClasses + ' ' +
+    variantClasses + ' ' +
+    disabledClasses + ' ' +
+    className
+  ">
+
+    <!-- ===== ICON LEFT -Property binding ===== -->
+    @if (startIcon){
+    <svg [lucideIcon]="startIcon"></svg>
+    }
+
+    <!-- ===== CONTENT ===== -->
+    <ng-content></ng-content>
+
+    <!-- ===== ICON RIGHT  -Property binding ===== -->
+    @if (endIcon){
+    <svg [lucideIcon]="endIcon" [size]="15"></svg>
+    }
+
+</button>

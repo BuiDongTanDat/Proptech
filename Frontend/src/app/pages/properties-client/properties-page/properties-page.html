@@ -1,0 +1,75 @@
+<!-- Layout -->
+<div class="min-h-screen ">
+  <div class="flex flex-col md:flex-row items-start">
+    <!-- Sidebar -->
+    <div class="w-full md:w-auto">
+      <app-properties-sidebar
+    [filters]="filters" 
+    [typologies]="typologies" 
+    [coreAttributes]="coreAttributes"
+    (toggleTypology)="toggleTypology($event)" 
+    (toggleAttribute)="toggleAttribute($event)"
+    (filtersChange)="filters = $event"></app-properties-sidebar>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full px-4 md:px-10 py-8">
+      <!-- Header Row -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
+        <div>
+          <h2 class="text-3xl md:text-4xl text-primary">Bộ sưu tập hiện có</h2>
+          <p class="text-xs text-gray-400 mt-1">
+            Hiển thị {{ filteredProperties.length }} kiệt tác kiến trúc được tuyển chọn.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] uppercase text-gray-400">Sắp xếp</span>
+          <div class="relative">
+            <select
+              class="text-xs border border-gray-300 px-3 py-2 bg-white outline-none text-primary appearance-none pr-8 cursor-pointer">
+              <option>Mới nhất</option>
+              <option>Giá: Cao đến Thấp</option>
+              <option>Giá: Thấp đến Cao</option>
+              <option>Xem nhiều nhất</option>
+            </select>
+            <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-6 text-gray-200">
+
+      <!-- Tag filter (CheckTag) -->
+      <div class="flex flex-wrap gap-2 mb-6">
+        @for (type of typologies; track type) {
+          <app-check-tag
+            [label]="type"
+            [checked]="filters.typologies.includes(type)"
+            (tagClick)="toggleTypology(type)"
+          ></app-check-tag>
+        }
+      </div>
+
+      <!-- List -->
+      <app-properties-list 
+        class="overflow-y-auto"
+        [properties]="filteredProperties">
+      </app-properties-list>
+
+      <!-- ===== PHÂN TRANG (PAGINATION) ===== -->
+      <div class="flex items-center justify-center gap-3 mt-12 pb-8">
+        <app-pagination
+          [currentPage]="currentPage"
+          [totalPages]="totalPages"
+          [maxVisible]="5"
+          (pageChange)="onPageChange($event)"
+        ></app-pagination>
+      </div>
+    </main>
+  </div>
+</div>

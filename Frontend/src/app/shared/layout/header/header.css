@@ -1,0 +1,21 @@
+/* Ẩn thanh line mặc định của indicator */
+.active-indicator {
+  width: 0;
+}
+
+/* Khi link có class active-link thì hiện thanh line full width */
+.active-link {
+  color: bg-primary;
+  font-weight: 600;
+}
+
+.active-link .active-indicator {
+  width: 100%;
+}
+
+a.active .active-indicator {
+  width: 100%;
+}
+.active-indicator {
+  width: 0;
+}

@@ -1,0 +1,254 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+/* =========================
+   FONT GLOBAL
+========================= */
+body {
+  font-family: "Montserrat", sans-serif;
+}
+@theme {
+  --color-primary: #1A2B48;
+  --color-secondary: #006D5B;
+  --color-tertiary: #F26419;
+}
+/* =========================
+   DESIGN TOKENS
+========================= */
+@layer base {
+  :root {
+    /* Core palette */
+    --primary: #1A2B48;
+    --secondary: #006D5B;
+    --tertiary: #F26419;
+    --neutral: #F8F9FA;
+
+    /* Base UI */
+    --background: #F8F9FA;
+    --foreground: #1A2B48;
+
+    --card: #ffffff;
+    --border: rgba(26, 43, 72, 0.12);
+
+    --muted: rgba(26, 43, 72, 0.06);
+    --muted-foreground: rgba(26, 43, 72, 0.7);
+
+    --radius: 14px;
+
+    /* Status */
+    --success: #006D5B;
+    --warning: #F26419;
+    --danger: #e63946;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #1A2B48, #006D5B);
+    --gradient-accent: linear-gradient(135deg, #006D5B, #F26419);
+    --gradient-warm: linear-gradient(135deg, #F26419, #ff8c42);
+  }
+
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)];
+  }
+}
+
+/* =========================
+   COMPONENTS SYSTEM
+========================= */
+@layer components {
+
+  /* ===== CARD ===== */
+  .card {
+    @apply bg-white rounded-sm border;
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ===== BUTTONS ===== */
+  /* .btn {
+    @apply px-4 py-2  font-medium transition;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: var(--secondary);
+    color: white;
+  }
+
+  .btn-accent {
+    background: var(--tertiary);
+    color: white;
+  }
+
+  .btn-outline {
+    border: 1px solid var(--border);
+    background: transparent;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    transition: 0.25s;
+  } */
+
+
+  /* ===== INPUT ===== */
+  .input {
+    @apply w-full px-3 py-2 rounded-sm outline-none;
+    border: 1px solid var(--border);
+    background: white;
+  }
+
+  .input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26, 43, 72, 0.1);
+  }
+
+  /* ===== CHAT BUBBLES ===== */
+  .chat-sent {
+    background: var(--primary);
+    color: white;
+    @apply rounded-2xl px-4 py-2 ml-auto w-fit;
+  }
+
+  .chat-received {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    @apply rounded-2xl px-4 py-2 w-fit;
+  }
+
+  /* ===== BADGE ===== */
+  .badge {
+    @apply text-xs px-2 py-1 rounded-full;
+  }
+
+  .badge-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .badge-secondary {
+    background: var(--secondary);
+    color: white;
+  }
+
+  .badge-warning {
+    background: var(--tertiary);
+    color: white;
+  }
+
+  /* ===== GLASS EFFECT ===== */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    background: white;
+    border-right: 1px solid var(--border);
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    height: 1px;
+    background: var(--border);
+  }
+}
+
+/* =========================
+   UTILITIES
+========================= */
+@layer utilities {
+
+  .text-primary {
+    color: var(--primary);
+  }
+
+  .text-secondary {
+    color: var(--secondary);
+  }
+
+  .text-tertiary {
+    color: var(--tertiary);
+  }
+
+  .bg-primary {
+    background: var(--primary);
+  }
+
+  .bg-secondary {
+    background: var(--secondary);
+  }
+
+  .bg-tertiary {
+    background: var(--tertiary);
+  }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .bg-gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .bg-gradient-warm {
+    background: var(--gradient-warm);
+  }
+
+  .shadow-custom-sm {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .shadow-custom-md {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-custom-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .rounded-default {
+    border-radius: var(--radius);
+  }
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+@layer utilities {
+  .fade-in {
+    animation: fadeIn 0.25s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* =========================
+   GLOBAL RESET
+========================= */
+html,
+body {
+  height: 100%;
+}

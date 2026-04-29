@@ -1,0 +1,15 @@
+<!-- Wrapper không dùng h-screen và overflow-y-auto ở main nữa -->
+<div class="min-h-screen flex flex-col bg-white">
+
+  <!-- HEADER -->
+  <app-header class="sticky top-0 z-50 "></app-header>
+
+  <!-- CONTENT -->
+  <main class="flex-1">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- FOOTER -->
+  <app-footer></app-footer>
+
+</div>
