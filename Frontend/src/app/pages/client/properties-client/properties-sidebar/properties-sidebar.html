@@ -1,0 +1,67 @@
+<aside class="w-full md:w-64 border-b md:border-b-0 md:border-r border-gray-200 px-6 py-8 overflow-y-auto ">
+	<!-- Logo -->
+	<div class="mb-8">
+		<h1 class="text-xl text-primary font-bold"> Tuyển chọn </h1>
+		<p class="text-xs uppercase text-gray-400 mt-0.5">Bộ lọc tìm kiếm</p>
+	</div>
+
+	<!-- Vị trí -->
+	<div class="mb-6">
+		<label class="block text-xs uppercase text-gray-400 mb-2">Vị trí</label>
+		<app-custom-input variant="outline" type="text" placeholder="Nhập khu vực hoặc thành phố..."
+			(input)="onLocationChange($any($event.target).value)"></app-custom-input>
+	</div>
+
+	<!-- Loại hình -->
+	<div class="mb-6">
+		<label class="block text-xs uppercase text-gray-400 mb-2">Loại hình</label>
+		<div class="flex flex-wrap gap-1.5">
+
+			@for (type of typologies; track type) {
+			<app-check-tag [label]="type" [checked]="filters.typologies.includes(type)"
+				(tagClick)="onToggleTypology(type)"></app-check-tag>
+			}
+		</div>
+	</div>
+
+	<!-- Khoảng giá đầu tư -->
+	<div class="mb-6">
+		<label class="block text-xs uppercase text-gray-400 mb-2">Khoảng giá</label>
+		<div class="flex items-center gap-2">
+			<app-custom-input variant="outline" type="text" placeholder="Tối thiểu"
+				(input)="{}"></app-custom-input>
+			<span class="text-gray-300 text-xs">—</span>
+			<app-custom-input variant="outline" type="text" placeholder="Tối đa" 
+				(input)="{}"></app-custom-input>
+		</div>
+	</div>
+
+	<!-- Tiện ích cốt lõi -->
+	<div class="mb-8">
+		<label class="block text-xs uppercase text-gray-400 mb-2">Tiện ích cốt lõi</label>
+		<div class="space-y-2">
+			@for (attr of coreAttributes; track attr.label) {
+			<label class="flex items-center gap-2 cursor-pointer group">
+				<div (click)="onToggleAttribute(attr)"
+					[class]="attr.checked
+							? 'w-3.5 h-3.5 border border-primary   bg-primary flex items-center justify-center flex-shrink-0 cursor-pointer'
+							: 'w-3.5 h-3.5 border border-gray-300 flex items-center justify-center flex-shrink-0 cursor-pointer group-hover:border-primarytransition'">
+					@if (attr.checked) {
+					<svg class="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 8 8">
+						<path d="M1 4l2 2 4-4" stroke="currentColor" stroke-width="1.5" />
+					</svg>
+					}
+				</div>
+				<span class="text-xs text-gray-500 group-hover:text-gray-700 transition">
+					{{ attr.label }}
+				</span>
+			</label>
+			}
+		</div>
+	</div>
+
+	<!-- Nút áp dụng -->
+	<app-button variant="primary" endIcon="search" className="w-full">
+		ÁP DỤNG BỘ LỌC
+	</app-button>
+</aside>

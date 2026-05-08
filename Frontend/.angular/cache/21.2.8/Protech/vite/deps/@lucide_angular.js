@@ -33,7 +33,7 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate,
   ɵɵviewQuerySignal
-} from "./chunk-EYTYPK7D.js";
+} from "./chunk-ZBUEH6HV.js";
 
 // node_modules/@lucide/angular/fesm2022/lucide-angular.mjs
 var _c0 = ["contentRef"];

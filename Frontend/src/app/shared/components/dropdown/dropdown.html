@@ -1,22 +1,31 @@
-<div class="relative w-full">
-	<select
-		class="w-full text-xs border border-gray-300 px-3 py-2 bg-white outline-none text-primary appearance-none pr-8 cursor-pointer rounded transition"
-		[ngClass]="className + (disabled ? ' opacity-50 cursor-not-allowed' : '')"
-		[disabled]="disabled"
-		[value]="value"
-		(change)="onSelect($any($event.target).value)"
-	>
-		<option value="" disabled selected hidden>{{ placeholder }}</option>
-        @for(opt of options; track opt.label){
-            <ng-container >
-			<option [value]="opt.value" [selected]="opt.value === value">{{ opt.label }}</option>
-		</ng-container>
-        }
-		
-	</select>
-	<div class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
-		<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-			<path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+<div class="relative w-full" [ngClass]="className">
+
+	<!-- Trigger button -->
+	<button type="button" (click)="toggle()" [disabled]="disabled"
+		class="w-full flex items-center justify-between text-xs border border-gray-300 px-3 py-2 bg-white text-primary cursor-pointer transition hover:border-gray-400 focus:border-primary focus:outline-none"
+		[ngClass]="disabled ? 'opacity-50 cursor-not-allowed' : ''">
+		<span [ngClass]="value ? 'text-primary' : 'text-gray-400'">
+			{{ value ? selectedLabel : placeholder }}
+		</span>
+
+		<!-- Icon: chevron-up khi mở, chevron-down khi đóng -->
+		<svg lucideIcon='chevron-down' class="size-4 text-primary transition-transform duration-200"
+			[ngClass]="isOpen ? 'rotate-180' : 'rotate-0'">
+
 		</svg>
-	</div>
+	</button>
+
+	<!-- Options list -->
+	@if (isOpen) {
+	<ul class="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-lg overflow-hidden fade-in">
+		@for (opt of options; track opt.value) {
+		<li (click)="onSelect(opt.value)" class="px-3 py-2 text-xs cursor-pointer transition-colors" [ngClass]="opt.value === value
+            ? 'bg-primary text-white'
+            : 'text-primary hover:bg-gray-50'">
+			{{ opt.label }}
+		</li>
+		}
+	</ul>
+	}
+
 </div>

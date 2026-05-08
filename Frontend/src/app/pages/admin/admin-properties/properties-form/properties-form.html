@@ -1,0 +1,244 @@
+<div class="flex flex-col max-h-[80vh] w-full">
+
+    <!-- HEADER -->
+    <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shrink-0">
+
+        <div class="relative flex items-center justify-center p-4">
+
+            <!-- TITLE -->
+            <h2 class="text-lg font-bold text-gray-900 text-center">
+                {{
+                mode === 'add'
+                ? 'Thêm BĐS'
+                : mode === 'edit'
+                ? 'Chỉnh sửa BĐS'
+                : 'Xem chi tiết BĐS'
+                }}
+            </h2>
+
+            <!-- CLOSE -->
+            <div class="absolute right-3 top-1/2 -translate-y-1/2">
+
+                <app-button type="button" variant="ghost" size="icon" (btnClick)="onClose()">
+
+                    <svg lucideIcon="x" class="size-4"></svg>
+
+                </app-button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    @if (mode === 'view') {
+
+    <!-- VIEW CONTENT -->
+    <div class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+
+        <div>
+            <label class="block text-sm font-medium mb-1">
+                Tên BĐS
+            </label>
+
+            <div class="border rounded px-3 py-2 bg-gray-50">
+                {{ property?.title }}
+            </div>
+        </div>
+
+        <!-- Các field khác -->
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4 shrink-0">
+
+        <div class="flex justify-end">
+            <app-button type="button" variant="outline" (btnClick)="onClose()">
+                Đóng
+            </app-button>
+        </div>
+
+    </div>
+
+    } @else {
+
+    <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 min-h-0">
+
+        <!-- SCROLLABLE CONTENT -->
+        <div class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+
+            <!-- TITLE -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Tên BĐS
+                </label>
+
+                <app-custom-input formControlName="title" placeholder="Tên BĐS" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['title'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Tên BĐS là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- PRICE -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Giá
+                </label>
+
+                <app-custom-input formControlName="price" placeholder="Giá" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['price'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Giá là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- LOCATION -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Vị trí
+                </label>
+
+                <app-custom-input formControlName="location" placeholder="Vị trí" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['location'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Vị trí là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- SUITES -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Số phòng ngủ
+                </label>
+
+                <app-custom-input formControlName="suites" type="number" placeholder="Số phòng ngủ" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['suites'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Số phòng ngủ là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- BATHS -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Số phòng tắm
+                </label>
+
+                <app-custom-input formControlName="baths" type="number" placeholder="Số phòng tắm" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['baths'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Số phòng tắm là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- SQFT -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Diện tích
+                </label>
+
+                <app-custom-input formControlName="sqft" type="number" placeholder="Diện tích" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['sqft'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Diện tích là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- ARCHITECT -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Kiến trúc sư
+                </label>
+
+                <app-custom-input formControlName="architect" placeholder="Kiến trúc sư" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['architect'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Kiến trúc sư là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- IMAGE -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Ảnh
+                </label>
+
+                <app-custom-input formControlName="image" placeholder="Link ảnh" variant="outline">
+                </app-custom-input>
+
+                @if (submitted && f['image'].errors) {
+                <p class="text-xs text-red-500 mt-1">
+                    * Ảnh là bắt buộc
+                </p>
+                }
+            </div>
+
+            <!-- BADGE -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Badge
+                </label>
+
+                <app-custom-input formControlName="badge" placeholder="Badge" variant="outline">
+                </app-custom-input>
+            </div>
+
+            <!-- TYPOLOGIES -->
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Typologies
+                </label>
+
+                <app-custom-input formControlName="typologies" placeholder="Cách nhau bằng dấu phẩy" variant="outline">
+                </app-custom-input>
+            </div>
+
+        </div>
+
+        <!-- STICKY FOOTER -->
+        <div class="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4 shrink-0">
+
+            <div class="flex justify-end gap-2">
+
+                <app-button type="button" variant="outline" (btnClick)="onClose()">
+                    Đóng
+                </app-button>
+
+                <app-button type="submit" [disabled]="propertyForm.invalid" className="bg-primary text-white">
+
+                    Lưu
+
+                </app-button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    }
+
+</div>

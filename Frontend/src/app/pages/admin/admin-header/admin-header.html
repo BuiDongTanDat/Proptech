@@ -1,0 +1,19 @@
+<header class="flex items-center justify-between pl-1 pr-8  py-2 bg-white border-b border-gray-100 shadow-sm">
+	<div class="flex items-center gap-4">
+		<button (click)="toggleSidebar.emit()" class="cursor-pointer p-2 rounded-md hover:bg-gray-100 focus:outline-none">
+			<svg lucideIcon="panel-right" class="w-6 h-6 text-gray-700"></svg>
+		</button>
+		
+		<app-custom-input
+			placeholder="Tìm kiếm chức năng..."
+			icon="search"
+			className="w-80"
+			/>
+	</div>
+	<div class="flex items-center gap-4">
+		<span class="text-gray-600 text-sm">Xin chào, <span class="font-medium">Quản trị viên</span></span>
+		<span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 border border-gray-200">
+			<svg lucideIcon="user" class="w-6 h-6 text-gray-500"></svg>
+		</span>
+	</div>
+</header>

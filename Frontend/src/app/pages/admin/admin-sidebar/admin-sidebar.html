@@ -1,0 +1,60 @@
+<aside [class]="isCollapsed ? 'w-0 -translate-x-full opacity-0' : 'w-64 translate-x-0 opacity-100'"
+    class="transition-all duration-300 ease-in-out h-screen bg-white border-r border-gray-100 flex flex-col justify-between overflow-hidden">
+
+    <!-- Dùng div bọc nội dung cố định chiều rộng để không bị vỡ chữ khi đang transition -->
+    <div class="w-64">
+        <!-- Logo Section -->
+        <div class="px-6 py-4 flex flex-col items-start gap-1">
+            <span class="text-xl font-bold tracking-tight text-primary">PROPTECH</span>
+            <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">Management</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex flex-col gap-1 ">
+            @for (item of navItems; track item.route) {
+            <a [routerLink]="item.route" #rla="routerLinkActive"
+                routerLinkActive="bg-primary text-white font-semibold shadow-sm hover:bg-primary hover:text-white"
+                class="group flex items-center gap-3 px-4 py-2.5 text-gray-400 hover:text-primary hover:bg-gray-100 transition-all  text-sm whitespace-nowrap">
+                <div class="pl-2 py-1 flex gap-3 group-hover:translate-x-1.5 transition duration-250">
+
+                    <svg [lucideIcon]="item.icon" class="size-5"
+                        [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"></svg>
+
+                    <span>{{ item.label }}</span>
+                </div>
+            </a>
+            }
+        </nav>
+    </div>
+
+    <!-- Bottom items -->
+    <div>
+        <nav class="flex flex-col gap-1 ">
+            @for (item of bottomNavItems; track item.route) {
+            <a [routerLink]="item.route" #rla="routerLinkActive"
+                routerLinkActive="bg-primary text-white font-bold shadow-sm hover:bg-primary hover:text-white"
+                class="group flex items-center gap-3 px-4 py-2.5 text-gray-400 hover:text-primary hover:bg-gray-100 transition-all  text-sm whitespace-nowrap">
+                <div class="pl-2 py-1 flex gap-3 group-hover:translate-x-1.5 transition duration-250">
+
+                    <svg [lucideIcon]="item.icon" class="size-5"
+                        [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"></svg>
+
+                    <span>{{ item.label }}</span>
+                </div>
+            </a>
+            }
+        </nav>
+        <!-- Sign Out -->
+        <div class="w-64 pb-6">
+            <button (click)="onSignOut()"
+                class="
+            cursor-pointer group flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 w-full  text-sm transition-all whitespace-nowrap">
+                <div class="pl-2 py-1 flex gap-3 hover:translate-x-1.5  duration-250 transtion">
+                    <svg lucideIcon="log-out" class="size-5 text-red-400 group-hover:text-red-600"></svg>
+                    <span>Đăng xuất</span>
+                </div>
+            </button>
+        </div>
+    </div>
+
+</aside>

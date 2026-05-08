@@ -1,0 +1,39 @@
+
+.admin-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 18px 32px;
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	margin-bottom: 24px;
+}
+.header-left {
+	display: flex;
+	align-items: center;
+	gap: 18px;
+}
+.toggle-btn {
+	background: none;
+	border: none;
+	font-size: 22px;
+	cursor: pointer;
+}
+.header-title {
+	font-size: 22px;
+	font-weight: 600;
+	color: #1a2a3a;
+}
+.header-right {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.user-name {
+	font-size: 16px;
+	color: #222;
+}
+.user-avatar {
+	font-size: 22px;
+}

@@ -1,0 +1,236 @@
+<div class="min-h-screen">
+
+  <!-- TOP BAR -->
+  <div class="mb-6">
+
+ <h1 class="text-3xl italic font-bold text-primary tracking-tight">      Cài đặt hệ thống
+    </h1>
+
+    <p class="text-sm text-gray-500 mt-1">
+      Quản lý cấu hình, tài khoản và bảo mật
+    </p>
+
+  </div>
+
+  <!-- SETTINGS CARD -->
+  <div class="fade-in bg-white border border-gray-200 shadow-sm overflow-hidden">
+
+    <!-- TABS -->
+    <div class="border-b border-gray-100">
+
+      <div class="flex items-center overflow-x-auto">
+
+        <!-- GENERAL -->
+        <button
+          (click)="setTab('general')"
+          [class]="
+            activeTab === 'general'
+              ? 'border-primary text-primary bg-primary/5'
+              : 'border-transparent text-gray-500 hover:text-gray-900'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap transition">
+
+          Thiết lập chung
+
+        </button>
+
+        <!-- ACCOUNT -->
+        <button
+          (click)="setTab('account')"
+          [class]="
+            activeTab === 'account'
+              ? 'border-primary text-primary bg-primary/5'
+              : 'border-transparent text-gray-500 hover:text-gray-900'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap transition">
+
+          Tài khoản
+
+        </button>
+
+        <!-- SECURITY -->
+        <button
+          (click)="setTab('security')"
+          [class]="
+            activeTab === 'security'
+              ? 'border-primary text-primary bg-primary/5'
+              : 'border-transparent text-gray-500 hover:text-gray-900'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap transition">
+
+          Bảo mật
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="p-6">
+
+      <!-- GENERAL -->
+      @if (activeTab === 'general') {
+
+        <div class="space-y-6 fade-in">
+
+          <div>
+
+            <h3 class="text-base font-semibold text-gray-900 mb-1">
+              Thiết lập chung
+            </h3>
+
+            <p class="text-sm text-gray-500">
+              Cấu hình thông tin hệ thống
+            </p>
+
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <div>
+              <label class="block text-sm font-medium mb-2">
+                Tên website
+              </label>
+
+              <app-custom-input
+                placeholder="Tên website"
+                variant="outline">
+              </app-custom-input>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">
+                Email liên hệ
+              </label>
+
+              <app-custom-input
+                placeholder="Email liên hệ"
+                variant="outline">
+              </app-custom-input>
+            </div>
+
+          </div>
+
+        </div>
+
+      }
+
+      <!-- ACCOUNT -->
+      @if (activeTab === 'account') {
+
+        <div class="space-y-6 fade-in">
+
+          <div>
+
+            <h3 class="text-base font-semibold text-gray-900 mb-1">
+              Cài đặt tài khoản
+            </h3>
+
+            <p class="text-sm text-gray-500">
+              Quản lý thông tin tài khoản quản trị
+            </p>
+
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <div>
+              <label class="block text-sm font-medium mb-2">
+                Họ và tên
+              </label>
+
+              <app-custom-input
+                placeholder="Họ và tên"
+                variant="outline">
+              </app-custom-input>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">
+                Email
+              </label>
+
+              <app-custom-input
+                placeholder="Email"
+                variant="outline">
+              </app-custom-input>
+            </div>
+
+          </div>
+
+        </div>
+
+      }
+
+      <!-- SECURITY -->
+      @if (activeTab === 'security') {
+
+        <div class="space-y-6 fade-in">
+
+          <div>
+
+            <h3 class="text-base font-semibold text-gray-900 mb-1">
+              Bảo mật
+            </h3>
+
+            <p class="text-sm text-gray-500">
+              Quản lý mật khẩu và bảo mật hệ thống
+            </p>
+
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <div>
+              <label class="block text-sm font-medium mb-2">
+                Mật khẩu hiện tại
+              </label>
+
+              <app-custom-input
+                type="password"
+                placeholder="Mật khẩu hiện tại"
+                variant="outline">
+              </app-custom-input>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">
+                Mật khẩu mới
+              </label>
+
+              <app-custom-input
+                type="password"
+                placeholder="Mật khẩu mới"
+                variant="outline">
+              </app-custom-input>
+            </div>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
+
+      <app-button variant="outline">
+        Hủy
+      </app-button>
+
+      <app-button
+        variant="primary"
+        startIcon="save">
+
+        Lưu thay đổi
+
+      </app-button>
+
+    </div>
+
+  </div>
+
+</div>

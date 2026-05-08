@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
 
 @Component({
@@ -8,56 +9,69 @@ import { LucideDynamicIcon } from '@lucide/angular';
   imports: [CommonModule, LucideDynamicIcon],
   templateUrl: './custom-input.html',
   styleUrl: './custom-input.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CustomInput),
+      multi: true,
+    },
+  ],
 })
-export class CustomInput {
+export class CustomInput implements ControlValueAccessor {
 
   // ===== VALUE =====
-  @Input() value: string = '';
+  value: string = '';
 
-  // ===== PLACEHOLDER =====
+  // ===== INPUT PROPS =====
   @Input() placeholder: string = '';
-
-  // ===== VARIANT =====
   @Input() variant: 'primary' | 'outline' | 'ghost' = 'primary';
-
-  // ===== DISABLED =====
   @Input() disabled: boolean = false;
-
-  // ===== ICON =====
   @Input() icon?: string;
-
-  // ===== CUSTOM CLASS =====
   @Input() className: string = '';
+  @Input() type: string = 'text';
 
-  // ===== EVENT =====
-  @Output() valueChange = new EventEmitter<string>();
+  // ===== ControlValueAccessor =====
+  private onChange = (value: string) => {};
+  private onTouched = () => {};
 
-  // =========================
-  // VARIANT CLASSES
-  // =========================
+  writeValue(value: string): void {
+    this.value = value || '';
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  // ===== HANDLE INPUT =====
+  onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value;
+    this.onChange(value);
+    this.onTouched();
+  }
+
+  // ===== VARIANT CLASSES =====
   get variantClasses(): string {
     switch (this.variant) {
       case 'outline':
-        return 'bg-white border border-gray-300 focus:border-primary hover:border-gray-500 hover:border-1.5';
+        return 'bg-white border border-gray-300 focus:border-primary hover:border-gray-500';
       case 'ghost':
         return 'border border-transparent focus:border-primary bg-gray-50 hover:bg-gray-100';
       default:
-        return 'border border-gray-200 focus:border-primary bg-white hover:border-gray-300 hover:border-1.5';
+        return 'border border-gray-200 focus:border-primary bg-white hover:border-gray-300';
     }
   }
 
-  // =========================
-  // DISABLED
-  // =========================
+  // ===== DISABLED =====
   get disabledClasses(): string {
     return this.disabled ? 'opacity-50 cursor-not-allowed' : '';
-  }
-
-  // =========================
-  // HANDLE INPUT
-  // =========================
-  onInput(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.valueChange.emit(value);
   }
 }

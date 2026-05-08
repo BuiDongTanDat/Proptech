@@ -1,12 +1,14 @@
 <div class="flex items-center justify-center gap-3" [ngClass]="className">
 	<!-- Prev -->
 	<button
-		class="flex items-center gap-1.5 text-xs uppercase text-gray-400 hover:text-primary transition disabled:opacity-30"
+		class="flex items-center gap-1.5 text-xs uppercase text-gray-400 hover:text-primary transition disabled:opacity-30 cursor-pointer"
 		[disabled]="disabled || currentPage === 1"
 		(click)="goToPage(currentPage - 1)"
 	>
-		<svg class="w-3 h-3" viewBox="0 0 12 12" fill="none">
-			<path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.2" />
+		<svg 
+		lucideIcon="chevron-left"
+		>
+			
 		</svg>
 		Trước
 	</button>
@@ -19,8 +21,8 @@
 				[disabled]="disabled || page === currentPage"
 				[ngClass]="
 					page === currentPage
-						? 'w-8 h-8 text-xs bg-primary text-white flex items-center justify-center'
-						: 'w-8 h-8 text-xs text-gray-400 hover:text-primary transition flex items-center justify-center border border-transparent hover:border-gray-200 '
+						? 'cursor-pointer w-8 h-8 text-xs bg-primary text-white flex items-center justify-center'
+						: 'cursor-pointer w-8 h-8 text-xs text-gray-400 hover:text-primary transition flex items-center justify-center border border-transparent hover:border-gray-200 '
 				"
 			>
 				{{ page < 10 ? '0' + page : page }}
@@ -30,13 +32,15 @@
 
 	<!-- Next -->
 	<button
-		class="flex items-center gap-1.5 text-xs uppercase text-gray-400 hover:text-primary transition disabled:opacity-30"
+		class="flex items-center gap-1.5 text-xs uppercase text-gray-400 hover:text-primary transition disabled:opacity-30 cursor-pointer"
 		[disabled]="disabled || currentPage === totalPages"
 		(click)="goToPage(currentPage + 1)"
 	>
 		Sau
-		<svg class="w-3 h-3" viewBox="0 0 12 12" fill="none">
-			<path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.2" />
+		<svg 
+		lucideIcon="chevron-right"
+		>
+			
 		</svg>
 	</button>
 </div>

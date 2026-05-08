@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build: 
+      context: ./Frontend
+      dockerfile: Dockerfile.dev # Dùng file dev mới tạo
+    container_name: protech_frontend
+    ports:
+      - "4200:4200" 
+    volumes:
+      - ./Frontend:/app         # Mount code từ máy thật vào container
+      - /app/node_modules       # Giữ lại node_modules bên trong container (không ghi đè ngược ra máy thật)
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Hỗ trợ watch file tốt hơn trong Docker
+      - CHOKIDAR_INTERVAL=2000     
+      - WATCHPACK_POLLING=true       
+    restart: unless-stopped

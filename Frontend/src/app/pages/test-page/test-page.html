@@ -1,7 +1,53 @@
-<div class="tilda-wrapper">
+<section class="max-h-screen ">
   <iframe
     src="https://attract-scented-guillemot.tilda.ws/"
+    title="Tilda Landing Page"
     frameborder="0"
-    loading="lazy"
-  ></iframe>
-</div>
+    loading="lazy">
+  </iframe>
+  <button
+  (click)="onSuccess()"
+  class="px-4 py-2 bg-green-500 text-white rounded"
+>
+  Success Toast
+</button>
+
+<button
+  (click)="onError()"
+  class="ml-2 px-4 py-2 bg-red-500 text-white rounded"
+>
+  Error Toast
+</button>
+
+<app-toast />
+
+<button
+  (click)="onToggleDialog()"
+  class="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+>
+  Show dialog
+</button>
+
+<app-dialog
+  [show]="dialogVisible()"
+  title="Dialog Title"
+  description="This is a description for the dialog. <b>Supports HTML content.</b>"
+  icon="user"
+  (closed)="onToggleDialog()"
+>
+ <app-button
+    variant="outline"
+    (btnClick)="onToggleDialog()"
+  >
+    Cancel
+  </app-button>
+<app-button
+    variant="primary"
+    (btnClick)="onToggleDialog()"
+  >
+    Submit
+  </app-button>
+
+
+</app-dialog>
+</section>

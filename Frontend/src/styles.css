@@ -7,11 +7,13 @@
 body {
   font-family: "Montserrat", sans-serif;
 }
+
 @theme {
   --color-primary: #1A2B48;
   --color-secondary: #006D5B;
   --color-tertiary: #F26419;
 }
+
 /* =========================
    DESIGN TOKENS
 ========================= */
@@ -243,6 +245,79 @@ body {
       transform: translateY(0);
     }
   }
+
+  .fade-out {
+    animation: fadeOut 0.25s ease-in-out;
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  .scale-in {
+    animation: scaleIn 0.25s ease-in-out;
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .scale-out {
+    animation: scaleOut 0.25s ease-in-out;
+  }
+
+  @keyframes scaleOut {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  .slide-in-left {
+    animation: slideInLeft 0.25s ease-in-out;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .transition-bounce {
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .group\/button:hover .transition-bounce {
+    transform: scale(1.15);
+  }
+
 }
 
 /* =========================

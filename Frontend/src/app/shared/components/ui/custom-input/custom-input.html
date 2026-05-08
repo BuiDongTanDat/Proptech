@@ -1,4 +1,7 @@
-<div class="relative w-full">
+<div
+  class="relative"
+  [ngClass]="className"
+>
 
   <!-- ICON -->
   @if (icon) {
@@ -9,16 +12,15 @@
 
   <!-- INPUT -->
   <input
-    type="text"
+    [type]="type"
     [value]="value"
     [placeholder]="placeholder"
     [disabled]="disabled"
     (input)="onInput($event)"
-    class="w-full text-xs py-2 outline-none transition text-gray-600 placeholder-gray-300 font-sans"
+    class="w-full text-sm py-2 outline-none transition text-gray-600 placeholder-gray-300 font-sans"
     [ngClass]="[
       variantClasses,
       disabledClasses,
-      className,
       icon ? 'pl-9 pr-3' : 'px-3'
     ]"
   />

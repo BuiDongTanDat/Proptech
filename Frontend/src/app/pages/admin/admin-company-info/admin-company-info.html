@@ -1,0 +1,274 @@
+<div class="min-h-screen">
+
+  <!-- TOP BAR -->
+  <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+
+    <div>
+ <h1 class="text-3xl italic font-bold text-primary tracking-tight">        Thông tin doanh nghiệp
+      </h1>
+
+      <p class="text-sm text-gray-500 mt-1">
+        Quản lý thông tin hiển thị của doanh nghiệp
+      </p>
+    </div>
+
+    @if (!isEditing) {
+
+      <app-button
+        variant="primary"
+        startIcon="pencil"
+        (btnClick)="onEdit()">
+
+        Chỉnh sửa
+
+      </app-button>
+
+    } @else {
+
+      <div class="flex items-center gap-2">
+
+        <app-button
+          variant="outline"
+          (btnClick)="onCancel()">
+
+          Hủy
+
+        </app-button>
+
+        <app-button
+          variant="primary"
+          startIcon="save"
+          (btnClick)="onSave()">
+
+          Lưu thay đổi
+
+        </app-button>
+
+      </div>
+
+    }
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="bg-white border border-gray-200 shadow-sm overflow-hidden fade-in">
+
+    <!-- HEADER -->
+    <div class="px-6 py-5 border-b border-gray-100">
+
+      <div class="flex items-center gap-4">
+
+        <!-- LOGO -->
+        <div
+          class="size-18 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold uppercase">
+
+          {{ company.companyName.charAt(0) }}
+
+        </div>
+
+        <div>
+
+          <h2 class="text-lg font-semibold text-gray-900">
+            {{ company.companyName }}
+          </h2>
+
+          <p class="text-sm text-gray-500 mt-1">
+            Hồ sơ doanh nghiệp
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FORM -->
+    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+
+      <!-- COMPANY NAME -->
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          Tên doanh nghiệp
+        </label>
+
+        @if (!isEditing) {
+
+          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            {{ company.companyName }}
+          </div>
+
+        } @else {
+
+          <app-custom-input
+            [(ngModel)]="tempCompany.companyName"
+            variant="outline"
+            placeholder="Tên doanh nghiệp">
+
+          </app-custom-input>
+
+        }
+
+      </div>
+
+      <!-- EMAIL -->
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          Email
+        </label>
+
+        @if (!isEditing) {
+
+          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            {{ company.email }}
+          </div>
+
+        } @else {
+
+          <app-custom-input
+            [(ngModel)]="tempCompany.email"
+            variant="outline"
+            placeholder="Email">
+
+          </app-custom-input>
+
+        }
+
+      </div>
+
+      <!-- PHONE -->
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          Số điện thoại
+        </label>
+
+        @if (!isEditing) {
+
+          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            {{ company.phone }}
+          </div>
+
+        } @else {
+
+          <app-custom-input
+            [(ngModel)]="tempCompany.phone"
+            variant="outline"
+            placeholder="Số điện thoại">
+
+          </app-custom-input>
+
+        }
+
+      </div>
+
+      <!-- WEBSITE -->
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          Website
+        </label>
+
+        @if (!isEditing) {
+
+          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            {{ company.website }}
+          </div>
+
+        } @else {
+
+          <app-custom-input
+            [(ngModel)]="tempCompany.website"
+            variant="outline"
+            placeholder="Website">
+
+          </app-custom-input>
+
+        }
+
+      </div>
+
+      <!-- TAX CODE -->
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          Mã số thuế
+        </label>
+
+        @if (!isEditing) {
+
+          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            {{ company.taxCode }}
+          </div>
+
+        } @else {
+
+          <app-custom-input
+            [(ngModel)]="tempCompany.taxCode"
+            variant="outline"
+            placeholder="Mã số thuế">
+
+          </app-custom-input>
+
+        }
+
+      </div>
+
+      <!-- ADDRESS -->
+      <div>
+
+        <label class="block text-sm font-medium mb-2">
+          Địa chỉ
+        </label>
+
+        @if (!isEditing) {
+
+          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+            {{ company.address }}
+          </div>
+
+        } @else {
+
+          <app-custom-input
+            [(ngModel)]="tempCompany.address"
+            variant="outline"
+            placeholder="Địa chỉ">
+
+          </app-custom-input>
+
+        }
+
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="md:col-span-2">
+
+        <label class="block text-sm font-medium mb-2">
+          Mô tả doanh nghiệp
+        </label>
+
+        @if (!isEditing) {
+
+          <div class="border border-gray-200 bg-gray-50 px-3 py-3 text-sm leading-relaxed">
+            {{ company.description }}
+          </div>
+
+        } @else {
+
+          <textarea
+            [(ngModel)]="tempCompany.description"
+            rows="5"
+            class="w-full border border-gray-200 px-3 py-2 outline-none focus:border-primary resize-none"
+            placeholder="Mô tả doanh nghiệp">
+          </textarea>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

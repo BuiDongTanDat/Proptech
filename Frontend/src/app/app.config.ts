@@ -8,9 +8,10 @@ import { LUCIDE_ICON_SET } from './shared/utils/icons';
 export const appConfig: ApplicationConfig = {
   providers: [
      // Provider cung cấp để dùng icon ở dạng khai báo string 'user' 
-    provideLucideConfig({ size: 12 }),
+    provideLucideConfig({ size: 18 }),
     provideLucideIcons(...LUCIDE_ICON_SET),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes)
   ]
+  
 };

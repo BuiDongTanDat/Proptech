@@ -1,0 +1,55 @@
+@if (show()) {
+
+<div class="fixed inset-0 z-50 flex items-center justify-center">
+
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/40 fade-in" (click)="close()"></div>
+
+    <!-- Modal -->
+    <div class="relative z-10 w-full max-w-md  bg-white rounded-sm shadow-2xl flex flex-col gap-4 scale-in">
+
+       @if (title()) {
+         <!-- Header-->
+        <div class="flex items-center justify-between gap-4 pt-2">
+
+            <!-- Left -->
+            <div class="flex items-center gap-3">
+
+                @if (icon()) {
+                <svg [lucideIcon]="icon()" class="size-4 text-gray-600 shrink-0"></svg>
+                }
+
+                <h3 class="text-lg font-semibold text-gray-800 leading-none">
+                    {{ title() }}
+                </h3>
+
+            </div>
+
+            <!-- Close -->
+            <app-button type="button" variant="ghost" size="icon" (btnClick)="close()">
+                <svg [lucideIcon]="'x'" class="size-4"></svg>
+            </app-button>
+
+        </div>
+       }
+        
+
+        <!-- Content -->
+        @if (description()) {
+        <p class="text-sm text-gray-500 leading-relaxed" [innerHTML]="description()"></p>
+        }
+        <!-- Dùng ng-content để cho phép truyền nội dung tùy chỉnh vào dialog -->
+         <ng-content></ng-content>
+
+
+        <hr class="border-gray-100" />
+
+        <!-- Actions
+        <div class="flex justify-end gap-2">
+            <ng-content></ng-content>
+        </div> -->
+
+    </div>
+</div>
+
+}
