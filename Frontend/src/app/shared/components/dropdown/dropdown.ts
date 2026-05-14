@@ -1,49 +1,111 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+  forwardRef,
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  FormsModule,
+} from '@angular/forms';
+
 import { LucideDynamicIcon } from '@lucide/angular';
 
 @Component({
   selector: 'app-dropdown',
   standalone: true,
-  imports: [CommonModule, LucideDynamicIcon],
+  imports: [CommonModule, LucideDynamicIcon, FormsModule],
   templateUrl: './dropdown.html',
   styleUrl: './dropdown.css',
+
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => Dropdown),
+      multi: true,
+    },
+  ],
 })
-export class Dropdown {
+export class Dropdown implements ControlValueAccessor {
+
   /** Danh sách option */
   @Input() options: Array<{ label: string; value: any }> = [];
-  /** Giá trị đang chọn */
-  @Input() value: any;
+
   /** Placeholder */
   @Input() placeholder: string = 'Chọn';
+
   /** Disabled */
   @Input() disabled: boolean = false;
+
   /** Custom class */
   @Input() className: string = '';
-  /** Sự kiện chọn option */
-  @Output() valueChange = new EventEmitter<any>();
+
+  value: any = null;
 
   isOpen = false;
+
+  // ===== CONTROL VALUE ACCESSOR =====
+
+  private onChange: any = () => { };
+  private onTouched: any = () => { };
+
+  writeValue(value: any): void {
+    this.value = value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  // ===== GETTER =====
 
   get selectedLabel(): string {
     return this.options.find(o => o.value === this.value)?.label ?? '';
   }
 
-  toggle() {
-    if (!this.disabled) this.isOpen = !this.isOpen;
-  }
+  // ===== ACTIONS =====
 
-  onSelect(val: any) {
+  toggle() {
     if (!this.disabled) {
-      this.valueChange.emit(val);
-      this.isOpen = false;
+      this.isOpen = !this.isOpen;
     }
   }
 
-  // Đóng khi click ra ngoài
+  onSelect(val: any) {
+
+    if (this.disabled) return;
+
+    // update internal state
+    this.value = val;
+
+    // notify Angular forms/ngModel
+    this.onChange(val);
+
+    this.onTouched();
+
+    // close dropdown
+    this.isOpen = false;
+  }
+
+  // ===== CLICK OUTSIDE =====
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     const el = event.target as HTMLElement;
+
     if (!el.closest('app-dropdown')) {
       this.isOpen = false;
     }

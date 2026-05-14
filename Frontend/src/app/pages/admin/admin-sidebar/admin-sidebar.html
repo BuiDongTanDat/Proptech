@@ -1,60 +1,149 @@
-<aside [class]="isCollapsed ? 'w-0 -translate-x-full opacity-0' : 'w-64 translate-x-0 opacity-100'"
-    class="transition-all duration-300 ease-in-out h-screen bg-white border-r border-gray-100 flex flex-col justify-between overflow-hidden">
+<aside
+  class="h-screen bg-white border-r border-gray-100 flex flex-col justify-between transition-all duration-300 ease-in-out"
+  [ngClass]="isLeftSidebarCollapsed() ? 'w-18' : 'w-64'"
+>
+  <!-- Dùng div bọc nội dung cố định chiều rộng để không bị vỡ chữ khi đang transition -->
+  <div class="w-full">
+    <!-- Logo Section -->
+    <div
+      class="px-4 py-4 flex items-center"
+      [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
+    >
+      <!-- Logo Icon -->
+      <div class="size-10 shrink-0 overflow-hidden rounded-sm">
+        <img src="Protech_icon.png" alt="PROPTECH Logo" class="w-full h-full object-cover" />
+      </div>
 
-    <!-- Dùng div bọc nội dung cố định chiều rộng để không bị vỡ chữ khi đang transition -->
-    <div class="w-64">
-        <!-- Logo Section -->
-        <div class="px-6 py-4 flex flex-col items-start gap-1">
-            <span class="text-xl font-bold tracking-tight text-primary">PROPTECH</span>
-            <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">Management</span>
+      <!-- Full title -->
+      @if (!isLeftSidebarCollapsed()) {
+        <div class="flex flex-col slide-in-left transition duration-250">
+          <span class="text-xl font-bold tracking-tight text-primary"> PROPTECH </span>
+
+          <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">
+            Management
+          </span>
         </div>
-
-        <!-- Navigation -->
-        <nav class="flex flex-col gap-1 ">
-            @for (item of navItems; track item.route) {
-            <a [routerLink]="item.route" #rla="routerLinkActive"
-                routerLinkActive="bg-primary text-white font-semibold shadow-sm hover:bg-primary hover:text-white"
-                class="group flex items-center gap-3 px-4 py-2.5 text-gray-400 hover:text-primary hover:bg-gray-100 transition-all  text-sm whitespace-nowrap">
-                <div class="pl-2 py-1 flex gap-3 group-hover:translate-x-1.5 transition duration-250">
-
-                    <svg [lucideIcon]="item.icon" class="size-5"
-                        [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"></svg>
-
-                    <span>{{ item.label }}</span>
-                </div>
-            </a>
-            }
-        </nav>
+      }
     </div>
 
-    <!-- Bottom items -->
-    <div>
-        <nav class="flex flex-col gap-1 ">
-            @for (item of bottomNavItems; track item.route) {
-            <a [routerLink]="item.route" #rla="routerLinkActive"
-                routerLinkActive="bg-primary text-white font-bold shadow-sm hover:bg-primary hover:text-white"
-                class="group flex items-center gap-3 px-4 py-2.5 text-gray-400 hover:text-primary hover:bg-gray-100 transition-all  text-sm whitespace-nowrap">
-                <div class="pl-2 py-1 flex gap-3 group-hover:translate-x-1.5 transition duration-250">
+    <!-- Navigation -->
+    <nav class="flex flex-col gap-1 mt-4">
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          #rla="routerLinkActive"
+          routerLinkActive="bg-primary text-white font-semibold shadow-sm hover:bg-primary"
+          class="relative group flex items-center px-4 py-2.5 text-sm whitespace-nowrap transition-all hover:bg-gray-100"
+        >
+          <div
+            class="flex items-center w-full group-hover:translate-x-1.5 transition duration-250"
+            [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
+          >
+            <!-- Icon -->
+            <svg
+              [lucideIcon]="item.icon"
+              class="size-5 shrink-0"
+              [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
+            ></svg>
 
-                    <svg [lucideIcon]="item.icon" class="size-5"
-                        [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"></svg>
-
-                    <span>{{ item.label }}</span>
-                </div>
-            </a>
+            <!-- Expanded -->
+            @if (!isLeftSidebarCollapsed()) {
+              <span class="slide-in-left transition duration-250 ">
+                {{ item.label }}
+              </span>
             }
-        </nav>
-        <!-- Sign Out -->
-        <div class="w-64 pb-6">
-            <button (click)="onSignOut()"
-                class="
-            cursor-pointer group flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 w-full  text-sm transition-all whitespace-nowrap">
-                <div class="pl-2 py-1 flex gap-3 hover:translate-x-1.5  duration-250 transtion">
-                    <svg lucideIcon="log-out" class="size-5 text-red-400 group-hover:text-red-600"></svg>
-                    <span>Đăng xuất</span>
-                </div>
-            </button>
-        </div>
-    </div>
+          </div>
 
+          <!-- Tooltip -->
+          @if (isLeftSidebarCollapsed()) {
+            <div
+              class="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none"
+            >
+              <div class="px-3 py-2 rounded-sm bg-gray-100 text-primary text-xs shadow-lg">
+                {{ item.label }}
+              </div>
+            </div>
+          }
+        </a>
+      }
+    </nav>
+  </div>
+
+  <div>
+    <nav class="flex flex-col gap-1">
+      @for (item of bottomNavItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          #rla="routerLinkActive"
+          routerLinkActive="bg-primary text-white font-semibold shadow-sm hover:bg-primary"
+          class="relative group flex items-center px-4 py-2.5 text-sm whitespace-nowrap transition-all hover:bg-gray-100"
+        >
+          <div
+            class="flex items-center w-full group-hover:translate-x-1.5 transition duration-250"
+            [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
+          >
+            <!-- Icon -->
+            <svg
+              [lucideIcon]="item.icon"
+              class="size-5 shrink-0"
+              [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
+            ></svg>
+
+            <!-- Expanded -->
+            @if (!isLeftSidebarCollapsed()) {
+              <span class="slide-in-left transition duration-250 ">
+                {{ item.label }}
+              </span>
+            }
+          </div>
+
+          <!-- Tooltip -->
+          @if (isLeftSidebarCollapsed()) {
+            <div
+              class="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none"
+            >
+              <div class="px-3 py-2 rounded-sm bg-gray-100 text-primary text-xs shadow-lg">
+                {{ item.label }}
+              </div>
+            </div>
+          }
+        </a>
+      }
+    </nav>
+
+    <!-- Sign Out -->
+    <div class="pb-6">
+      <button
+        (click)="onSignOut()"
+        class="cursor-pointer relative group flex items-center px-4 py-2.5 text-sm whitespace-nowrap transition-all hover:bg-red-50 w-full"
+      >
+        <div
+          class="flex items-center w-full group-hover:translate-x-1.5 transition duration-250"
+          [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
+        >
+          <!-- Icon -->
+          <svg
+            lucideIcon="log-out"
+            class="size-5 shrink-0 text-red-400 group-hover:text-red-600"
+          ></svg>
+
+          <!-- Expanded -->
+          @if (!isLeftSidebarCollapsed()) {
+            <span class="text-red-400 group-hover:text-red-600 slide-in-left transition duration-250 "> Đăng xuất </span>
+          }
+        </div>
+
+        <!-- Tooltip -->
+        @if (isLeftSidebarCollapsed()) {
+          <div
+            class="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none"
+          >
+            <div class="px-3 py-2 rounded-sm bg-gray-100 text-primary text-xs shadow-lg">
+              Đăng xuất
+            </div>
+          </div>
+        }
+      </button>
+    </div>
+  </div>
 </aside>

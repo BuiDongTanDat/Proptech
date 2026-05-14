@@ -21,6 +21,7 @@ export class Dialog {
 
   closed = output<void>();
 
+  
   close() {
     this.closed.emit();
   }

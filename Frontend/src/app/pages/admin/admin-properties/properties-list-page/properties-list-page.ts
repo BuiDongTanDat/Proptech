@@ -10,6 +10,7 @@ import { propertiesList, Property } from '../../../../shared/utils/data.mock';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { PropertiesForm } from '../properties-form/properties-form';
 import { Dialog } from '../../../../shared/components/dialog/dialog';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -24,12 +25,16 @@ import { Dialog } from '../../../../shared/components/dialog/dialog';
     CustomInput,
     Dropdown,
     PropertiesForm,
-    Dialog
+    Dialog,
   ],
   templateUrl: './properties-list-page.html',
 })
 export class PropertiesListPage implements OnInit {
 
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   properties: Property[] = [];
   allProperties: Property[] = [];
@@ -60,6 +65,7 @@ export class PropertiesListPage implements OnInit {
     this.checkMobile();
     this.allProperties = propertiesList;
     this.filteredProperties = [...this.allProperties];
+    this.onSortChange();
     this.updatePage();
   }
   onExport() {
@@ -68,11 +74,14 @@ export class PropertiesListPage implements OnInit {
   }
 
   onAdd() {
-    // TODO: Add property logic
-    this.formMode = 'add';
-    this.selectedProperty = null;
-    this.showFormDialog = true;
-    alert('Thêm BĐS mới!');
+    // // TODO: Add property logic
+    // this.formMode = 'add';
+    // this.selectedProperty = null;
+    // this.showFormDialog = true;
+    // alert('Thêm BĐS mới!');
+    this.router.navigate(['../properties/add'], {
+      relativeTo: this.route
+    });
   }
 
   onEdit(property: Property) {
@@ -87,7 +96,7 @@ export class PropertiesListPage implements OnInit {
     this.showFormDialog = true;
   }
 
-   onDelete(property: Property) {
+  onDelete(property: Property) {
     this.allProperties = this.allProperties.filter(p => p.id !== property.id);
     this.filteredProperties = this.filteredProperties.filter(p => p.id !== property.id);
     if ((this.currentPage - 1) * this.pageSize >= this.filteredProperties.length && this.currentPage > 1) {
@@ -121,17 +130,16 @@ export class PropertiesListPage implements OnInit {
     this.selectedProperty = null;
   }
 
-
   onFilter() {
     // TODO: Filter logic
 
     alert('Bộ lọc!');
   }
 
-  onSortChange(value: string) {
-    this.selectedSort = value;
+  onSortChange() {
 
-    switch (value) {
+    switch (this.selectedSort) {
+
       case 'newest':
         this.filteredProperties.sort((a, b) => b.id - a.id);
         break;
@@ -141,17 +149,20 @@ export class PropertiesListPage implements OnInit {
         break;
 
       case 'price-desc':
-
+        this.filteredProperties.sort((a, b) => Number(b.price) - Number(a.price));
         break;
 
       case 'price-asc':
-
+        this.filteredProperties.sort((a, b) => Number(a.price) - Number(b.price));
         break;
     }
 
     this.currentPage = 1;
+
     this.updatePage();
   }
+
+
 
   @HostListener('window:resize')
   onResize() { this.checkMobile(); }
@@ -193,6 +204,6 @@ export class PropertiesListPage implements OnInit {
     this.updatePage();
   }
 
- 
+
 
 }

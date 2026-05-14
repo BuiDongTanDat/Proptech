@@ -1,0 +1,231 @@
+<div class="flex flex-col max-h-[80vh] w-full">
+  <!-- HEADER -->
+  <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shrink-0">
+    <div class="relative flex items-center justify-center p-4">
+      <h2 class="text-lg font-bold text-gray-900 text-center">
+        {{
+          mode === 'add'
+            ? 'Thêm tài khoản'
+            : editable
+              ? 'Chỉnh sửa tài khoản'
+              : 'Xem chi tiết tài khoản'
+        }}
+      </h2>
+      <div class="absolute right-3 top-1/2 -translate-y-1/2">
+        <app-button type="button" variant="ghost" size="icon" (btnClick)="onClose()">
+          <svg lucideIcon="x" class="size-4"></svg>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  @if (!editable) {
+    <!-- VIEW CONTENT -->
+    <div class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+      <!-- AVATAR -->
+      <div class="flex justify-center pb-2">
+        @if (user?.avatar) {
+          <img
+            [src]="user?.avatar"
+            alt="avatar"
+            class="size-24 rounded-full object-cover border border-gray-200 shadow-sm"
+          />
+        } @else {
+          <div
+            class="size-24 rounded-full bg-primary text-white flex items-center justify-center text-3xl font-bold uppercase"
+          >
+            {{ user?.fullName?.charAt(0) }}
+          </div>
+        }
+      </div>
+
+      <!-- FULL NAME -->
+      <div>
+        <label class="block text-sm font-medium mb-1"> Họ tên </label>
+
+        <div class="border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-sm text-gray-700">
+          {{ user?.fullName }}
+        </div>
+      </div>
+
+      <!-- EMAIL -->
+      <div>
+        <label class="block text-sm font-medium mb-1"> Email </label>
+
+        <div class="border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-sm text-gray-700">
+          {{ user?.email }}
+        </div>
+      </div>
+
+      <!-- PHONE -->
+      <div>
+        <label class="block text-sm font-medium mb-1"> Số điện thoại </label>
+
+        <div class="border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-sm text-gray-700">
+          {{ user?.phone }}
+        </div>
+      </div>
+
+      <!-- ROLE -->
+      <div>
+        <label class="block text-sm font-medium mb-1"> Vai trò </label>
+
+        <div class="border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-sm">
+          <span
+            [class]="
+              user?.role === 'admin' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'
+            "
+            class="inline-flex px-2 py-1 text-xs font-semibold rounded-md"
+          >
+            {{ user?.role === 'admin' ? 'Admin' : 'Nhân viên' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- STATUS -->
+      <div>
+        <label class="block text-sm font-medium mb-1"> Trạng thái </label>
+
+        <div class="border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-sm">
+          <div class="flex items-center gap-2">
+            <div
+              [class]="user?.status === 'active' ? 'bg-green-500' : 'bg-red-500'"
+              class="size-2 rounded-full"
+            ></div>
+
+            <span class="text-gray-700">
+              {{ user?.status === 'active' ? 'Đang hoạt động' : 'Ngưng hoạt động' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATED -->
+      <div>
+        <label class="block text-sm font-medium mb-1"> Ngày tạo </label>
+
+        <div class="border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-sm text-gray-700">
+          {{ user?.createdAt }}
+        </div>
+      </div>
+    </div>
+    <!-- FOOTER -->
+    <div class="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4 shrink-0">
+      <div class="flex justify-end gap-2">
+        <app-button type="button" variant="outline" (btnClick)="onClose()">Đóng</app-button>
+        @if (mode !== 'add') {
+          <app-button type="button" variant="primary" (btnClick)="onEdit()"> Chỉnh sửa </app-button>
+        }
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 min-h-0">
+      <!-- CONTENT -->
+      <div class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+        <!-- FULL NAME -->
+        <div>
+          <label class="block text-sm font-medium mb-1"> Họ tên </label>
+
+          <app-custom-input formControlName="fullName" placeholder="Họ tên" variant="outline">
+          </app-custom-input>
+
+          @if (submitted && f['fullName'].errors) {
+            <p class="text-xs text-red-500 mt-1">* Họ tên là bắt buộc</p>
+          }
+        </div>
+
+        <!-- EMAIL -->
+        <div>
+          <label class="block text-sm font-medium mb-1"> Email </label>
+
+          <app-custom-input
+            formControlName="email"
+            placeholder="Email"
+            variant="outline"
+            type="email"
+          >
+          </app-custom-input>
+
+          @if (submitted && f['email'].errors) {
+            <p class="text-xs text-red-500 mt-1">* Email hợp lệ là bắt buộc</p>
+          }
+        </div>
+
+        <!-- PHONE -->
+        <div>
+          <label class="block text-sm font-medium mb-1"> Số điện thoại </label>
+
+          <app-custom-input formControlName="phone" placeholder="Số điện thoại" variant="outline">
+          </app-custom-input>
+
+          @if (submitted && f['phone'].errors) {
+            <p class="text-xs text-red-500 mt-1">* Số điện thoại là bắt buộc</p>
+          }
+        </div>
+
+        <!-- ROLE -->
+        <div>
+          <label class="block text-sm font-medium mb-1"> Vai trò </label>
+
+          <app-dropdown
+            formControlName="role"
+            [options]="[
+              { label: 'Admin', value: 'admin' },
+              { label: 'Nhân viên', value: 'staff' },
+            ]"
+            placeholder="Chọn vai trò"
+          ></app-dropdown>
+        </div>
+
+        <!-- STATUS -->
+        <div>
+          <label class="block text-sm font-medium mb-1"> Trạng thái </label>
+
+          <app-dropdown
+            formControlName="status"
+            [options]="[
+              { label: 'Đang hoạt động', value: 'active' },
+              { label: 'Ngưng hoạt động', value: 'inactive' },
+            ]"
+            placeholder="Chọn trạng thái"
+          ></app-dropdown>
+        </div>
+
+        <!-- CREATED -->
+        <div>
+          <label class="block text-sm font-medium mb-1"> Ngày tạo </label>
+
+          <app-custom-date-picker formControlName="createdAt" placeholder="Chọn ngày tạo">
+          </app-custom-date-picker>
+        </div>
+
+        <!-- AVATAR -->
+        <div>
+          <label class="block text-sm font-medium mb-1"> Avatar </label>
+
+          <app-custom-input formControlName="avatar" placeholder="Link avatar" variant="outline">
+          </app-custom-input>
+
+          @if (userForm.get('avatar')?.value) {
+            <img
+              [src]="userForm.get('avatar')?.value"
+              alt="avatar"
+              class="w-14 h-14 rounded-full object-cover mt-3 border border-gray-200"
+            />
+          }
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4 shrink-0">
+        <div class="flex justify-end gap-2">
+          <app-button type="button" variant="outline" (btnClick)="onClose()"> Đóng </app-button>
+
+          <app-button type="submit" [disabled]="userForm.invalid" className="bg-primary text-white">
+            Lưu
+          </app-button>
+        </div>
+      </div>
+    </form>
+  }
+</div>

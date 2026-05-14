@@ -1,384 +1,386 @@
 <div class="min-h-screen">
-
-    <!-- Top Bar -->
-    <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <div class="flex flex-col">
-            <h1 class="text-3xl italic font-bold text-primary tracking-tight">Bất động sản</h1>
-            <h3 class="text-md text-gray-900 tracking-tight">Quản lý tin đăng thông tin nhà đất</h3>
-        </div>
-        <div class="flex items-center gap-2">
-            <app-button text="Thêm BĐS" startIcon="download" variant="outline" (click)="{}"> Xuất file</app-button>
-            <app-button text="Thêm BĐS" startIcon="plus" variant="primary" (click)="{}"> Thêm mới</app-button>
-        </div>
+  <!-- Top Bar -->
+  <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <div class="flex flex-col">
+      <h1 class="text-3xl italic font-bold text-primary tracking-tight">Bất động sản</h1>
+      <h3 class="text-md text-gray-900 tracking-tight">Quản lý tin đăng thông tin nhà đất</h3>
     </div>
-
-    <!-- Toolbar -->
-    <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
-        <!-- Search -->
-
-        <app-custom-input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Tìm kiếm..." icon="search"
-            variant="outline" className="w-52  text-xs"></app-custom-input>
-
-
-        <div class="flex items-center gap-2 flex-wrap">
-
-            <!-- View Toggle (ẩn trên mobile) -->
-            <div class="hidden md:flex ">
-                <app-button (click)="setView(false)" [variant]="!isListView ? 'primary' : 'outline'" title="Chế độ lưới"
-                    size="icon">
-                    <svg lucideIcon="layout-grid" size="18"></svg>
-                </app-button>
-                <app-button (click)="setView(true)" [variant]="isListView ? 'primary' : 'outline'"
-                    title="Chế độ danh sách" size="icon">
-                    <svg lucideIcon="list" size="18"></svg>
-                </app-button>
-            </div>
-
-            <!-- Sort -->
-            <div class="relative flex items-center">
-                <app-dropdown [options]="sortOptions" [value]="selectedSort" placeholder="Sắp xếp"
-                    (valueChange)="onSortChange($event)" className="min-w-40" />
-            </div>
-        </div>
+    <div class="flex items-center gap-2">
+      <app-button text="Thêm BĐS" startIcon="download" variant="outline" (click)="onExport()">
+        Xuất file</app-button
+      >
+      <app-button text="Thêm BĐS" startIcon="plus" variant="primary" (click)="onAdd()">
+        Thêm mới</app-button
+      >
     </div>
+  </div>
 
-    <!-- CARD VIEW (mobile luôn hiện, desktop khi !isListView) -->
-    @if (!isListView || isMobile) {
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 fade-in transition duration-150">
+  <!-- Toolbar -->
+  <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+    <!-- Search -->
 
-        @for (p of properties; track p.id) {
+    <app-custom-input
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearch()"
+      placeholder="Tìm kiếm..."
+      icon="search"
+      variant="outline"
+      className="w-52  text-xs"
+    ></app-custom-input>
 
+    <div class="flex items-center gap-2 flex-wrap">
+      <!-- View Toggle (ẩn trên mobile) -->
+      <div class="hidden md:flex">
+        <app-button
+          (click)="setView(false)"
+          [variant]="!isListView ? 'primary' : 'outline'"
+          title="Chế độ lưới"
+          size="icon"
+        >
+          <svg lucideIcon="layout-grid" size="18"></svg>
+        </app-button>
+        <app-button
+          (click)="setView(true)"
+          [variant]="isListView ? 'primary' : 'outline'"
+          title="Chế độ danh sách"
+          size="icon"
+        >
+          <svg lucideIcon="list" size="18"></svg>
+        </app-button>
+      </div>
+
+      <!-- Sort -->
+      <div class="relative flex items-center">
+        <app-dropdown
+          [options]="sortOptions"
+          [(ngModel)]="selectedSort"
+          (ngModelChange)="onSortChange()"
+          placeholder="Sắp xếp"
+          className="min-w-40"
+        >
+        </app-dropdown>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD VIEW (mobile luôn hiện, desktop khi !isListView) -->
+  @if (!isListView || isMobile) {
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 fade-in transition duration-150"
+    >
+      @for (p of properties; track p.id) {
         <div
-            class="group bg-white border border-gray-200  overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          class="fade-in  group bg-white border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+        >
+          <!-- IMAGE -->
+          <div class="relative overflow-hidden aspect-4/3 bg-gray-100">
+            <img
+              [src]="p.image"
+              [alt]="p.title"
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+            />
 
-            <!-- IMAGE -->
-            <div class="relative overflow-hidden aspect-4/3 bg-gray-100">
-
-                <img [src]="p.image" [alt]="p.title"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
-
-                <!-- Badge -->
-                @if (p.badge) {
-                <div [class]="'absolute top-2 right-2 px-2 py-1 text-[9px] uppercase tracking-wider font-medium ' +
-                (p.badge === 'Featured'
-                  ? 'bg-orange-600 text-white'
-                  : 'bg-white text-primary border border-gray-200')">
-
-                    {{ p.badge === 'Featured' ? 'Nổi bật' : p.badge }}
-                </div>
-                }
-
-                <!-- Overlay -->
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-200">
-                </div>
-            </div>
-
-            <!-- CONTENT -->
-            <div class="p-5">
-
-                <!-- TITLE + PRICE -->
-                <div class="flex items-start justify-between gap-4 mb-2">
-                    <div>
-                        <h3 class="text-lg font-semibold text-primary leading-snug line-clamp-1">
-                            {{ p.title }}
-                        </h3>
-
-                        <p class="text-xs uppercase tracking-wide text-gray-400 mt-1">
-                            {{ p.location }}
-                        </p>
-                    </div>
-
-                    <span class="text-lg font-bold text-primary whitespace-nowrap">
-                        ${{ p.price }}
-                    </span>
-                </div>
-
-                <!-- INFO -->
-                <div class="grid grid-cols-3 gap-3 py-4 border-y border-gray-100">
-
-                    <!-- Bedrooms -->
-                    <div class="flex flex-col items-center gap-1">
-                        <svg lucideIcon="bed" size="18" class="text-gray-400">
-                        </svg>
-                        <span class="text-xs text-gray-500">
-                            {{ p.suites }} Phòng ngủ
-                        </span>
-                    </div>
-
-                    <!-- Bathrooms -->
-                    <div class="flex flex-col items-center gap-1">
-                        <svg lucideIcon="bed" size="18" class="text-gray-400">
-                        </svg>
-                        <span class="text-xs text-gray-500">
-                            {{ p.baths }} Phòng tắm
-                        </span>
-                    </div>
-
-                    <!-- Area -->
-                    <div class="flex flex-col items-center gap-1">
-                        <svg lucideIcon="square" size="18" class="text-gray-400">
-                        </svg>
-                        <span class="text-xs text-gray-500">
-                            {{ p.sqft | number }} m²
-                        </span>
-                    </div>
-                </div>
-
-                <!-- FOOTER -->
-                <div class="flex items-center justify-between pt-4">
-
-                    <div>
-                        <p class="text-[10px] uppercase tracking-wide text-gray-400">
-                            CHỦ ĐẦU TƯ
-                        </p>
-
-                        <p class="text-sm font-medium text-primary">
-                            {{ p.architect }}
-                        </p>
-                    </div>
-
-                    <!-- ACTIONS -->
-                    <div class="flex items-center gap-2">
-
-                        <app-button variant="action" size="icon" title="Xem chi tiết" className="group/button"
-                            (btnClick)="onView(p)">
-                            <svg lucideIcon="eye" size="18" class="transition-bounce"></svg>
-                        </app-button>
-                        <app-button variant="action" size="icon" title="Sửa" className="group/button"
-                            (btnClick)="onEdit(p)">
-                            <svg lucideIcon="pencil" size="18" class="transition-bounce"></svg>
-                        </app-button>
-                        <app-button (click)="onDelete(p)" variant="destructive" size="icon" title="Xóa"
-                            className="group/button">
-                            <svg lucideIcon="trash" size="18" class="transition-bounce"></svg>
-                        </app-button>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        }
-
-    </div>
-    }
-    <!-- LIST VIEW (chỉ desktop) -->
-    @if (isListView && !isMobile) {
-
-    <div class="overflow-hidden border border-gray-200 bg-white fade-in transition duration-150 shadow-md">
-
-        <table class="w-full border-collapse ">
-
-            <!-- HEADER -->
-            <thead class="bg-gray-50 border-b border-gray-200">
-
-                <tr>
-
-                    <th
-                        class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400 w-[38%]">
-                        Bất động sản
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400">
-                        Thông tin
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400">
-                        Phong cách
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400">
-                        Giá
-                    </th>
-
-                    <th class="px-5 py-4 text-right text-[11px] uppercase tracking-wider font-semibold text-gray-400">
-                        Thao tác
-                    </th>
-
-                </tr>
-
-            </thead>
-
-            <!-- BODY -->
-            <tbody>
-
-                @for (p of properties; track p.id) {
-
-                <tr class="group border-b border-gray-100 hover:bg-gray-50/70 transition duration-300">
-
-                    <!-- PROPERTY -->
-                    <td class="px-5 py-4">
-
-                        <div class="flex items-center gap-4">
-
-                            <!-- IMAGE -->
-                            <div class="relative w-36 aspect-4/3 overflow-hidden bg-gray-100 shrink-0">
-
-                                <img [src]="p.image" [alt]="p.title"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
-
-                                <!-- BADGE -->
-                                @if (p.badge) {
-                                <div [class]="'absolute top-2 right-2 px-2 py-1 text-[9px] uppercase tracking-wider font-medium ' +
-                    (p.badge === 'Featured'
+            <!-- Badge -->
+            @if (p.badge) {
+              <div
+                [class]="
+                  'absolute top-2 right-2 px-2 py-1 text-[9px] uppercase tracking-wider font-medium ' +
+                  (p.badge === 'Featured'
                     ? 'bg-orange-600 text-white'
-                    : 'bg-white text-primary border border-gray-200')">
+                    : 'bg-white text-primary border border-gray-200')
+                "
+              >
+                {{ p.badge === 'Featured' ? 'Nổi bật' : p.badge }}
+              </div>
+            }
 
-                                    {{ p.badge === 'Featured' ? 'Nổi bật' : p.badge }}
-                                </div>
-                                }
+            <!-- Overlay -->
+            <div
+              class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-200"
+            ></div>
+          </div>
 
-                            </div>
+          <!-- CONTENT -->
+          <div class="p-5">
+            <!-- TITLE + PRICE -->
+            <div class="flex items-start justify-between gap-4 mb-2">
+              <div>
+                <h3 class="text-lg font-semibold text-primary leading-snug line-clamp-1">
+                  {{ p.title }}
+                </h3>
 
-                            <!-- CONTENT -->
-                            <div class="min-w-0">
+                <p class="text-xs uppercase tracking-wide text-gray-400 mt-1">
+                  {{ p.location }}
+                </p>
+              </div>
 
-                                <h3 class="text-base text-primary leading-tight mb-1 line-clamp-1">
-                                    {{ p.title }}
-                                </h3>
+              <span class="text-lg font-bold text-primary whitespace-nowrap"> ${{ p.price }} </span>
+            </div>
 
-                                <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">
-                                    {{ p.location }}
-                                </p>
+            <!-- INFO -->
+            <div class="grid grid-cols-3 gap-3 py-4 border-y border-gray-100">
+              <!-- Bedrooms -->
+              <div class="flex flex-col items-center gap-1">
+                <svg lucideIcon="bed" size="18" class="text-gray-400"></svg>
+                <span class="text-xs text-gray-500"> {{ p.suites }} Phòng ngủ </span>
+              </div>
 
-                                <div class="flex items-center gap-4">
+              <!-- Bathrooms -->
+              <div class="flex flex-col items-center gap-1">
+                <svg lucideIcon="bed" size="18" class="text-gray-400"></svg>
+                <span class="text-xs text-gray-500"> {{ p.baths }} Phòng tắm </span>
+              </div>
 
-                                    <div class="flex items-center gap-1.5">
-                                        <svg lucideIcon="bed" size="14" class="text-gray-400">
-                                        </svg>
+              <!-- Area -->
+              <div class="flex flex-col items-center gap-1">
+                <svg lucideIcon="square" size="18" class="text-gray-400"></svg>
+                <span class="text-xs text-gray-500"> {{ p.sqft | number }} m² </span>
+              </div>
+            </div>
 
-                                        <span class="text-xs text-gray-500">
-                                            {{ p.suites }}
-                                        </span>
-                                    </div>
+            <!-- FOOTER -->
+            <div class="flex items-center justify-between pt-4">
+              <div>
+                <p class="text-[10px] uppercase tracking-wide text-gray-400">CHỦ ĐẦU TƯ</p>
 
-                                    <div class="flex items-center gap-1.5">
-                                        <svg lucideIcon="bath" size="14" class="text-gray-400">
-                                        </svg>
+                <p class="text-sm font-medium text-primary">
+                  {{ p.architect }}
+                </p>
+              </div>
 
-                                        <span class="text-xs text-gray-500">
-                                            {{ p.baths }}
-                                        </span>
-                                    </div>
+              <!-- ACTIONS -->
+              <div class="flex items-center gap-2">
+                <app-button
+                  variant="action"
+                  size="icon"
+                  title="Xem chi tiết"
+                  className="group/button"
+                  (btnClick)="onView(p)"
+                >
+                  <svg lucideIcon="eye" size="18" class="transition-bounce"></svg>
+                </app-button>
+                <app-button
+                  variant="action"
+                  size="icon"
+                  title="Sửa"
+                  className="group/button"
+                  (btnClick)="onEdit(p)"
+                >
+                  <svg lucideIcon="pencil" size="18" class="transition-bounce"></svg>
+                </app-button>
+                <app-button
+                  (click)="onDelete(p)"
+                  variant="destructive"
+                  size="icon"
+                  title="Xóa"
+                  className="group/button"
+                >
+                  <svg lucideIcon="trash" size="18" class="transition-bounce"></svg>
+                </app-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+  <!-- LIST VIEW (chỉ desktop) -->
+  @if (isListView && !isMobile) {
+    <div
+      class="overflow-hidden border border-gray-200 bg-white fade-in transition duration-150 shadow-md"
+    >
+      <table class="w-full border-collapse">
+        <!-- HEADER -->
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th
+              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400 w-[38%]"
+            >
+              Bất động sản
+            </th>
 
-                                    <div class="flex items-center gap-1.5">
-                                        <svg lucideIcon="square" size="14" class="text-gray-400">
-                                        </svg>
+            <th
+              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400"
+            >
+              Thông tin
+            </th>
 
-                                        <span class="text-xs text-gray-500">
-                                            {{ p.sqft | number }} m²
-                                        </span>
-                                    </div>
+            <th
+              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400"
+            >
+              Phong cách
+            </th>
 
-                                </div>
+            <th
+              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400"
+            >
+              Giá
+            </th>
 
-                            </div>
-                        </div>
+            <th
+              class="px-5 py-4 text-right text-[11px] uppercase tracking-wider font-semibold text-gray-400"
+            >
+              Thao tác
+            </th>
+          </tr>
+        </thead>
 
-                    </td>
+        <!-- BODY -->
+        <tbody>
+          @for (p of properties; track p.id) {
+            <tr class="group border-b border-gray-100 hover:bg-gray-50/70 transition duration-300">
+              <!-- PROPERTY -->
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-4">
+                  <!-- IMAGE -->
+                  <div class="relative w-36 aspect-4/3 overflow-hidden bg-gray-100 shrink-0">
+                    <img
+                      [src]="p.image"
+                      [alt]="p.title"
+                      class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                    />
 
-                    <!-- INFO -->
-                    <td class="px-5 py-4 align-middle">
+                    <!-- BADGE -->
+                    @if (p.badge) {
+                      <div
+                        [class]="
+                          'absolute top-2 right-2 px-2 py-1 text-[9px] uppercase tracking-wider font-medium ' +
+                          (p.badge === 'Featured'
+                            ? 'bg-orange-600 text-white'
+                            : 'bg-white text-primary border border-gray-200')
+                        "
+                      >
+                        {{ p.badge === 'Featured' ? 'Nổi bật' : p.badge }}
+                      </div>
+                    }
+                  </div>
 
-                        <div class="space-y-1">
+                  <!-- CONTENT -->
+                  <div class="min-w-0">
+                    <h3 class="text-base text-primary leading-tight mb-1 line-clamp-1">
+                      {{ p.title }}
+                    </h3>
 
-                            <p class="text-[10px] uppercase tracking-wider text-gray-400">
-                                CHỦ ĐẦU TƯ
-                            </p>
+                    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">
+                      {{ p.location }}
+                    </p>
 
-                            <p class="text-sm text-primary">
-                                {{ p.architect }}
-                            </p>
+                    <div class="flex items-center gap-4">
+                      <div class="flex items-center gap-1.5">
+                        <svg lucideIcon="bed" size="14" class="text-gray-400"></svg>
 
-                        </div>
-
-                    </td>
-
-                    <!-- TYPOLOGIES -->
-                    <td class="px-5 py-4 align-middle">
-
-                        <div class="flex flex-wrap gap-1.5">
-
-                            @for (t of p.typologies; track t) {
-                            <span
-                                class="text-[10px] uppercase tracking-wide border border-gray-200 px-2 py-1 text-gray-500 bg-white">
-                                {{ t }}
-                            </span>
-                            }
-
-                        </div>
-
-                    </td>
-
-                    <!-- PRICE -->
-                    <td class="px-5 py-4 align-middle">
-
-                        <span class="text-lg font-bold text-primary whitespace-nowrap">
-                            ${{ p.price }}
+                        <span class="text-xs text-gray-500">
+                          {{ p.suites }}
                         </span>
+                      </div>
 
-                    </td>
+                      <div class="flex items-center gap-1.5">
+                        <svg lucideIcon="bath" size="14" class="text-gray-400"></svg>
 
-                    <!-- ACTIONS -->
-                    <td class="px-5 py-4 align-middle">
+                        <span class="text-xs text-gray-500">
+                          {{ p.baths }}
+                        </span>
+                      </div>
 
-                        <div
-                            class="flex items-center justify-end gap-2 opacity-0 translate-x-3 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-300">
+                      <div class="flex items-center gap-1.5">
+                        <svg lucideIcon="square" size="14" class="text-gray-400"></svg>
 
-                            <!-- VIEW -->
-                            <app-button variant="action" size="icon" title="Xem chi tiết" className="group/button">
+                        <span class="text-xs text-gray-500"> {{ p.sqft | number }} m² </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
 
-                                <svg lucideIcon="eye" size="18" class="transition-bounce">
-                                </svg>
+              <!-- INFO -->
+              <td class="px-5 py-4 align-middle">
+                <div class="space-y-1">
+                  <p class="text-[10px] uppercase tracking-wider text-gray-400">CHỦ ĐẦU TƯ</p>
 
-                            </app-button>
+                  <p class="text-sm text-primary">
+                    {{ p.architect }}
+                  </p>
+                </div>
+              </td>
 
-                            <!-- EDIT -->
-                            <app-button variant="action" size="icon" title="Sửa" className="group/button">
+              <!-- TYPOLOGIES -->
+              <td class="px-5 py-4 align-middle">
+                <div class="flex flex-wrap gap-1.5">
+                  @for (t of p.typologies; track t) {
+                    <span
+                      class="text-[10px] uppercase tracking-wide border border-gray-200 px-2 py-1 text-gray-500 bg-white"
+                    >
+                      {{ t }}
+                    </span>
+                  }
+                </div>
+              </td>
 
-                                <svg lucideIcon="pencil" size="18" class="transition-bounce">
-                                </svg>
+              <!-- PRICE -->
+              <td class="px-5 py-4 align-middle">
+                <span class="text-lg font-bold text-primary whitespace-nowrap">
+                  ${{ p.price }}
+                </span>
+              </td>
 
-                            </app-button>
+              <!-- ACTIONS -->
+              <td class="px-5 py-4 align-middle">
+                <div
+                  class="flex items-center justify-end gap-2 opacity-0 translate-x-3 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-300"
+                >
+                  <!-- VIEW -->
+                  <app-button
+                    variant="action"
+                    size="icon"
+                    title="Xem chi tiết"
+                    className="group/button"
+                  >
+                    <svg lucideIcon="eye" size="18" class="transition-bounce"></svg>
+                  </app-button>
 
-                            <!-- DELETE -->
-                            <app-button (btnClick)="onDelete(p)" variant="destructive" size="icon" title="Xóa"
-                                className="group/button">
+                  <!-- EDIT -->
+                  <app-button variant="action" size="icon" title="Sửa" className="group/button">
+                    <svg lucideIcon="pencil" size="18" class="transition-bounce"></svg>
+                  </app-button>
 
-                                <svg lucideIcon="trash" size="18" class="transition-bounce">
-                                </svg>
-
-                            </app-button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-                }
-
-            </tbody>
-
-        </table>
-
+                  <!-- DELETE -->
+                  <app-button
+                    (btnClick)="onDelete(p)"
+                    variant="destructive"
+                    size="icon"
+                    title="Xóa"
+                    className="group/button"
+                  >
+                    <svg lucideIcon="trash" size="18" class="transition-bounce"></svg>
+                  </app-button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
-    }
+  }
 
-    <!-- Pagination -->
-    <div class="flex justify-center pt-6">
-        <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" [maxVisible]="5"
-            (pageChange)="onPageChange($event)" />
-    </div>
+  <!-- Pagination -->
+  <div class="flex justify-center pt-6">
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      [maxVisible]="5"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
 
-    @if (showFormDialog) {
-
+  @if (showFormDialog) {
     <app-dialog [show]="showFormDialog" (closed)="closeFormDialog()">
-
-        <app-properties-form [mode]="formMode" [property]="selectedProperty" (close)="closeFormDialog()" (save)="{}">
-        </app-properties-form>
-
+      <app-properties-form
+        [mode]="formMode"
+        [property]="selectedProperty"
+        (close)="closeFormDialog()"
+        (save)="({})"
+      >
+      </app-properties-form>
     </app-dialog>
-
-    }
+  }
 </div>

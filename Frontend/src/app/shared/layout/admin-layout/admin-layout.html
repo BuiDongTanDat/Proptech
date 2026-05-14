@@ -1,9 +1,32 @@
-<div class="flex min-h-screen bg-gray-50 overflow-hidden">
-  <!-- Không dùng @if, truyền Input vào -->
-  <app-admin-sidebar [isCollapsed]="sidebarCollapsed"></app-admin-sidebar>
+<div class="flex min-h-screen bg-gray-50 overflow-hidden relative">
+  <!-- Background sọc -->
+  <div
+    class="absolute inset-0 z-0 pointer-events-none opacity-40"
+    style="
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        #f3f4f6 2px,
+        #f3f4f6 4px
+      );
+    "
+  ></div>
 
-  <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 h-screen">
-    <app-admin-header (toggleSidebar)="toggleSidebar()"></app-admin-header>
+  <!-- Overlay (chỉ hiện trên mobile khi sidebar mở) -->
+
+  <!-- Sidebar -->
+  <app-admin-sidebar
+    [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
+    [screenWidth]="screenWidth()"
+    class="z-10"
+
+  ></app-admin-sidebar>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 h-screen relative">
+    <app-admin-header (toggleSidebar)="onToggleSidebar()"></app-admin-header>
+
     <main class="flex-1 p-8 overflow-y-auto">
       <router-outlet></router-outlet>
     </main>

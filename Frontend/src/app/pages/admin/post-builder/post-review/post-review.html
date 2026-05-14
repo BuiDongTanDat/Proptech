@@ -1,0 +1,159 @@
+<div class="flex flex-col h-screen bg-white">
+
+  <!-- Top bar -->
+  <header class="h-14 shrink-0 flex items-center justify-between px-6
+                 border-b border-gray-200 bg-white sticky top-0 z-20">
+    <div class="flex items-center gap-3">
+      <span class="text-sm font-bold text-gray-900">Xem trước</span>
+      <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+        {{ sections().length }} block{{ sections.length !== 1 ? 's' : '' }}
+      </span>
+    </div>
+
+    <button
+      type="button"
+      (click)="closePreview.emit()"
+      class="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900 text-white
+             text-sm font-semibold hover:bg-indigo-600 transition-colors"
+    >
+      <svg lucideIcon="arrow-left" [size]="14" />
+      Quay lại chỉnh sửa
+    </button>
+  </header>
+
+  <!-- Page content -->
+  <main class="flex-1 overflow-y-auto">
+
+    <!-- Empty state -->
+    @if (sections.length === 0) {
+      <div class="flex flex-col items-center justify-center gap-3 min-h-[calc(100vh-56px)]">
+        <svg lucideIcon="layout-template" [size]="36" class="text-gray-300" />
+        <p class="text-sm text-gray-400">Trang chưa có block nào.</p>
+      </div>
+    }
+
+    @for (block of sections(); track block.id) {
+
+      <!-- ── COVER ── -->
+      @if (block.type === 'cover') {
+        <section
+          class="min-h-screen bg-cover bg-center flex items-center px-20 py-24"
+          [style.background-image]="
+            block.data.backgroundImage
+              ? 'linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url(' + block.data.backgroundImage + ')'
+              : 'linear-gradient(135deg,#111827,#374151)'
+          "
+        >
+          <div class="text-white max-w-3xl">
+            <h1
+              class="font-bold leading-tight mb-5"
+              [style.font-size.px]="block.data.titleFontSize || 64"
+            >
+              {{ block.data.title }}
+            </h1>
+            <p
+              class="mb-8 opacity-85 leading-relaxed max-w-2xl"
+              [style.font-size.px]="block.data.subtitleFontSize || 22"
+            >
+              {{ block.data.subtitle }}
+            </p>
+            
+              [href]="block.data.buttonLink || '#'"
+              class="inline-block bg-white text-gray-900 font-bold px-7 py-3.5
+                     rounded-full text-base no-underline hover:opacity-90 transition-opacity"
+            >
+              {{ block.data.buttonText }}
+            
+          </div>
+        </section>
+      }
+
+      <!-- ── TEXT ── -->
+      @if (block.type === 'text') {
+        <section class="py-24 px-6 text-center">
+          <h2 class="text-5xl font-bold text-gray-900 leading-tight mb-5">
+            {{ block.data.title }}
+          </h2>
+          <p class="text-xl text-gray-500 leading-loose max-w-3xl mx-auto whitespace-pre-line">
+            {{ block.data.content }}
+          </p>
+        </section>
+      }
+
+      <!-- ── IMAGE ── -->
+      @if (block.type === 'image') {
+        <section class="w-full overflow-hidden">
+          @if (block.data.imageUrl) {
+            <img
+              [src]="block.data.imageUrl"
+              alt="Image block"
+              class="w-full h-auto block"
+            />
+          } @else {
+            <div class="w-full h-120 bg-gray-100 flex flex-col items-center
+                        justify-center gap-3 text-gray-400">
+              <svg lucideIcon="image" [size]="36" />
+              <span class="text-sm">Chưa có hình ảnh</span>
+            </div>
+          }
+        </section>
+      }
+
+      <!-- ── COLUMNS ── -->
+      @if (block.type === 'columns') {
+        <section
+          class="grid w-full"
+          [style.grid-template-columns]="getGridTemplate(block)"
+        >
+          @for (col of block.data.columns; track col.id; let last = $last) {
+            <div
+              class="min-w-0"
+              [class.border-r]="!last"
+              [class.border-gray-100]="!last"
+            >
+
+              @if (col.contentType === 'text') {
+                <div class="min-h-140 px-16 py-20 flex flex-col justify-center">
+                  <h2 class="text-4xl font-bold leading-tight mb-5 text-gray-900">
+                    {{ col.title }}
+                  </h2>
+                  <p class="text-lg leading-loose text-gray-500 whitespace-pre-line">
+                    {{ col.content }}
+                  </p>
+                </div>
+              }
+
+              @if (col.contentType === 'image') {
+                <div
+                  class="flex items-center justify-center bg-gray-50 overflow-hidden"
+                  [style.min-height.px]="col.imageBoxHeight || 560"
+                >
+                  @if (col.imageUrl) {
+                    <img
+                      [src]="col.imageUrl"
+                      alt="Column image"
+                      [class.object-contain]="col.imageFit !== 'cover'"
+                      [class.object-cover]="col.imageFit === 'cover'"
+                      [class.w-full]="col.imageFit === 'cover'"
+                      [class.h-full]="col.imageFit === 'cover'"
+                      [style.width.%]="col.imageFit !== 'cover' ? (col.imageWidth || 100) : null"
+                    />
+                  } @else {
+                    <div class="flex flex-col items-center justify-center gap-3 text-gray-300">
+                      <svg lucideIcon="image" [size]="32" />
+                      <span class="text-sm">Chưa có hình ảnh</span>
+                    </div>
+                  }
+                </div>
+              }
+
+            </div>
+          }
+        </section>
+      }
+
+    }
+
+  </main>
+
+</div>

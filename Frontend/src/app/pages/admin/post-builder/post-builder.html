@@ -1,0 +1,29 @@
+<div class="flex h-screen overflow-hidden bg-gray-100">
+  <!-- Sidebar -->
+  <app-post-tool
+    [blockLibrary]="blockLibrary"
+    (addBlock)="addBlock($event)"
+    (openPreview)="openPreview()"
+    (clearPage)="clearPage()"
+    (submitPage)="onSubmit()"
+  />
+  <!-- Canvas -->
+  <div class="flex-1 overflow-y-auto">
+    <app-post-view
+      [sections]="sections"
+      [selectedBlock]="selectedBlock"
+      (selectBlock)="selectedBlock = $event"
+      (deleteBlock)="deleteBlock($event)"
+      (duplicateBlock)="duplicateBlock($event)"
+      (moveBlockUp)="moveBlockUp($event)"
+      (moveBlockDown)="moveBlockDown($event)"
+      (closeEditor)="selectedBlock = null"
+    />
+  </div>
+  @if (isPreviewMode) {
+    <!-- Dialog cần có class để chiếm trọn màn hình nếu component Dialog chưa hỗ trợ mặc định -->
+    <app-dialog (close)="isPreviewMode = false" className="p-0 max-w-none w-full h-full z-20">
+      <app-post-review [sections]="sections" (closePreview)="isPreviewMode = false" />
+    </app-dialog>
+  }
+</div>

@@ -17,6 +17,8 @@ import { AdminCompanyInfo } from './pages/admin/admin-company-info/admin-company
 import { AdminUserInfo } from './pages/admin/admin-user-info/admin-user-info';
 import { AdminSetting } from './pages/admin/admin-setting/admin-setting';
 import { AdminDashboard } from './pages/admin/admin-dashboard/admin-dashboard';
+import { PostBuilder } from './pages/admin/post-builder/post-builder';
+import { PostReview } from './pages/admin/post-builder/post-review/post-review';
 
 export const routes: Routes = [
     {
@@ -26,23 +28,28 @@ export const routes: Routes = [
             {
                 path: '',
                 component: LandingPage,
+                title: 'Protech - Nơi tìm kiếm bất động sản mơ ước của bạn',
             },
             {
                 path: 'home',
                 redirectTo: '',
                 pathMatch: 'full',
+                title: 'Trang chủ',
             },
             {
                 path: 'properties',
                 component: PropertiesPage,
+                title: 'Bất động sản',
             },
             {
                 path: 'properties/:id',
                 component: PropertyDetail, // Sử dụng cùng component để hiển thị chi tiết
+                title: 'Chi tiết bất động sản',
             },
             {
                 path: 'about',
                 component: AboutUs,
+                title: 'Về chúng tôi',
             },
             {
                 path: 'test',
@@ -60,18 +67,22 @@ export const routes: Routes = [
                 path: '',
                 redirectTo: 'login',
                 pathMatch: 'full',
+
             },
             {
                 path: 'login',
                 component: LoginPage,
+                title: 'Đăng nhập - Protech',
             },
             {
                 path: 'forgot-password',
                 component: ForgotPage,
+                title: 'Quên mật khẩu - Protech',
             },
             {
                 path: 'reset-password',
                 component: ResetPassword,
+                title: 'Đặt lại mật khẩu - Protech',
             }
         ]
     },
@@ -84,38 +95,55 @@ export const routes: Routes = [
             {
                 path: '',
                 redirectTo: 'dashboard',
-                pathMatch: 'full'
+                pathMatch: 'full',
+                title: 'Dashboard',
             },
             {
                 path: 'dashboard',
-                component: AdminDashboard
+                component: AdminDashboard,
+                title: 'Dashboard',
 
             },
             {
                 path: 'properties',
-                component: PropertiesListPage
+                component: PropertiesListPage,
+                title: 'Quản lý bất động sản',
             },
             {
                 path: 'contact',
-                component: ContactListPage
+                component: ContactListPage,
+                title: 'Quản lý liên hệ',
             },
             {
                 path: 'account',
-                component: UsersListPage
+                component: UsersListPage,
+                title: 'Quản lý tài khoản',
             },
             {
                 path: 'info',
-                component: AdminCompanyInfo
+                component: AdminCompanyInfo,
+                title: 'Thông tin doanh nghiệp',
             },
             {
                 path: 'profile',
-                component: AdminUserInfo
+                component: AdminUserInfo,
+                title: 'Thông tin cá nhân',
             },
             {
                 path: 'setting',
-                component: AdminSetting
+                component: AdminSetting,
+                title: 'Cài đặt',
             }
         ]
+    },
+
+    // Admin Post Add page (Không lồng bên trong AdminLayout)
+    {
+
+        path: 'admin/properties/add',
+        component: PostBuilder,
+        title: 'Thêm bất động sản',
+
     },
     // Error pages 
     {

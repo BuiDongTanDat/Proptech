@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, input, Input, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
 
@@ -19,8 +19,9 @@ export interface NavItem {
 })
 export class AdminSidebar {
 
-  @Input() isCollapsed = false; // Nhận biến này từ AdminLayout
-
+  isLeftSidebarCollapsed = input.required<boolean>();
+  screenWidth = input.required<number>();
+  
   navItems: NavItem[] = [
     { label: 'Trang chủ', icon: 'house', route: '/admin/dashboard' },
     { label: 'Bất động sản', icon: 'building-2', route: '/admin/properties' },
@@ -33,6 +34,7 @@ export class AdminSidebar {
     { label: 'Cá nhân', icon: 'user', route: '/admin/profile' },
     { label: 'Cài đặt', icon: 'settings', route: '/admin/setting' },
   ];
+
 
   onSignOut() {
     console.log('Signing out...');

@@ -2,42 +2,42 @@
   "hash": "d077183d",
   "configHash": "dabf509b",
   "lockfileHash": "a8de7e48",
-  "browserHash": "bf9b1bb8",
+  "browserHash": "7028b414",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "ee5f9ba7",
+      "fileHash": "d4cccb9f",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "2cf66762",
-      "needsInterop": false
-    },
-    "@angular/platform-browser": {
-      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
-      "file": "@angular_platform-browser.js",
-      "fileHash": "654556d5",
-      "needsInterop": false
-    },
-    "@angular/router": {
-      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
-      "file": "@angular_router.js",
-      "fileHash": "db60f5ed",
-      "needsInterop": false
-    },
-    "@lucide/angular": {
-      "src": "../../../../../../node_modules/@lucide/angular/fesm2022/lucide-angular.mjs",
-      "file": "@lucide_angular.js",
-      "fileHash": "0d33637b",
+      "fileHash": "aab5f32d",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "766104ae",
+      "fileHash": "ab7ea327",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "a7edb394",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "90ce8a71",
+      "needsInterop": false
+    },
+    "@lucide/angular": {
+      "src": "../../../../../../node_modules/@lucide/angular/fesm2022/lucide-angular.mjs",
+      "file": "@lucide_angular.js",
+      "fileHash": "a4605c2b",
       "needsInterop": false
     }
   },

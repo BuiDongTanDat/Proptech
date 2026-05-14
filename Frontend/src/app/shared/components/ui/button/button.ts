@@ -16,7 +16,7 @@ export class Button {
   @Input() variant: 'primary' | 'secondary' | 'accent' | 'outline' | 'white' | 'ghost' | 'icon' | 'destructive' | 'action' = 'primary';
 
   // ===== SIZE =====
-  @Input() size: 'sm' | 'md' | 'lg' | 'icon' = 'md';
+  @Input() size: 'sm' | 'md' | 'lg' | 'icon' | 'icon-sm' = 'md';
 
   // ===== TYPE =====
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
@@ -47,6 +47,8 @@ export class Button {
         return 'px-6 py-3 text-lg';
       case 'icon':
         return 'p-2'; // Chỉ có padding, không có text
+      case 'icon-sm':
+        return 'p-1'; // Chỉ có padding nhỏ, không có text
       default:
         return 'px-4 py-2 text-sm';
     }

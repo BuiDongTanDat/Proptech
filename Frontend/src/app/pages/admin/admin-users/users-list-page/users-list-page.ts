@@ -7,6 +7,8 @@ import { Button } from '../../../../shared/components/ui/button/button';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 import { UserAccount, usersList } from '../../../../shared/utils/data.mock';
+import { UsersForm } from '../users-form/users-form';
+import { Dialog } from '../../../../shared/components/dialog/dialog';
 
 
 @Component({
@@ -20,6 +22,8 @@ import { UserAccount, usersList } from '../../../../shared/utils/data.mock';
     Button,
     CustomInput,
     Dropdown,
+    UsersForm,
+    Dialog
   ],
   templateUrl: './users-list-page.html',
 })
@@ -45,6 +49,12 @@ export class UsersListPage implements OnInit {
   ];
 
   selectedSort = 'newest';
+
+  // Form state
+  showFormDialog: boolean = false;
+  formMode: 'view' | 'edit' | 'add' = 'view';
+  selectedUser: UserAccount | null = null;
+
 
   ngOnInit(): void {
     this.checkMobile();
@@ -130,11 +140,39 @@ export class UsersListPage implements OnInit {
     this.updatePage();
   }
 
-  onAdd() {}
+  
 
-  onEdit(user: UserAccount) {}
+  onAdd() {
+    this.formMode = 'add';
+    this.selectedUser = null;
+    this.showFormDialog = true;
+  }
 
-  onView(user: UserAccount) {}
+  onEdit(user: UserAccount) {
+    this.formMode = 'edit';
+    this.selectedUser = user;
+    this.showFormDialog = true;
+  }
 
-  onDelete(user: UserAccount) {}
+  onView(user: UserAccount) {
+    this.formMode = 'view';
+    this.selectedUser = user;
+    this.showFormDialog = true;
+  }
+
+  onDelete(user: UserAccount) {
+    this.allUsers = this.allUsers.filter(u => u.id !== user.id);
+    this.filteredUsers = this.filteredUsers.filter(u => u.id !== user.id);
+
+    if ((this.currentPage - 1) * this.pageSize >= this.filteredUsers.length && this.currentPage > 1) {
+      this.currentPage--;
+    }
+
+    this.updatePage();
+  }
+
+  closeFormDialog() {
+    this.showFormDialog = false;
+    this.selectedUser = null;
+  }
 }
