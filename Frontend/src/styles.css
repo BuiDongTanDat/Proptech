@@ -4,9 +4,9 @@
 /* =========================
    FONT GLOBAL
 ========================= */
-body {
+/* body {
   font-family: "Montserrat", sans-serif;
-}
+} */
 
 @theme {
   --color-primary: #1A2B48;
@@ -325,6 +325,22 @@ body {
       transform: translateX(0);
     }
     
+  }
+
+  .slide-down {
+    animation: slideDown 0.2s ease-in-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .transition-bounce {

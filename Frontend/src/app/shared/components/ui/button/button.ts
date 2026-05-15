@@ -50,7 +50,7 @@ export class Button {
       case 'icon-sm':
         return 'p-1'; // Chỉ có padding nhỏ, không có text
       default:
-        return 'px-4 py-2 text-sm';
+        return 'px-3 py-2 text-xs';
     }
   }
 

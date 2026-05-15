@@ -6,11 +6,12 @@ import { Pagination } from '../../../../shared/components/pagination/pagination'
 import { Button } from '../../../../shared/components/ui/button/button';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
-import { propertiesList, Property } from '../../../../shared/utils/data.mock';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { PropertiesForm } from '../properties-form/properties-form';
 import { Dialog } from '../../../../shared/components/dialog/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
+import { IProperty } from '../../../../types/type';
+import { propertiesList } from '../../../../shared/utils/data.mock';
 
 
 @Component({
@@ -36,9 +37,9 @@ export class PropertiesListPage implements OnInit {
     private route: ActivatedRoute
   ) { }
 
-  properties: Property[] = [];
-  allProperties: Property[] = [];
-  filteredProperties: Property[] = [];
+  properties: IProperty[] = [];
+  allProperties: IProperty[] = [];
+  filteredProperties: IProperty[] = [];
 
   currentPage = 1;
   pageSize = 3;
@@ -59,7 +60,7 @@ export class PropertiesListPage implements OnInit {
   // Form state 
   showFormDialog: boolean = false;
   formMode: 'view' | 'edit' | 'add' = 'view';
-  selectedProperty: Property | null = null;
+  selectedProperty: IProperty | null = null;
 
   ngOnInit() {
     this.checkMobile();
@@ -74,7 +75,7 @@ export class PropertiesListPage implements OnInit {
   }
 
   onAdd() {
-    // // TODO: Add property logic
+    // // TODO: Add IProperty logic
     // this.formMode = 'add';
     // this.selectedProperty = null;
     // this.showFormDialog = true;
@@ -84,21 +85,21 @@ export class PropertiesListPage implements OnInit {
     });
   }
 
-  onEdit(property: Property) {
+  onEdit(IProperty: IProperty) {
     this.formMode = 'edit';
-    this.selectedProperty = property;
+    this.selectedProperty = IProperty;
     this.showFormDialog = true;
   }
 
-  onView(property: Property) {
+  onView(IProperty: IProperty) {
     this.formMode = 'view';
-    this.selectedProperty = property;
+    this.selectedProperty = IProperty;
     this.showFormDialog = true;
   }
 
-  onDelete(property: Property) {
-    this.allProperties = this.allProperties.filter(p => p.id !== property.id);
-    this.filteredProperties = this.filteredProperties.filter(p => p.id !== property.id);
+  onDelete(IProperty: IProperty) {
+    this.allProperties = this.allProperties.filter(p => p.id !== IProperty.id);
+    this.filteredProperties = this.filteredProperties.filter(p => p.id !== IProperty.id);
     if ((this.currentPage - 1) * this.pageSize >= this.filteredProperties.length && this.currentPage > 1) {
       this.currentPage--;
     }
@@ -106,16 +107,16 @@ export class PropertiesListPage implements OnInit {
   }
 
 
-  onSaveProperty(property: Property) {
+  onSaveIProperty(IProperty: IProperty) {
 
     if (this.formMode === 'add') {
 
-      this.allProperties.unshift(property);
+      this.allProperties.unshift(IProperty);
 
     } else if (this.formMode === 'edit') {
 
       this.allProperties = this.allProperties.map(p =>
-        p.id === property.id ? property : p
+        p.id === IProperty.id ? IProperty : p
       );
     }
 
@@ -141,11 +142,11 @@ export class PropertiesListPage implements OnInit {
     switch (this.selectedSort) {
 
       case 'newest':
-        this.filteredProperties.sort((a, b) => b.id - a.id);
+        this.filteredProperties.sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
         break;
 
       case 'oldest':
-        this.filteredProperties.sort((a, b) => a.id - b.id);
+        this.filteredProperties.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
         break;
 
       case 'price-desc':

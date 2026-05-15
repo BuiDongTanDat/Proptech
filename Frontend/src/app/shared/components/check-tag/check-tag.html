@@ -1,4 +1,6 @@
-<button type="button" (click)="onClick()" [disabled]="disabled" [ngClass]="
+<button
+class="rounded-sm"
+type="button" (click)="onClick()" [disabled]="disabled" [ngClass]="
 		'p-2 text-xs  font-medium transition select-none ' +
 		(checked
 			? 'bg-primary text-white border border-primary shadow-sm'
@@ -9,7 +11,7 @@
 
 	<div class="flex items-center gap-1">
 		@if (checked) {
-		<svg lucideIcon="check" class="size-3 text-white"></svg>
+		<svg lucideIcon="check" class="size-3 text-white scale-in"></svg>
 		}
 		{{ label }}
 	</div>

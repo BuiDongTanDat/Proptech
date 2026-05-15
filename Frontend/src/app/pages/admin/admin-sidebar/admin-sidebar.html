@@ -1,5 +1,5 @@
 <aside
-  class="h-screen bg-white border-r border-gray-100 flex flex-col justify-between transition-all duration-300 ease-in-out"
+  class="h-screen bg-white shadow-md border-r border-gray-100 flex flex-col justify-between transition-all duration-300 ease-in-out"
   [ngClass]="isLeftSidebarCollapsed() ? 'w-18' : 'w-64'"
 >
   <!-- Dùng div bọc nội dung cố định chiều rộng để không bị vỡ chữ khi đang transition -->
@@ -26,6 +26,7 @@
       }
     </div>
 
+
     <!-- Navigation -->
     <nav class="flex flex-col gap-1 mt-4">
       @for (item of navItems; track item.route) {
@@ -48,11 +49,18 @@
 
             <!-- Expanded -->
             @if (!isLeftSidebarCollapsed()) {
-              <span class="slide-in-left transition duration-250 ">
+              <span
+                class="slide-in-left"
+                [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
+              >
                 {{ item.label }}
               </span>
             }
           </div>
+          <!-- Thanh xanh bên phải -->
+          <span
+            class="absolute right-0 top-0 h-full w-1 bg-primary opacity-0 transition-all group-hover:opacity-100"
+          ></span>
 
           <!-- Tooltip -->
           @if (isLeftSidebarCollapsed()) {
@@ -91,7 +99,10 @@
 
             <!-- Expanded -->
             @if (!isLeftSidebarCollapsed()) {
-              <span class="slide-in-left transition duration-250 ">
+              <span
+                class="slide-in-left"
+                [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
+              >
                 {{ item.label }}
               </span>
             }
@@ -107,9 +118,15 @@
               </div>
             </div>
           }
+
+           <!-- Thanh xanh bên phải -->
+  <span
+    class="absolute right-0 top-0 h-full w-1 bg-primary opacity-0 transition-all group-hover:opacity-100"
+  ></span>
         </a>
       }
     </nav>
+    <hr class="my-1 border-gray-200 mx-3" />
 
     <!-- Sign Out -->
     <div class="pb-6">
@@ -129,7 +146,11 @@
 
           <!-- Expanded -->
           @if (!isLeftSidebarCollapsed()) {
-            <span class="text-red-400 group-hover:text-red-600 slide-in-left transition duration-250 "> Đăng xuất </span>
+            <span
+              class="text-red-400 group-hover:text-red-600 slide-in-left transition duration-250"
+            >
+              Đăng xuất
+            </span>
           }
         </div>
 
@@ -143,6 +164,10 @@
             </div>
           </div>
         }
+         <!-- Thanh xanh bên phải -->
+  <span
+    class="absolute right-0 top-0 h-full w-1 bg-red-500 opacity-0 transition-all group-hover:opacity-100"
+  ></span>
       </button>
     </div>
   </div>

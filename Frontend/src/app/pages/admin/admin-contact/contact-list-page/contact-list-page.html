@@ -1,38 +1,25 @@
 <div class="min-h-screen">
-
   <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
-
     <div class="flex flex-col">
+      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left ">
+        Biểu mẫu liên hệ</h1>
 
-       <h1 class="text-3xl italic font-bold text-primary tracking-tight">
-        Form liên hệ
-      </h1>
-
-      <h3 class="text-md text-gray-900 tracking-tight">
+        <p class="text-sm text-gray-500 mt-1 slide-in-left ">
         Quản lý thông tin khách hàng liên hệ tư vấn
-      </h3>
-
+        </p>
     </div>
 
     <div class="flex items-center gap-2">
-
-      <app-button
-        text="Xuất file"
-        startIcon="download"
-        variant="outline">
-
-        Xuất file
-
+      <app-button startIcon="download" variant="outline"> Xuất file </app-button>
+      <app-button startIcon="plus" variant="primary" (btnClick)="onAdd()">
+        Thêm liên hệ
       </app-button>
-
     </div>
-
   </div>
 
   <!-- TOOLBAR -->
   <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
-
     <!-- SEARCH -->
     <app-custom-input
       [(ngModel)]="searchQuery"
@@ -40,85 +27,70 @@
       placeholder="Tìm kiếm..."
       icon="search"
       variant="outline"
-      className="w-52 text-xs">
-
+      className="w-52 text-xs"
+    >
     </app-custom-input>
 
     <div class="flex items-center gap-2 flex-wrap">
-
       <!-- VIEW -->
       <div class="hidden md:flex">
-
         <app-button
           (btnClick)="setView(false)"
           [variant]="!isListView ? 'primary' : 'outline'"
-          size="icon">
-
+          size="icon"
+        >
           <svg lucideIcon="layout-grid" size="18"></svg>
-
         </app-button>
 
         <app-button
           (btnClick)="setView(true)"
           [variant]="isListView ? 'primary' : 'outline'"
-          size="icon">
-
+          size="icon"
+        >
           <svg lucideIcon="list" size="18"></svg>
-
         </app-button>
-
       </div>
 
       <!-- SORT -->
       <app-dropdown
         [options]="sortOptions"
+        [(ngModel)]="selectedSort"
+        (ngModelChange)="onSortChange($event)"
         placeholder="Sắp xếp"
-        className="min-w-40">
-
+        className="min-w-40 text-sm"
+      >
       </app-dropdown>
-
     </div>
-
   </div>
 
   <!-- CARD VIEW -->
   @if (!isListView || isMobile) {
-
-    <div class="fade-in grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-
+    <div class="fade-in grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       @for (f of forms; track f.id) {
-
         <div
-          class="group bg-white border border-gray-200 p-5 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
-
+          class="rounded-sm shadow-sm group bg-white border border-gray-200 p-5 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+        >
           <!-- HEADER -->
           <div class="flex items-start justify-between gap-4 mb-5">
-
             <div class="flex items-center gap-3">
-
               <!-- AVATAR -->
               <div
-                class="size-14 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase">
-
+                class="size-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase"
+              >
                 {{
-                  f.fullName.split(' ')[0].charAt(0) +
-                  f.fullName.split(' ').slice(-1)[0].charAt(0)
+                  f.fullName.split(' ')[0].charAt(0) + f.fullName.split(' ').slice(-1)[0].charAt(0)
                 }}
-
               </div>
 
               <div>
-
-                <h3 class="text-base font-semibold text-primary">
+                <h3 class="font-semibold text-primary">
                   {{ f.fullName }}
                 </h3>
 
                 <p class="text-xs text-gray-400 mt-1">
                   {{ f.email }}
                 </p>
-
               </div>
-
             </div>
 
             <!-- STATUS -->
@@ -130,89 +102,61 @@
                     ? 'bg-blue-100 text-blue-600'
                     : 'bg-gray-100 text-gray-600'
               "
-              class="inline-flex items-center justify-center w-24 px-2 py-1 text-[11px] uppercase font-semibold">
-
-              {{
-                f.status === 'new'
-                  ? 'Mới'
-                  : f.status === 'contacted'
-                    ? 'Đã liên hệ'
-                    : 'Đã đóng'
-              }}
-
+              class="inline-flex items-center justify-center w-24 px-2 py-1 text-[11px] uppercase font-semibold"
+            >
+              {{ f.status === 'new' ? 'Mới' : f.status === 'contacted' ? 'Đã liên hệ' : 'Đã đóng' }}
             </span>
-
           </div>
 
           <!-- INFO -->
           <div class="space-y-3 text-sm">
+            <div class="flex flex-row justify-between">
+              <div class="flex items-center gap-2 text-gray-600">
+                <svg lucideIcon="phone" size="16"></svg>
+                <span>{{ f.phone }}</span>
+              </div>
 
-            <div class="flex items-center gap-2 text-gray-600">
-              <svg lucideIcon="phone" size="16"></svg>
-              <span>{{ f.phone }}</span>
-            </div>
-
-            <div class="flex items-center gap-2 text-gray-600">
-              <svg lucideIcon="calendar" size="16"></svg>
-              <span>{{ f.createdAt }}</span>
+              <div class="flex items-center gap-2 text-gray-600">
+                <svg lucideIcon="calendar" size="16"></svg>
+                <span>{{ f.createdAt }}</span>
+              </div>
             </div>
 
             <!-- MESSAGE -->
             <div class="border-t border-gray-100 pt-3">
-
-              <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">
-                Lời nhắn
-              </p>
+              <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Lời nhắn</p>
 
               <p class="text-sm text-gray-600 line-clamp-3 leading-relaxed">
                 {{ f.message }}
               </p>
-
             </div>
-
           </div>
 
           <!-- ACTIONS -->
           <div class="flex items-center justify-end gap-2 pt-5">
-
-            <app-button
-              variant="action"
-              size="icon">
-
+            <app-button (btnClick)="onView(f)" variant="action" size="icon">
               <svg lucideIcon="eye" size="18"></svg>
-
+            </app-button>
+            <app-button (btnClick)="onEdit(f)" variant="action" size="icon">
+              <svg lucideIcon="pencil" size="18"></svg>
             </app-button>
 
-            <app-button
-              variant="destructive"
-              size="icon">
-
+            <app-button (btnClick)="onDelete(f)" variant="destructive" size="icon">
               <svg lucideIcon="trash" size="18"></svg>
-
             </app-button>
-
           </div>
-
         </div>
-
       }
-
     </div>
-
   }
 
   <!-- TABLE VIEW -->
   @if (isListView && !isMobile) {
-
     <div class="fade-in overflow-hidden border border-gray-200 bg-white shadow-md">
-
       <table class="w-full border-collapse">
-
         <!-- HEAD -->
         <thead class="bg-gray-50 border-b border-gray-200">
-
           <tr>
-
             <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider text-gray-400">
               Khách hàng
             </th>
@@ -232,35 +176,26 @@
             <th class="px-5 py-4 text-right text-[11px] uppercase tracking-wider text-gray-400">
               Thao tác
             </th>
-
           </tr>
-
         </thead>
 
         <!-- BODY -->
         <tbody>
-
           @for (f of forms; track f.id) {
-
             <tr class="group border-b border-gray-100 hover:bg-gray-50 transition">
-
               <!-- USER -->
               <td class="px-5 py-4">
-
                 <div class="flex items-center gap-4">
-
                   <div
-                    class="size-14 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase shrink-0">
-
+                    class="size-14 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase shrink-0"
+                  >
                     {{
                       f.fullName.split(' ')[0].charAt(0) +
-                      f.fullName.split(' ').slice(-1)[0].charAt(0)
+                        f.fullName.split(' ').slice(-1)[0].charAt(0)
                     }}
-
                   </div>
 
                   <div>
-
                     <h3 class="text-sm font-semibold text-primary">
                       {{ f.fullName }}
                     </h3>
@@ -268,18 +203,13 @@
                     <p class="text-xs text-gray-400 mt-1">
                       {{ f.createdAt }}
                     </p>
-
                   </div>
-
                 </div>
-
               </td>
 
               <!-- CONTACT -->
               <td class="px-5 py-4">
-
                 <div class="space-y-1">
-
                   <p class="text-sm text-gray-700">
                     {{ f.email }}
                   </p>
@@ -287,23 +217,18 @@
                   <p class="text-xs text-gray-500">
                     {{ f.phone }}
                   </p>
-
                 </div>
-
               </td>
 
               <!-- MESSAGE -->
               <td class="px-5 py-4 max-w-sm">
-
                 <p class="text-sm text-gray-600 line-clamp-2">
                   {{ f.message }}
                 </p>
-
               </td>
 
               <!-- STATUS -->
               <td class="px-5 py-4">
-
                 <span
                   [class]="
                     f.status === 'new'
@@ -312,68 +237,59 @@
                         ? 'bg-blue-100 text-blue-600'
                         : 'bg-gray-100 text-gray-600'
                   "
-                  class="inline-flex items-center justify-center w-24 px-2 py-1 text-[11px] uppercase font-semibold ">
-
+                  class="inline-flex items-center justify-center w-24 px-2 py-1 text-[11px] uppercase font-semibold"
+                >
                   {{
-                    f.status === 'new'
-                      ? 'Mới'
-                      : f.status === 'contacted'
-                        ? 'Đã liên hệ'
-                        : 'Đã đóng'
+                    f.status === 'new' ? 'Mới' : f.status === 'contacted' ? 'Đã liên hệ' : 'Đã đóng'
                   }}
-
                 </span>
-
               </td>
 
               <!-- ACTIONS -->
               <td class="px-5 py-4">
-
-                <div class="flex items-center justify-end gap-2 opacity-0 translate-x-3 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-300">
-
-                  <app-button
-                    variant="action"
-                    size="icon">
-
+                <div
+                  class="flex items-center justify-end gap-2 opacity-0 translate-x-3 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-300"
+                >
+                  <app-button (btnClick)="onView(f)" variant="action" size="icon">
                     <svg lucideIcon="eye" size="18"></svg>
-
+                  </app-button>
+                  <app-button (btnClick)="onEdit(f)" variant="action" size="icon">
+                    <svg lucideIcon="pencil" size="18"></svg>
                   </app-button>
 
-                  <app-button
-                    variant="destructive"
-                    size="icon">
-
+                  <app-button (btnClick)="onDelete(f)" variant="destructive" size="icon">
                     <svg lucideIcon="trash" size="18"></svg>
-
                   </app-button>
-
                 </div>
-
               </td>
-
             </tr>
-
           }
-
         </tbody>
-
       </table>
-
     </div>
-
   }
 
   <!-- PAGINATION -->
   <div class="flex justify-center pt-6">
-
     <app-pagination
       [currentPage]="currentPage"
       [totalPages]="totalPages"
       [maxVisible]="5"
-      (pageChange)="onPageChange($event)">
-
+      (pageChange)="onPageChange($event)"
+    >
     </app-pagination>
-
   </div>
 
+  <!-- CONTACT FORM MODAL -->
+  @if (showFormDialog) {
+    <app-dialog [show]="showFormDialog" (closed)="closeFormDialog()">
+      <app-contact-form
+        [mode]="formMode"
+        [contact]="selectedForm"
+        (close)="closeFormDialog()"
+        (save)="onSaveForm($event)"
+      >
+      </app-contact-form>
+    </app-dialog>
+  }
 </div>

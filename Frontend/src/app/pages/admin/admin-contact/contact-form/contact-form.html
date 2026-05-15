@@ -1,0 +1,150 @@
+<div class="flex flex-col max-h-[80vh] w-full text-sm">
+  <!-- HEADER -->
+  <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shrink-0">
+    <div class="relative flex items-center justify-center p-4">
+      <h2 class="text-base font-bold text-gray-900 text-center">
+        {{
+          currentMode() === 'add'
+            ? 'Thêm liên hệ'
+            : currentMode() === 'edit'
+              ? 'Chỉnh sửa liên hệ'
+              : 'Chi tiết liên hệ'
+        }}
+      </h2>
+
+      <div class="absolute right-3 top-1/2 -translate-y-1/2">
+        <app-button type="button" variant="ghost" size="icon" (btnClick)="onClose()">
+          <svg lucideIcon="x" class="size-4"></svg>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 min-h-0">
+    <div class="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+      <!-- FULL NAME -->
+      <div>
+        <label class="block text-xs font-medium mb-1 text-gray-500 uppercase tracking-wide">
+          Họ tên
+        </label>
+        @if (currentMode() === 'view') {
+          <div class="border border-gray-200 rounded-sm px-3 py-2 bg-gray-50 text-sm">
+            {{ contact()?.fullName }}
+          </div>
+        } @else {
+          <app-custom-input
+            formControlName="fullName"
+            placeholder="Họ tên"
+            variant="outline"
+          ></app-custom-input>
+          @if (submitted && f.fullName.errors?.['required']) {
+            <p class="text-[11px] text-red-500 mt-1">* Họ tên là bắt buộc</p>
+          }
+        }
+      </div>
+
+      <!-- EMAIL -->
+      <div>
+        <label class="block text-xs font-medium mb-1 text-gray-500 uppercase tracking-wide">
+          Email
+        </label>
+        @if (currentMode() === 'view') {
+          <div class="border border-gray-200 rounded-sm px-3 py-2 bg-gray-50 text-sm italic">
+            {{ contact()?.email }}
+          </div>
+        } @else {
+          <app-custom-input
+            formControlName="email"
+            placeholder="Email"
+            variant="outline"
+          ></app-custom-input>
+          @if (submitted && f.email.errors) {
+            <p class="text-[11px] text-red-500 mt-1">* Email không hợp lệ</p>
+          }
+        }
+      </div>
+
+      <!-- PHONE -->
+      <div>
+        <label class="block text-xs font-medium mb-1 text-gray-500 uppercase tracking-wide">
+          Số điện thoại
+        </label>
+        @if (currentMode() === 'view') {
+          <div class="border border-gray-200 rounded-sm px-3 py-2 bg-gray-50 text-sm">
+            {{ contact()?.phone }}
+          </div>
+        } @else {
+          <app-custom-input
+            formControlName="phone"
+            placeholder="Số điện thoại"
+            variant="outline"
+          ></app-custom-input>
+          @if (submitted && f.phone.errors) {
+            <p class="text-[11px] text-red-500 mt-1">* Số điện thoại không hợp lệ</p>
+          }
+        }
+      </div>
+
+      <!-- STATUS (Sử dụng 1 loại dropdown duy nhất) -->
+      <div>
+        <label class="block text-xs font-medium mb-1 text-gray-500 uppercase tracking-wide">
+          Trạng thái
+        </label>
+        <app-dropdown
+          formControlName="status"
+          [options]="statusOptions"
+          [placeholder]="'Chọn trạng thái'"
+          className="w-full"
+          [disabled]="currentMode() === 'view'"
+        >
+        </app-dropdown>
+      </div>
+
+      <!-- MESSAGE -->
+      <div>
+        <label class="block text-xs font-medium mb-1 text-gray-500 uppercase tracking-wide">
+          Nội dung
+        </label>
+        @if (currentMode() === 'view') {
+          <div
+            class="border border-gray-200 rounded-sm px-3 py-3 bg-gray-50 text-sm leading-relaxed whitespace-pre-line min-h-28"
+          >
+            {{ contact()?.message }}
+          </div>
+        } @else {
+          <textarea
+            rows="5"
+            formControlName="message"
+            placeholder="Nội dung liên hệ"
+            class="w-full border border-gray-200 rounded-sm px-3 py-2 text-sm outline-none focus:border-primary resize-none"
+            [class.border-red-500]="submitted && f.message.errors"
+          ></textarea>
+          @if (submitted && f.message.errors) {
+            <p class="text-[11px] text-red-500 mt-1">* Nội dung là bắt buộc</p>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4 shrink-0">
+      <div class="flex justify-end gap-2">
+        @if (currentMode() === 'view') {
+          <app-button type="button" variant="destructive" (btnClick)="onDelete()">
+            <svg lucideIcon="trash-2" class="size-4"></svg>
+            Xóa
+          </app-button>
+          <app-button type="button" className="bg-primary text-white" (btnClick)="onEdit()">
+            <svg lucideIcon="pencil" class="size-4"></svg>
+            Chỉnh sửa
+          </app-button>
+        } @else {
+          <app-button type="button" variant="outline" (btnClick)="onCancel()"> {{ currentMode() === 'edit' && contact() ? 'Quay lại' : 'Hủy' }} </app-button>
+          <app-button type="submit" className="bg-primary text-white">
+            <svg lucideIcon="save" class="size-4"></svg> Lưu
+          </app-button>
+        }
+      </div>
+    </div>
+  </form>
+</div>

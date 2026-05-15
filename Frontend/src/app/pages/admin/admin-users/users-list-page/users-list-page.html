@@ -2,9 +2,11 @@
   <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
     <div class="flex flex-col">
-      <h1 class="text-3xl italic font-bold text-primary tracking-tight">Tài khoản người dùng</h1>
+      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left ">Tài khoản người dùng</h1>
 
-      <h3 class="text-md text-gray-900 tracking-tight">Quản lý tài khoản admin và nhân viên</h3>
+        <p class="text-sm text-gray-500 mt-1 slide-in-left ">
+          Quản lý tài khoản admin và nhân viên
+        </p>
     </div>
 
     <div class="flex items-center gap-2">
@@ -57,96 +59,77 @@
       </div>
 
       <!-- SORT -->
-      <app-dropdown
-        [options]="sortOptions"
-        placeholder="Sắp xếp"
-        className="min-w-40"
-      >
+      <app-dropdown [options]="sortOptions" placeholder="Sắp xếp" className="min-w-40 text-xs">
       </app-dropdown>
     </div>
   </div>
 
   <!-- CARD VIEW -->
   @if (!isListView || isMobile) {
-    <div class="fade-in grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div class="fade-in grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       @for (u of users; track u.id) {
         <div
-          class="group bg-white border border-gray-200 p-5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          class="rounded-sm shadow-sm group bg-white border border-gray-200 p-5 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
         >
           <!-- HEADER -->
           <div class="flex items-start justify-between gap-4 mb-5">
             <div class="flex items-center gap-3">
-              <!-- <img [src]="u.avatar" [alt]="u.fullName"
-                        class="size-14 rounded-full object-cover border border-gray-200"> 
-                        -->
               <div
-                class="size-14 rounded-full border border-gray-200 bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase"
+                class="size-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase"
               >
-                {{ u.fullName.charAt(0) }}
+                {{
+                  u.fullName.split(' ')[0].charAt(0) + u.fullName.split(' ').slice(-1)[0].charAt(0)
+                }}
               </div>
               <div>
-                <h3 class="text-base font-semibold text-primary">
+                <h3 class="font-semibold text-primary">
                   {{ u.fullName }}
                 </h3>
-
                 <p class="text-xs text-gray-400 mt-1">
                   {{ u.email }}
                 </p>
               </div>
             </div>
-
             <span
               [class]="
                 u.role === 'admin' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'
               "
-              class="px-2 py-1 text-[12px] uppercase font-semibold"
+              class="inline-flex items-center justify-center w-24 px-2 py-1 text-[11px] uppercase font-semibold"
             >
               {{ u.role === 'admin' ? 'Admin' : 'Nhân viên' }}
             </span>
           </div>
-
           <!-- INFO -->
           <div class="space-y-3 text-sm">
-            <div class="flex items-center gap-2 text-gray-600">
-              <svg lucideIcon="phone" size="16"></svg>
-              <span>{{ u.phone }}</span>
+            <div class="flex flex-row justify-between">
+              <div class="flex items-center gap-2 text-gray-600">
+                <svg lucideIcon="phone" size="16"></svg>
+                <span>{{ u.phone }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-600">
+                <svg lucideIcon="calendar" size="16"></svg>
+                <span>{{ u.createdAt }}</span>
+              </div>
             </div>
-
-            <div class="flex items-center gap-2 text-gray-600">
-              <svg lucideIcon="calendar" size="16"></svg>
-              <span>{{ u.createdAt }}</span>
-            </div>
-
             <div class="flex items-center gap-2">
               <div
                 [class]="u.status === 'active' ? 'bg-green-500' : 'bg-red-500'"
                 class="size-2 rounded-full"
               ></div>
-
               <span class="text-sm text-gray-600">
                 {{ u.status === 'active' ? 'Đang hoạt động' : 'Ngưng hoạt động' }}
               </span>
             </div>
           </div>
-
           <!-- ACTIONS -->
           <div class="flex items-center justify-end gap-2 pt-5">
-            <app-button variant="action" size="icon"
-            (btnClick)="onView(u)"
-            >
+            <app-button (btnClick)="onView(u)" variant="action" size="icon">
               <svg lucideIcon="eye" size="18"></svg>
             </app-button>
-
-            <app-button variant="action" size="icon"
-            (btnClick)="onEdit(u)"
-            >
-              <svg lucideIcon="pencil" size="18"
-              ></svg>
+            <app-button (btnClick)="onEdit(u)" variant="action" size="icon">
+              <svg lucideIcon="pencil" size="18"></svg>
             </app-button>
-
-            <app-button variant="destructive" size="icon"
-            (btnClick)="onDelete(u)"
-            >
+            <app-button (btnClick)="onDelete(u)" variant="destructive" size="icon">
               <svg lucideIcon="trash" size="18"></svg>
             </app-button>
           </div>
@@ -286,7 +269,14 @@
   <!-- Form -->
   @if (showFormDialog) {
     <app-dialog [show]="showFormDialog" (closed)="closeFormDialog()">
-      <app-users-form [mode]="formMode" (close)="closeFormDialog()" (save)="({})"> </app-users-form>
+      <app-users-form
+        [mode]="formMode"
+        [userModal]="selectedUser"
+        (close)="closeFormDialog()"
+        (save)="onSaveUser($event)"
+        (delete)="onDelete(selectedUser!)"
+      >
+      </app-users-form>
     </app-dialog>
   }
 </div>

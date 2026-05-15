@@ -1,31 +1,46 @@
 <div class="relative w-full" [ngClass]="className">
+  <!-- Trigger button -->
+  <button
+    type="button"
+    (click)="toggle()"
+    [disabled]="disabled"
+    class="rounded-sm w-full flex items-center justify-between border border-gray-200 px-3 py-2 transition focus:outline-none"
+    [ngClass]="
+      disabled
+        ? ' bg-gray-50 text-primary'
+        : 'cursor-pointer hover:border-gray-400 focus:border-primary bg-white'
+    "
+  >
+    <span 
+    class="text-xs"
+    [ngClass]="value ? 'text-primary' : 'text-gray-400'">
+      {{ value ? selectedLabel : placeholder }}
+    </span>
 
-	<!-- Trigger button -->
-	<button type="button" (click)="toggle()" [disabled]="disabled"
-		class="w-full flex items-center justify-between text-[13px]  border border-gray-300 px-3 py-2 bg-white text-primary cursor-pointer transition hover:border-gray-400 focus:border-primary focus:outline-none"
-		[ngClass]="disabled ? 'opacity-50 cursor-not-allowed' : ''">
-		<span [ngClass]="value ? 'text-primary' : 'text-gray-400'">
-			{{ value ? selectedLabel : placeholder }}
-		</span>
+    <!-- Icon: chevron-up khi mở, chevron-down khi đóng -->
+    <svg
+      lucideIcon="chevron-down"
+      class="size-4 text-primary transition-transform duration-200"
+      [ngClass]="isOpen ? 'rotate-180' : 'rotate-0'"
+    ></svg>
+  </button>
 
-		<!-- Icon: chevron-up khi mở, chevron-down khi đóng -->
-		<svg lucideIcon='chevron-down' class="size-4 text-primary transition-transform duration-200"
-			[ngClass]="isOpen ? 'rotate-180' : 'rotate-0'">
-
-		</svg>
-	</button>
-
-	<!-- Options list -->
-	@if (isOpen) {
-	<ul class="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-lg overflow-hidden fade-in">
-		@for (opt of options; track opt.value) {
-		<li (click)="onSelect(opt.value)" class="p-3 text-[13px] cursor-pointer transition-colors" [ngClass]="opt.value === value
-            ? 'bg-primary text-white'
-            : 'text-primary hover:bg-gray-50'">
-			{{ opt.label }}
-		</li>
-		}
-	</ul>
-	}
-
+  <!-- Options list -->
+  @if (isOpen) {
+    <ul
+      class="mt-1 rounded-sm absolute z-50 w-full bg-white border border-gray-200 shadow-lg overflow-hidden slide-down"
+    >
+      @for (opt of options; track opt.value) {
+        <li
+          (click)="onSelect(opt.value)"
+          class="p-2 cursor-pointer transition-colors"
+          [ngClass]="
+            opt.value === value ? 'bg-primary text-white' : 'text-primary hover:bg-gray-100'
+          "
+        >
+          {{ opt.label }}
+        </li>
+      }
+    </ul>
+  }
 </div>

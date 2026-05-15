@@ -2,6 +2,8 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
+import { Injector } from '@angular/core';
+import { NgControl } from '@angular/forms';
 
 @Component({
   selector: 'app-custom-input',
@@ -31,9 +33,25 @@ export class CustomInput implements ControlValueAccessor {
   @Input() type: string = 'text';
 
   // ===== ControlValueAccessor =====
-  private onChange = (value: string) => {};
-  private onTouched = () => {};
+  private onChange = (value: string) => { };
+  private onTouched = () => { };
 
+  constructor(private injector: Injector) { }
+  //NgControl: Là lớp cha của tất cả các directive quản lý form trong Angular
+  get ngControl(): NgControl | null {
+    return this.injector.get(NgControl, null);
+  }
+
+  // Kiểm tra invalid rồi trả về, xuống dưới variant xét
+  get isInvalid(): boolean {
+    const control = this.ngControl?.control;
+
+    return !!(
+      control &&
+      control.invalid &&
+      (control.touched || control.dirty)
+    );
+  }
   writeValue(value: string): void {
     this.value = value || '';
   }
@@ -60,6 +78,15 @@ export class CustomInput implements ControlValueAccessor {
 
   // ===== VARIANT CLASSES =====
   get variantClasses(): string {
+    // invalid
+    if (this.isInvalid) {
+      return `
+      bg-white
+      border border-red-500
+      focus:border-red-500
+      hover:border-red-500
+    `;
+    }
     switch (this.variant) {
       case 'outline':
         return 'bg-white border border-gray-300 focus:border-primary hover:border-gray-500';

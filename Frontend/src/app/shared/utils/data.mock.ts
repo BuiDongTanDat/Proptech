@@ -1,19 +1,8 @@
-export interface Property {
-  id: number;
-  title: string;
-  price: string;
-  location: string;
-  suites: number;
-  baths: number;
-  sqft: number;
-  architect: string;
-  image: string;
-  badge?: string;
-  typologies: string[];
-}
+import { IContactForm, IProperty, IUserAccount } from "../../types/type";
+
 
  // ===== PROPERTIES DATA =====
-  export const propertiesList: Property[] = [
+  export const propertiesList: IProperty[] = [
     {
       id: 1,
       title: 'The Obsidian Point',
@@ -117,17 +106,7 @@ export interface Property {
   ];
 
  // ===== ACCOUNT USER DATA =====
-  export interface UserAccount {
-  id: number;
-  fullName: string;
-  email: string;
-  phone: string;
-  role: 'admin' | 'staff';
-  avatar?: string;
-  status: 'active' | 'inactive';
-  createdAt: string;
-}
-export const usersList: UserAccount[] = [
+export const usersList: IUserAccount[] = [
   {
     id: 1,
     fullName: 'Nguyễn Minh Quân',
@@ -212,17 +191,7 @@ export const usersList: UserAccount[] = [
 
 
  // ===== CONTACT DATA =====
-export interface ContactForm {
-  id: number;
-  fullName: string;
-  email: string;
-  phone: string;
-  message: string;
-  createdAt: string;
-  status: 'new' | 'contacted' | 'closed';
-}
-
-export const contactFormsList: ContactForm[] = [
+export const contactFormsList: IContactForm[] = [
   {
     id: 1,
     fullName: 'Nguyễn Văn An',

@@ -1,19 +1,61 @@
-<header class="flex items-center justify-between pl-1 pr-8  py-2 bg-white border-b border-gray-100 shadow-sm">
-	<div class="flex items-center gap-4">
-		<button (click)="toggleSidebar.emit()" class="cursor-pointer p-2 rounded-md hover:bg-gray-100 focus:outline-none">
-			<svg lucideIcon="panel-right" class="w-6 h-6 text-gray-700"></svg>
-		</button>
-		
-		<app-custom-input
-			placeholder="Tìm kiếm chức năng..."
-			icon="search"
-			className="w-80"
-			/>
-	</div>
-	<div class="flex items-center gap-4">
-		<span class="text-gray-600 text-sm">Xin chào, <span class="font-medium">Quản trị viên</span></span>
-		<span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 border border-gray-200">
-			<svg lucideIcon="user" class="w-6 h-6 text-gray-500"></svg>
-		</span>
-	</div>
+<header class="flex items-center justify-between pl-1 pr-8 py-2 bg-white border-b border-gray-100 shadow-sm">
+  <div class="flex items-center gap-4">
+    <!-- Nút Toggle Sidebar -->
+    <button class="cursor-pointer p-2 rounded-md hover:bg-gray-100 focus:outline-none">
+       <svg lucideIcon="panel-right" class="w-6 h-6 text-gray-700"></svg>
+    </button>
+
+    <!-- SEARCH -->
+    <div class="relative">
+      <app-custom-input
+        placeholder="Tìm kiếm chức năng..."
+        icon="search"
+        className="w-80"
+        [(ngModel)]="search" 
+        (ngModelChange)="onSearch($event)"
+        (focus)="showResults.set(search().length > 0)"
+      />
+
+      <!-- Hiển thị kết quả -->
+      @if (showResults() && filteredItems().length > 0) {
+        <div class="absolute top-full mt-2 w-full bg-white border border-gray-200 rounded-sm shadow-lg overflow-hidden z-50 slide-down duration-200">
+          @for (item of filteredItems(); track item.route) {
+            <button
+              type="button"
+              (click)="goTo(item.route)"
+              class="cursor-pointer w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-gray-100 transition text-left group"
+            >
+              <div class="p-2 rounded-md bg-gray-50 group-hover:bg-white transition-colors">
+                <svg [lucideIcon]="item.icon" class="size-4 text-primary"></svg>
+              </div>
+
+              <div class="flex flex-col">
+                <span class="text-primary font-semibold group-hover:text-primary transition-colors">
+                  {{ item.label }}
+                </span>
+                <span class="text-xs text-gray-400 font-mono">
+                  {{ item.route }}
+                </span>
+              </div>
+            </button>
+          }
+        </div>
+      } @else if (showResults() && search().length > 0) {
+        <!-- Hiển thị khi không tìm thấy gì -->
+        <div class="absolute top-full mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg p-4 text-center z-50">
+           <p class="text-sm text-gray-400">Không tìm thấy chức năng nào...</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- RIGHT (Giữ nguyên) -->
+  <div class="flex items-center gap-4">
+    <span class="text-gray-600 text-sm">
+      Xin chào, <span class="font-medium">Quản trị viên</span>
+    </span>
+    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 border border-gray-200">
+      <svg lucideIcon="user" class="w-6 h-6 text-gray-500"></svg>
+    </span>
+  </div>
 </header>

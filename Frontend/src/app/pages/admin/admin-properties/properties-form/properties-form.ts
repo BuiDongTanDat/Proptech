@@ -1,6 +1,6 @@
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Property } from '../../../../shared/utils/data.mock';
+import { IProperty } from '../../../../types/type';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
@@ -21,10 +21,10 @@ import { LucideDynamicIcon } from '@lucide/angular';
   styleUrl: './properties-form.css',
 })
 export class PropertiesForm {
-  @Input() property: Property | null = null;
+  @Input() property: IProperty | null = null;
   @Input() mode: 'view' | 'edit' | 'add' = 'view';
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<Property>();
+  @Output() save = new EventEmitter<IProperty>();
 
   propertyForm: FormGroup = new FormGroup({
     title: new FormControl('', [Validators.required]),
@@ -69,8 +69,8 @@ export class PropertiesForm {
 
   const formValue = this.propertyForm.value;
 
-  // const payload: Property = {
-  //   id: this.property?.id ?? Date.now(),
+  // const payload: IProperty = {
+  //   id: this.IProperty?.id ?? Date.now(),
 
   //   title: formValue.title!,
   //   price: String(formValue.price),

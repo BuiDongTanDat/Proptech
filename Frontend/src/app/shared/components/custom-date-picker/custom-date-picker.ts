@@ -14,11 +14,12 @@ import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 import { CustomInput } from '../ui/custom-input/custom-input';
+import { LucideDynamicIcon } from "@lucide/angular";
 
 @Component({
   selector: 'app-custom-date-picker',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomInput],
+  imports: [CommonModule, FormsModule, CustomInput, LucideDynamicIcon],
   templateUrl: './custom-date-picker.html',
   styleUrl: './custom-date-picker.css',
   providers: [
@@ -38,8 +39,8 @@ export class CustomDatePicker implements ControlValueAccessor {
 
   value = '';
 
-  onChange: (value: string) => void = () => {};
-  onTouched: () => void = () => {};
+  onChange: (value: string) => void = () => { };
+  onTouched: () => void = () => { };
 
   // mở / đóng popup
   toggleCalendar() {
@@ -58,10 +59,10 @@ export class CustomDatePicker implements ControlValueAccessor {
 
     this.value = input.value;
 
+    console.log(this.value);
+
     this.onChange(this.value);
     this.onTouched();
-
-    this.closeCalendar();
   }
 
   // ControlValueAccessor
