@@ -19,6 +19,8 @@ import { AdminSetting } from './pages/admin/admin-setting/admin-setting';
 import { AdminDashboard } from './pages/admin/admin-dashboard/admin-dashboard';
 import { PostBuilder } from './pages/admin/post-builder/post-builder';
 import { PostReview } from './pages/admin/post-builder/post-review/post-review';
+import { UnlayerDesign } from './pages/admin/unlayer-design/unlayer-design';
+import { PropertyPreview } from './pages/admin/admin-properties/property-preview/property-preview';
 
 export const routes: Routes = [
     {
@@ -141,9 +143,18 @@ export const routes: Routes = [
     {
 
         path: 'admin/properties/add',
-        component: PostBuilder,
-        title: 'Thêm bất động sản',
+        component: UnlayerDesign,
+        title: 'Thêm tin bất động sản',
 
+    },
+    {
+        path: 'admin/properties/view/:id',
+        component: PropertyPreview
+    },
+
+    {
+        path: 'admin/properties/editor/:id',
+        component: UnlayerDesign
     },
     // Error pages 
     {

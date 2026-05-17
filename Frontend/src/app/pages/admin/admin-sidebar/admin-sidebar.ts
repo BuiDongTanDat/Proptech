@@ -24,7 +24,7 @@ export class AdminSidebar {
   
   navItems: NavItem[] = [
     { label: 'Trang chủ', icon: 'house', route: '/admin/dashboard' },
-    { label: 'Bất động sản', icon: 'building-2', route: '/admin/properties' },
+    { label: 'Tin bất động sản', icon: 'building-2', route: '/admin/properties' },
     { label: 'Liên hệ', icon: 'phone', route: '/admin/contact' },
     { label: 'Tài khoản', icon: 'circle-user', route: '/admin/account' },
     { label: 'Thông tin doanh nghiệp', icon: 'info', route: '/admin/info' },

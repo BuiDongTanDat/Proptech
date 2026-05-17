@@ -26,7 +26,7 @@ export class AdminHeader {
 
   searchItems: SearchItem[] = [
     { label: 'Trang chủ', route: '/admin/dashboard', icon: 'house' },
-    { label: 'Bất động sản', route: '/admin/properties', icon: 'building-2' },
+    { label: 'Tin bất động sản', route: '/admin/properties', icon: 'building-2' },
     { label: 'Liên hệ', route: '/admin/contact', icon: 'phone' },
     { label: 'Tài khoản', route: '/admin/account', icon: 'circle-user' },
     { label: 'Thông tin doanh nghiệp', route: '/admin/info', icon: 'info' },

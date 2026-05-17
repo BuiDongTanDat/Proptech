@@ -10,6 +10,8 @@ export interface IProperty {
     image: string;
     badge?: string;
     typologies: string[];
+    htmlSource?: string;
+    jsonSource?: any;
 }
 
 export interface IUserAccount {

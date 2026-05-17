@@ -1,0 +1,49 @@
+<div class="h-screen flex flex-col bg-gray-100">
+  <!-- TOPBAR -->
+  <div
+    class="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-gray-100 bg-white shadow-sm"
+  >
+    <!-- LEFT -->
+    <div class="flex items-center gap-3">
+      <app-button variant="outline" startIcon="arrow-left" (btnClick)="goBack()">
+        Quay lại
+      </app-button>
+
+      <div>
+        <h2 class="text-lg font-semibold text-primary">Thiết kế tin đăng</h2>
+
+        <p class="text-xs text-gray-500">Thiết kế tin đăng bất động sản</p>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="flex items-center gap-2">
+      <!-- IMPORT JSON -->
+      <label
+        class="rounded-sm py-2.5 px-3 inline-flex items-center justify-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 cursor-pointer transition"
+      >
+        <svg lucideIcon="upload" size="16"></svg>
+
+        <span class="text-xs rounded-sm">Import JSON</span>
+
+        <input type="file" accept=".json" hidden (change)="loadDesign($event)" />
+      </label>
+
+      <!-- SAVE -->
+      <app-button variant="primary" startIcon="save" [disabled]="loading" (btnClick)="saveDesign()">
+        {{ loading ? 'Đang lưu...' : 'Lưu thiết kế' }}
+      </app-button>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="flex-1 overflow-hidden">
+    <email-editor
+      class="block h-full"
+      (loaded)="editorLoaded()"
+      [options]="editorOptions"
+      [projectId]="123456"
+    >
+    </email-editor>
+  </div>
+</div>

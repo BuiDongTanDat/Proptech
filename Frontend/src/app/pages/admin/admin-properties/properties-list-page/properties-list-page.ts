@@ -85,21 +85,27 @@ export class PropertiesListPage implements OnInit {
     });
   }
 
-  onEdit(IProperty: IProperty) {
-    this.formMode = 'edit';
-    this.selectedProperty = IProperty;
-    this.showFormDialog = true;
+  onEdit(property: IProperty) {
+
+    this.router.navigate([
+      'admin/properties/editor',
+      property.id
+    ]);
+
   }
 
-  onView(IProperty: IProperty) {
-    this.formMode = 'view';
-    this.selectedProperty = IProperty;
-    this.showFormDialog = true;
+  onView(property: IProperty) {
+
+    this.router.navigate([
+      'admin/properties/view',
+      property.id
+    ]);
+
   }
 
-  onDelete(IProperty: IProperty) {
-    this.allProperties = this.allProperties.filter(p => p.id !== IProperty.id);
-    this.filteredProperties = this.filteredProperties.filter(p => p.id !== IProperty.id);
+  onDelete(property: IProperty) {
+    this.allProperties = this.allProperties.filter(p => p.id !== property.id);
+    this.filteredProperties = this.filteredProperties.filter(p => p.id !== property.id);
     if ((this.currentPage - 1) * this.pageSize >= this.filteredProperties.length && this.currentPage > 1) {
       this.currentPage--;
     }
