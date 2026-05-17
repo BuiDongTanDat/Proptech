@@ -1,5 +1,5 @@
 {
-  "outputDirectory": "dist/ahpm_frontend/browser",
+  "outputDirectory": "dist/Protech/browser",
   "rewrites": [
     {
       "source": "/(.*)",
