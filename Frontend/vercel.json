@@ -1,4 +1,5 @@
 {
+  "outputDirectory": "dist/ahpm_frontend/browser",
   "rewrites": [
     {
       "source": "/(.*)",
