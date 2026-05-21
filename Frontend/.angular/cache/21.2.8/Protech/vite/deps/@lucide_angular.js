@@ -2,20 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  InjectionToken,
   Input,
   Renderer2,
   Type,
   ViewChild,
   ViewEncapsulation,
-  __spreadProps,
-  __spreadValues,
-  computed,
-  effect,
-  inject,
   input,
   setClassMetadata,
-  signal,
   viewChild,
   ɵɵInheritDefinitionFeature,
   ɵɵadvance,
@@ -33,7 +26,20 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate,
   ɵɵviewQuerySignal
-} from "./chunk-ZBUEH6HV.js";
+} from "./chunk-3T35MVF5.js";
+import {
+  InjectionToken,
+  computed,
+  effect,
+  inject,
+  signal
+} from "./chunk-6AKB5EJF.js";
+import "./chunk-J46EEYGT.js";
+import "./chunk-4YCCEXQQ.js";
+import {
+  __spreadProps,
+  __spreadValues
+} from "./chunk-U7EDC2PH.js";
 
 // node_modules/@lucide/angular/fesm2022/lucide-angular.mjs
 var _c0 = ["contentRef"];

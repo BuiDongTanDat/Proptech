@@ -1,136 +1,132 @@
 <div class="min-h-screen">
   <!-- TOP BAR -->
-  <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
-    <div class="flex flex-col">
-      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left ">Tài khoản người dùng</h1>
-
-        <p class="text-sm text-gray-500 mt-1 slide-in-left ">
-          Quản lý tài khoản admin và nhân viên
-        </p>
+  <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">
+        Tài khoản người dùng
+      </h1>
+      <p class="text-xs text-gray-400 mt-0.5 slide-in-left">Quản lý tài khoản nhân viên</p>
     </div>
 
     <div class="flex items-center gap-2">
       <app-button text="Xuất file" startIcon="download" variant="outline" (btnClick)="({})">
         Xuất file
       </app-button>
-
-      <app-button
-        (btnClick)="onAdd()"
-        text="Thêm tài khoản"
-        startIcon="plus"
-        variant="primary"
-        (btnClick)="onAdd()"
-      >
+      <app-button (btnClick)="onAdd()" text="Thêm tài khoản" startIcon="plus" variant="primary">
         Thêm tài khoản
       </app-button>
     </div>
   </div>
 
   <!-- TOOLBAR -->
-  <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+  <div class="flex items-center justify-between gap-2 mb-4 flex-wrap">
     <app-custom-input
       [(ngModel)]="searchQuery"
       (ngModelChange)="onSearch()"
       placeholder="Tìm kiếm..."
       icon="search"
       variant="outline"
-      className="w-52 text-xs"
-    >
-    </app-custom-input>
+      className="w-48 text-xs"
+    ></app-custom-input>
 
     <div class="flex items-center gap-2 flex-wrap">
-      <!-- VIEW -->
       <div class="hidden md:flex">
         <app-button
           (btnClick)="setView(false)"
           [variant]="!isListView ? 'primary' : 'outline'"
           size="icon"
         >
-          <svg lucideIcon="layout-grid" size="18"></svg>
+          <svg lucideIcon="layout-grid" size="16"></svg>
         </app-button>
-
         <app-button
           (btnClick)="setView(true)"
           [variant]="isListView ? 'primary' : 'outline'"
           size="icon"
         >
-          <svg lucideIcon="list" size="18"></svg>
+          <svg lucideIcon="list" size="16"></svg>
         </app-button>
       </div>
 
-      <!-- SORT -->
-      <app-dropdown [options]="sortOptions" placeholder="Sắp xếp" className="min-w-40 text-xs">
-      </app-dropdown>
+      <app-dropdown
+        [(ngModel)]="selectedSort"
+        [options]="sortOptions"
+        placeholder="Sắp xếp"
+        (ngModelChange)="onSortChange($event)"
+        className="min-w-36 text-xs"
+      ></app-dropdown>
     </div>
   </div>
 
   <!-- CARD VIEW -->
   @if (!isListView || isMobile) {
-    <div class="fade-in grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-      @for (u of users; track u.id) {
+    <div class="fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      @for (u of users; track u._id) {
         <div
-          class="rounded-sm shadow-sm group bg-white border border-gray-200 p-5 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+          class="rounded-md shadow-sm group bg-white border border-gray-200 p-4 hover:shadow-md hover:-translate-y-1 transition-all duration-200"
         >
           <!-- HEADER -->
-          <div class="flex items-start justify-between gap-4 mb-5">
-            <div class="flex items-center gap-3">
+          <div class="flex items-start justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2 min-w-0">
               <div
-                class="size-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase"
+                class="size-8 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-xs uppercase"
               >
-                {{
-                  u.fullName.split(' ')[0].charAt(0) + u.fullName.split(' ').slice(-1)[0].charAt(0)
-                }}
+                {{ u.name.split(' ')[0].charAt(0) + u.name.split(' ').slice(-1)[0].charAt(0) }}
               </div>
-              <div>
-                <h3 class="font-semibold text-primary">
-                  {{ u.fullName }}
-                </h3>
-                <p class="text-xs text-gray-400 mt-1">
-                  {{ u.email }}
-                </p>
+              <div class="min-w-0">
+                <h3 class="text-xs font-semibold text-primary truncate">{{ u.name }}</h3>
               </div>
             </div>
             <span
               [class]="
-                u.role === 'admin' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'
+                u.role === 'Quản lý' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'
               "
-              class="inline-flex items-center justify-center w-24 px-2 py-1 text-[11px] uppercase font-semibold"
+              class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-xs uppercase font-semibold rounded-sm"
             >
-              {{ u.role === 'admin' ? 'Admin' : 'Nhân viên' }}
+              {{ u.role }}
             </span>
           </div>
-          <!-- INFO -->
-          <div class="space-y-3 text-sm">
-            <div class="flex flex-row justify-between">
-              <div class="flex items-center gap-2 text-gray-600">
-                <svg lucideIcon="phone" size="16"></svg>
-                <span>{{ u.phone }}</span>
-              </div>
-              <div class="flex items-center gap-2 text-gray-600">
-                <svg lucideIcon="calendar" size="16"></svg>
-                <span>{{ u.createdAt }}</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
+          <div class="flex flex-col gap-1">
+            <p class="text-xs text-primary truncate flex items-center gap-1">
+              <svg lucideIcon="mail" class="size-3"></svg>
+              {{ u.email }}
+            </p>
+            <!-- STATUS -->
+            <div class="flex items-center gap-1.5 mb-3">
               <div
-                [class]="u.status === 'active' ? 'bg-green-500' : 'bg-red-500'"
-                class="size-2 rounded-full"
+                [class]="
+                  u.status === 'Kích hoạt'
+                    ? 'bg-green-500 '
+                    : u.status === 'Chờ xác thực'
+                      ? 'bg-yellow-400'
+                      : 'bg-red-500'
+                "
+                class="size-1.5 rounded-full shrink-0"
               ></div>
-              <span class="text-sm text-gray-600">
-                {{ u.status === 'active' ? 'Đang hoạt động' : 'Ngưng hoạt động' }}
+              <span
+                [class]="
+                  u.status === 'Kích hoạt'
+                    ? 'text-green-500'
+                    : u.status === 'Chờ xác thực'
+                      ? 'text-yellow-400'
+                      : 'text-red-500'
+                "
+                class="text-xs text-gray-500"
+              >
+                {{ u.status }}
               </span>
             </div>
           </div>
+
           <!-- ACTIONS -->
-          <div class="flex items-center justify-end gap-2 pt-5">
+          <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-gray-100">
             <app-button (btnClick)="onView(u)" variant="action" size="icon">
-              <svg lucideIcon="eye" size="18"></svg>
+              <svg lucideIcon="eye" size="14"></svg>
             </app-button>
             <app-button (btnClick)="onEdit(u)" variant="action" size="icon">
-              <svg lucideIcon="pencil" size="18"></svg>
+              <svg lucideIcon="pencil" size="14"></svg>
             </app-button>
             <app-button (btnClick)="onDelete(u)" variant="destructive" size="icon">
-              <svg lucideIcon="trash" size="18"></svg>
+              <svg lucideIcon="trash" size="14"></svg>
             </app-button>
           </div>
         </div>
@@ -140,111 +136,115 @@
 
   <!-- TABLE VIEW -->
   @if (isListView && !isMobile) {
-    <div class="fade-in overflow-hidden border border-gray-200 bg-white shadow-md">
-      <table class="w-full border-collapse">
-        <!-- HEAD -->
+    <div class="fade-in overflow-x-auto border border-gray-200 bg-white shadow-sm rounded-md">
+      <table class="w-full border-collapse text-xs">
         <thead class="bg-gray-50 border-b border-gray-200">
           <tr>
-            <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider text-gray-400">
+            <th
+              class="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold w-56"
+            >
               Người dùng
             </th>
-
-            <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider text-gray-400">
-              Liên hệ
+            <th
+              class="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold"
+            >
+              Email
             </th>
-
-            <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider text-gray-400">
+            <th
+              class="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold"
+            >
               Vai trò
             </th>
-
-            <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wider text-gray-400">
+            <th
+              class="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold"
+            >
               Trạng thái
             </th>
-
-            <th class="px-5 py-4 text-right text-[11px] uppercase tracking-wider text-gray-400">
+            <th
+              class="px-4 py-3 text-right text-xs uppercase tracking-wider text-gray-400 font-semibold w-28"
+            >
               Thao tác
             </th>
           </tr>
         </thead>
 
-        <!-- BODY -->
-        <tbody>
-          @for (u of users; track u.id) {
-            <tr class="group border-b border-gray-100 hover:bg-gray-50 transition">
+        <tbody class="divide-y divide-gray-100">
+          @for (u of users; track u._id) {
+            <tr class="group hover:bg-gray-50/70 transition-colors duration-150">
               <!-- USER -->
-              <td class="px-5 py-4">
-                <div class="flex items-center gap-4">
-                  <!-- <img
-                    [src]="u.avatar"
-                    [alt]="u.fullName"
-                    class="size-14 rounded-full object-cover border border-gray-200"> -->
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
                   <div
-                    class="size-14 rounded-full border border-gray-200 bg-primary text-white flex items-center justify-center font-semibold text-lg uppercase"
+                    class="size-8 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-xs uppercase"
                   >
-                    {{ u.fullName.charAt(0) }}
+                    {{ u.name.charAt(0) }}
                   </div>
-                  <div>
-                    <h3 class="text-sm font-semibold text-primary">
-                      {{ u.fullName }}
-                    </h3>
-
-                    <p class="text-xs text-gray-400 mt-1">
-                      {{ u.email }}
-                    </p>
+                  <div class="min-w-0">
+                    <p class="text-xs font-semibold text-primary truncate">{{ u.name }}</p>
                   </div>
                 </div>
               </td>
 
               <!-- CONTACT -->
-              <td class="px-5 py-4">
-                <div class="text-sm text-gray-600">
-                  {{ u.phone }}
-                </div>
+              <td class="px-4 py-3 text-xs text-gray-600">
+                <p class="text-xs text-gray-400 truncate">{{ u.email }}</p>
               </td>
 
               <!-- ROLE -->
-              <td class="px-5 py-4">
+              <td class="px-4 py-3">
                 <span
                   [class]="
-                    u.role === 'admin'
+                    u.role === 'Quản lý'
                       ? 'bg-orange-100 text-orange-600'
                       : 'bg-blue-100 text-blue-600'
                   "
-                  class="inline-flex items-center justify-center w-30 px-2 py-1 text-[12px] uppercase font-semibold"
+                  class="inline-flex items-center justify-center px-2 py-0.5 text-xs uppercase font-semibold rounded-sm"
                 >
-                  {{ u.role === 'admin' ? 'Admin' : 'Nhân viên' }}
+                  {{ u.role }}
                 </span>
               </td>
 
               <!-- STATUS -->
-              <td class="px-5 py-4">
-                <div class="flex items-center gap-2">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-1.5">
                   <div
-                    [class]="u.status === 'active' ? 'bg-green-500' : 'bg-red-500'"
-                    class="size-2 rounded-full"
+                    [class]="
+                      u.status === 'Kích hoạt'
+                        ? 'bg-green-500'
+                        : u.status === 'Chờ xác thực'
+                          ? 'bg-yellow-400'
+                          : 'bg-red-500'
+                    "
+                    class="size-1.5 rounded-full shrink-0"
                   ></div>
-
-                  <span class="text-sm text-gray-600">
-                    {{ u.status === 'active' ? 'Hoạt động' : 'Ngưng hoạt động' }}
+                  <span
+                    class="text-xs text-gray-600"
+                    [class]="
+                      u.status === 'Kích hoạt'
+                        ? 'text-green-500'
+                        : u.status === 'Chờ xác thực'
+                          ? 'text-yellow-400'
+                          : 'text-red-500'
+                    "
+                  >
+                    {{ u.status }}
                   </span>
                 </div>
               </td>
 
               <!-- ACTIONS -->
-              <td class="px-5 py-4">
+              <td class="px-4 py-3">
                 <div
-                  class="flex items-center justify-end gap-2 opacity-0 translate-x-3 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-300"
+                  class="flex items-center justify-end gap-1.5 opacity-0 translate-x-2 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-200"
                 >
                   <app-button variant="action" size="icon" (btnClick)="onView(u)">
-                    <svg lucideIcon="eye" size="18"></svg>
+                    <svg lucideIcon="eye" size="14"></svg>
                   </app-button>
-
                   <app-button variant="action" size="icon" (btnClick)="onEdit(u)">
-                    <svg lucideIcon="pencil" size="18"></svg>
+                    <svg lucideIcon="pencil" size="14"></svg>
                   </app-button>
-
                   <app-button variant="destructive" size="icon" (btnClick)="onDelete(u)">
-                    <svg lucideIcon="trash" size="18"></svg>
+                    <svg lucideIcon="trash" size="14"></svg>
                   </app-button>
                 </div>
               </td>
@@ -256,17 +256,16 @@
   }
 
   <!-- PAGINATION -->
-  <div class="flex justify-center pt-6">
+  <div class="flex justify-center pt-5">
     <app-pagination
       [currentPage]="currentPage"
       [totalPages]="totalPages"
       [maxVisible]="5"
       (pageChange)="onPageChange($event)"
-    >
-    </app-pagination>
+    ></app-pagination>
   </div>
 
-  <!-- Form -->
+  <!-- FORM DIALOG -->
   @if (showFormDialog) {
     <app-dialog [show]="showFormDialog" (closed)="closeFormDialog()">
       <app-users-form
@@ -275,8 +274,31 @@
         (close)="closeFormDialog()"
         (save)="onSaveUser($event)"
         (delete)="onDelete(selectedUser!)"
-      >
-      </app-users-form>
+      ></app-users-form>
     </app-dialog>
   }
 </div>
+
+<!-- CONFIRM DELETE -->
+<app-confirm-dialog
+  [show]="showDeleteConfirm"
+  title="Xác nhận xóa tài khoản người dùng"
+  icon="triangle-alert"
+  (closed)="cancelDelete()"
+  [closeOnBackdrop]="false"
+>
+  <div class="flex flex-col gap-3">
+    <p class="text-xs text-gray-500">
+      Bạn có chắc chắn muốn xóa tài khoản
+      <span class="font-semibold text-destructive">{{ selectedUser?.name }}</span>
+      khỏi hệ thống không? Hành động này không thể hoàn tác.
+    </p>
+    <div class="flex justify-end gap-2">
+      <app-button variant="outline" (btnClick)="cancelDelete()">Hủy</app-button>
+      <app-button variant="destructive" (btnClick)="confirmDelete(selectedUser!)">
+        <svg lucideIcon="trash-2" class="size-3.5 mr-1"></svg>
+        Xóa
+      </app-button>
+    </div>
+  </div>
+</app-confirm-dialog>

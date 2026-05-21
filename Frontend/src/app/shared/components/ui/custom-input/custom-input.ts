@@ -1,3 +1,4 @@
+
 import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -78,7 +79,10 @@ export class CustomInput implements ControlValueAccessor {
 
   // ===== VARIANT CLASSES =====
   get variantClasses(): string {
-    // invalid
+    if (this.disabled) {
+      return 'border border-gray-200';
+    }
+
     if (this.isInvalid) {
       return `
       bg-white
@@ -87,18 +91,24 @@ export class CustomInput implements ControlValueAccessor {
       hover:border-red-500
     `;
     }
+
     switch (this.variant) {
       case 'outline':
-        return 'bg-white border border-gray-300 focus:border-primary hover:border-gray-500';
+        return 'bg-white border border-gray-300 focus:border-primary hover:border-gray-500 text-primary';
+
       case 'ghost':
-        return 'border border-transparent focus:border-primary bg-gray-50 hover:bg-gray-100';
+        return 'border border-transparent focus:border-primary bg-gray-50 hover:bg-gray-100 text-primary';
+
       default:
-        return 'border border-gray-200 focus:border-primary bg-white hover:border-gray-300';
+        return 'border border-gray-200 focus:border-primary bg-white hover:border-gray-300 text-primary';
     }
   }
 
   // ===== DISABLED =====
   get disabledClasses(): string {
-    return this.disabled ? 'opacity-50 cursor-not-allowed' : '';
+    return this.disabled
+      ? 'bg-gray-50 text-primary cursor-not-allowed border-gray-200'
+      : '';
   }
+
 }

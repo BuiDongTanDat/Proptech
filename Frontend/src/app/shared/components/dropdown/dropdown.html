@@ -1,23 +1,22 @@
 <div class="relative w-full" [ngClass]="className">
   <!-- Trigger button -->
   <button
+    cdkOverlayOrigin
+    #trigger="cdkOverlayOrigin"
     type="button"
     (click)="toggle()"
     [disabled]="disabled"
-    class="rounded-sm w-full flex items-center justify-between border border-gray-200 px-3 py-2 transition focus:outline-none"
+    class="rounded-sm w-full flex items-center justify-between border px-3 py-2 transition"
     [ngClass]="
       disabled
-        ? ' bg-gray-50 text-primary'
-        : 'cursor-pointer hover:border-gray-400 focus:border-primary bg-white'
+        ? 'bg-gray-50 text-primary border-gray-200 cursor-not-allowed'
+        : 'bg-white cursor-pointer border-gray-300 hover:border-gray-400'
     "
   >
-    <span 
-    class="text-xs"
-    [ngClass]="value ? 'text-primary' : 'text-gray-400'">
+    <span class="text-xs" [ngClass]="value ? 'text-primary' : 'text-gray-400'">
       {{ value ? selectedLabel : placeholder }}
     </span>
 
-    <!-- Icon: chevron-up khi mở, chevron-down khi đóng -->
     <svg
       lucideIcon="chevron-down"
       class="size-4 text-primary transition-transform duration-200"
@@ -26,14 +25,20 @@
   </button>
 
   <!-- Options list -->
-  @if (isOpen) {
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayHasBackdrop]="false"
+    [cdkConnectedOverlayWidth]="trigger.elementRef.nativeElement.offsetWidth"
+  >
     <ul
-      class="mt-1 rounded-sm absolute z-50 w-full bg-white border border-gray-200 shadow-lg overflow-hidden slide-down"
+      class="rounded-sm bg-white border border-gray-200 shadow-lg max-h-60 overflow-y-auto w-full slide-down transition-all duration-100"
     >
       @for (opt of options; track opt.value) {
         <li
           (click)="onSelect(opt.value)"
-          class="p-2 cursor-pointer transition-colors"
+          class="p-2 cursor-pointer text-xs"
           [ngClass]="
             opt.value === value ? 'bg-primary text-white' : 'text-primary hover:bg-gray-100'
           "
@@ -42,5 +47,5 @@
         </li>
       }
     </ul>
-  }
+  </ng-template>
 </div>

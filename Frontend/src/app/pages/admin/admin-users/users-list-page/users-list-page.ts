@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
@@ -8,8 +8,12 @@ import { CustomInput } from '../../../../shared/components/ui/custom-input/custo
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 import { UsersForm } from '../users-form/users-form';
 import { Dialog } from '../../../../shared/components/dialog/dialog';
-import { IUserAccount } from '../../../../types/type';
-import { usersList } from '../../../../shared/utils/data.mock';
+import { IUserAccount } from '../../../../core/models/model';
+import { UserRequest, UserService } from '../../../../core/services/user/user.service';
+import { UserStore } from '../../../../core/stores/user.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import { ToastService } from '../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-users-list-page',
@@ -23,15 +27,39 @@ import { usersList } from '../../../../shared/utils/data.mock';
     CustomInput,
     Dropdown,
     UsersForm,
-    Dialog
+    Dialog,
+    ConfirmDialog
   ],
   templateUrl: './users-list-page.html',
 })
 export class UsersListPage implements OnInit {
+  private userService = inject(UserService);
+  private userStore = inject(UserStore);
+  private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
-  users: IUserAccount[] = [];
+  constructor() {
+    // Subscribe sớm để không miss emit, nhưng dùng takeUntilDestroyed
+    this.userStore.users$
+      .pipe(takeUntilDestroyed())
+      .subscribe(users => {
+        this.allUsers = users;
+        this.applyFilters();
+        this.cdr.markForCheck();
+      });
+  }
+
+  ngOnInit(): void {
+    this.checkMobile();
+    this.getUsers();
+  }
+
+
   allUsers: IUserAccount[] = [];
   filteredUsers: IUserAccount[] = [];
+  users: IUserAccount[] = []; // chỉ render page hiện tại
+  loading = false;
+  showDeleteConfirm = false;
 
   currentPage = 1;
   pageSize = 6;
@@ -55,16 +83,34 @@ export class UsersListPage implements OnInit {
   formMode: 'view' | 'edit' | 'add' = 'view';
   selectedUser: IUserAccount | null = null;
 
-  ngOnInit(): void {
-    this.checkMobile();
-    this.allUsers = usersList;
-    this.filteredUsers = [...this.allUsers];
-    this.updatePage();
-  }
+
+
 
   @HostListener('window:resize')
   onResize() {
     this.checkMobile();
+  }
+
+  //Call API    
+  getUsers() {
+    // Có thể dùng data từ store nếu đã có (tránh gọi API lại khi navigate)
+    if (this.userStore.getSnapshot().length > 0) {
+      return; // Đã có data, không cần gọi lại
+    }
+
+    this.loading = true;
+    this.userService.getUsers().subscribe({
+      next: (res) => {
+        this.userStore.setUsers(res.data);
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error fetching users:', err);
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   checkMobile() {
@@ -76,40 +122,12 @@ export class UsersListPage implements OnInit {
   }
 
   onSearch() {
-    const q = this.searchQuery.toLowerCase();
-
-    this.filteredUsers = this.allUsers.filter(user =>
-      user.fullName.toLowerCase().includes(q) ||
-      user.email.toLowerCase().includes(q) ||
-      user.phone.includes(q)
-    );
-
-    this.currentPage = 1;
-    this.updatePage();
+    this.applyFilters();
   }
 
   onSortChange(value: string) {
     this.selectedSort = value;
-
-    switch (value) {
-      case 'newest':
-        this.filteredUsers.sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
-        break;
-
-      case 'oldest':
-        this.filteredUsers.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
-        break;
-
-      case 'admin':
-        this.filteredUsers.sort((a, b) => a.role === 'admin' ? -1 : 1);
-        break;
-
-      case 'staff':
-        this.filteredUsers.sort((a, b) => a.role === 'staff' ? -1 : 1);
-        break;
-    }
-
-    this.updatePage();
+    this.applyFilters();
   }
 
   updatePage() {
@@ -146,55 +164,112 @@ export class UsersListPage implements OnInit {
     this.showFormDialog = true;
   }
 
+  // Mở dialog xác nhận trước khi xóa, tránh xóa nhầm
   onDelete(user: IUserAccount) {
-    this.allUsers = this.allUsers.filter(u => u.id !== user.id);
-    this.filteredUsers = this.filteredUsers.filter(u => u.id !== user.id);
-
-    if ((this.currentPage - 1) * this.pageSize >= this.filteredUsers.length && this.currentPage > 1) {
-      this.currentPage--;
-    }
-
-    this.updatePage();
+    this.showDeleteConfirm = true;
+    this.selectedUser = user;
   }
 
-  // Logic lưu dữ liệu tương tự ContactListPage
+  confirmDelete(user: IUserAccount) {
+    this.showDeleteConfirm = false;
+    this.userStore.removeUser(user._id!);
+    this.applyFilters();
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirm = false;
+  }
+
+  // Xử lý lưu (cả thêm mới và cập nhật)
   onSaveUser(userData: any) {
+    const payload: UserRequest = {
+      name: userData.name,
+      email: userData.email,
+      role: userData.role
+    };
+
     if (this.formMode === 'add') {
-      // Tạo object user mới
-      const newUser: IUserAccount = {
-        ...userData,
-        id: Date.now(), // ID tạm thời
-        // Xử lý định dạng ngày tháng nếu từ DatePicker gửi về là object Date
-        createdAt: userData.createdAt instanceof Date 
-          ? userData.createdAt.toLocaleDateString('vi-VN') 
-          : userData.createdAt
-      };
-      this.allUsers.unshift(newUser);
+      this.userService.register(payload).subscribe({
+        next: (res: any) => {
+          const user = res.data;
+
+          const newUser: IUserAccount = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: payload.role,
+            status: 'Chờ xác thực',
+          };
+
+          this.userStore.addUser(newUser);
+
+          this.toastService.success(
+            res.message || 'Người dùng mới đã được tạo thành công!'
+          );
+
+          this.applyFilters();
+          this.closeFormDialog();
+        },
+        error: (err) => {
+          console.error('Error creating user:', err);
+          this.toastService.error(err?.message || 'Có lỗi xảy ra khi tạo người dùng.');
+        }
+      });
+      return; // dừng lại, không chạy tiếp xuống dưới
+
     } else if (this.formMode === 'edit' && this.selectedUser) {
-      // Cập nhật user hiện tại và giữ nguyên ID
       const updatedUser: IUserAccount = {
-        ...userData,
-        id: this.selectedUser.id,
-        createdAt: userData.createdAt instanceof Date 
-          ? userData.createdAt.toLocaleDateString('vi-VN') 
-          : userData.createdAt
+        ...this.selectedUser,
+        ...payload,
+        _id: this.selectedUser._id,
       };
-      this.allUsers = this.allUsers.map(u => u.id === updatedUser.id ? updatedUser : u);
+      this.userStore.updateUser(updatedUser);
     }
 
-    this.filteredUsers = [...this.allUsers];
-    // Nếu đang có search query, chạy lại search để lọc đúng
-    if (this.searchQuery) {
-      this.onSearch();
-    } else {
-      this.updatePage();
-    }
-    
+    // Chỉ chạy đến đây nếu là edit
+    this.applyFilters();
     this.closeFormDialog();
   }
 
   closeFormDialog() {
     this.showFormDialog = false;
     this.selectedUser = null;
+  }
+
+  applyFilters() {
+    let result = [...this.allUsers];
+
+    // SEARCH
+    if (this.searchQuery.trim()) {
+      const q = this.searchQuery.toLowerCase();
+
+      result = result.filter(user =>
+        user.name.toLowerCase().includes(q) ||
+        user.email.toLowerCase().includes(q)
+      );
+    }
+
+    // SORT
+    switch (this.selectedSort) {
+      case 'admin':
+        result.sort((a, b) => a.role === 'Quản lý' ? -1 : 1);
+        break;
+
+      case 'staff':
+        result.sort((a, b) => a.role === 'Nhân viên' ? -1 : 1);
+        break;
+
+      case 'newest':
+        // nếu có createdAt thì sort
+        break;
+
+      case 'oldest':
+        // nếu có createdAt thì sort
+        break;
+    }
+
+    this.filteredUsers = result;
+    this.currentPage = 1;
+    this.updatePage();
   }
 }

@@ -1,8 +1,10 @@
 <header class="flex items-center justify-between pl-1 pr-8 py-2 bg-white border-b border-gray-100 shadow-sm">
   <div class="flex items-center gap-4">
     <!-- Nút Toggle Sidebar -->
-    <button class="cursor-pointer p-2 rounded-md hover:bg-gray-100 focus:outline-none">
-       <svg lucideIcon="panel-right" class="w-6 h-6 text-gray-700"></svg>
+    <button 
+    (click)="toggleSidebar.emit()"
+    class="cursor-pointer p-2 rounded-md hover:bg-gray-100 focus:outline-none">
+       <svg lucideIcon="panel-right" class="w-4 h-4 text-gray-400"></svg>
     </button>
 
     <!-- SEARCH -->

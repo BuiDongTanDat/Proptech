@@ -1,33 +1,29 @@
-<div class="flex min-h-screen  overflow-hidden relative">
+<div class="flex min-h-screen overflow-hidden relative">
   <!-- Background sọc -->
   <div
     class="absolute inset-0 z-0 pointer-events-none opacity-90"
-    style="
-      background-image: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 2px,
-        #f3f4f6 2px,
-        #f3f4f6 4px
-      );
-    "
+    style="background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, #f3f4f6 2px, #f3f4f6 4px);"
   ></div>
 
-  <!-- Overlay (chỉ hiện trên mobile khi sidebar mở) -->
+  <!-- Backdrop mobile -->
+  @if (!isLeftSidebarCollapsed() && screenWidth() < 768) {
+    <div
+      class="fixed inset-0 bg-black/30 z-30 md:hidden"
+      (click)="onToggleSidebar()"
+    ></div>
+  }
 
   <!-- Sidebar -->
   <app-admin-sidebar
     [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
     [screenWidth]="screenWidth()"
-    class="z-10"
-
+    class="z-40"
   ></app-admin-sidebar>
 
   <!-- Main Content -->
   <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 h-screen relative">
     <app-admin-header (toggleSidebar)="onToggleSidebar()"></app-admin-header>
-
-    <main class="flex-1 p-8 overflow-y-auto">
+    <main class="flex-1 px-8 py-4 overflow-y-auto">
       <router-outlet></router-outlet>
     </main>
   </div>

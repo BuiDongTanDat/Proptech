@@ -20,6 +20,7 @@ export class Dialog {
   show = input<boolean>(false);
 
   closed = output<void>();
+  closeOnBackdrop = input<boolean>(false);
 
   
   close() {

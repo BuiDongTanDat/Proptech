@@ -1,13 +1,15 @@
-@if (visible()) {
-<div class=" fixed bottom-5 right-5 z-50 flex items-start gap-3 px-4 py-3 rounded-sm shadow-lg min-w-64 max-w-sm fade-in transition duration-150"
-    [class]="config.bg">
-    <svg [lucideIcon]="config.icon" class="size-5 shrink-0"></svg>
+@if (toast.visible) {
+<div
+  class="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg min-w-64 max-w-sm fade-in transition-all duration-200"
+  [class]="config.bg"
+>
+  <svg
+    [lucideIcon]="config.icon"
+    class="size-5 shrink-0 self-center"
+  ></svg>
 
-    <div class="flex flex-col gap-0.5">
-
-        <span class="text-xs opacity-80">
-            {{ message() }}
-        </span>
-    </div>
+  <span class="text-xs leading-none flex items-center">
+    {{ toast.message }}
+  </span>
 </div>
 }

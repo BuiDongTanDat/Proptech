@@ -6,7 +6,10 @@ import { TestPage } from './pages/test-page/test-page';
 import { LoginPage } from './pages/auth/login-page/login-page';
 import { ForgotPage } from './pages/auth/forgot-page/forgot-page';
 import { AdminLayout } from './shared/layout/admin-layout/admin-layout';
+import { AuthGuard } from './core/guards/auth.guard';
 import { ResetPassword } from './pages/auth/reset-password/reset-password';
+import { NoAuthGuard } from './core/guards/no-auth.guard';
+import { TokenGuard } from './core/guards/token.guard';
 import { LandingPage } from './pages/client/landing-page/landing-page';
 import { AboutUs } from './pages/client/about-us/about-us';
 import { PropertiesPage } from './pages/client/properties-client/properties-page/properties-page';
@@ -17,10 +20,9 @@ import { AdminCompanyInfo } from './pages/admin/admin-company-info/admin-company
 import { AdminUserInfo } from './pages/admin/admin-user-info/admin-user-info';
 import { AdminSetting } from './pages/admin/admin-setting/admin-setting';
 import { AdminDashboard } from './pages/admin/admin-dashboard/admin-dashboard';
-import { PostBuilder } from './pages/admin/post-builder/post-builder';
-import { PostReview } from './pages/admin/post-builder/post-review/post-review';
 import { UnlayerDesign } from './pages/admin/unlayer-design/unlayer-design';
 import { PropertyPreview } from './pages/admin/admin-properties/property-preview/property-preview';
+import { SetupPassword } from './pages/auth/setup-password/setup-password';
 
 export const routes: Routes = [
     {
@@ -30,7 +32,7 @@ export const routes: Routes = [
             {
                 path: '',
                 component: LandingPage,
-                title: 'Protech - Nơi tìm kiếm bất động sản mơ ước của bạn',
+                title: 'AH.RPM - Nơi tìm kiếm bất động sản mơ ước của bạn',
             },
             {
                 path: 'home',
@@ -74,17 +76,26 @@ export const routes: Routes = [
             {
                 path: 'login',
                 component: LoginPage,
-                title: 'Đăng nhập - Protech',
+                title: 'Đăng nhập',
+                canActivate: [NoAuthGuard]
             },
             {
                 path: 'forgot-password',
                 component: ForgotPage,
-                title: 'Quên mật khẩu - Protech',
+                title: 'Quên mật khẩu',
+                canActivate: [NoAuthGuard]
             },
             {
                 path: 'reset-password',
                 component: ResetPassword,
-                title: 'Đặt lại mật khẩu - Protech',
+                title: 'Đặt lại mật khẩu',
+                canActivate: [TokenGuard]
+            },
+            {
+                path: 'setup-password',
+                component: SetupPassword,
+                title: 'Thiết lập mật khẩu',
+                canActivate: [TokenGuard]
             }
         ]
     },
@@ -93,6 +104,7 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminLayout,
+        canActivate: [AuthGuard],
         children: [
             {
                 path: '',

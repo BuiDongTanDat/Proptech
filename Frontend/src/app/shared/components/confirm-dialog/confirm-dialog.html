@@ -1,0 +1,38 @@
+@if (show()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/40 fade-in" (click)="closeOnBackdrop() && close()"></div>
+    <!-- Modal -->
+    <div
+      class="rounded-sm overflow-hidden relative z-40 w-full max-w-lg bg-white shadow-2xl flex flex-col max-h-[80vh] scale-in"
+    >
+      <!-- Header -->
+      <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shrink-0">
+        <div class="relative flex items-center justify-start p-4">
+          <div class="flex items-center gap-2">
+            @if (icon()) {
+              <svg [lucideIcon]="icon()" class="size-6 text-red-600 shrink-0"></svg>
+            }
+            <h3 class="text-base font-bold text-gray-900 text-center">
+              {{ title() }}
+            </h3>
+          </div>
+
+          <div class="absolute right-3 top-1/2 -translate-y-1/2">
+            <app-button type="button" variant="ghost" size="icon" (btnClick)="close()">
+              <svg [lucideIcon]="'x'" class="size-4"></svg>
+            </app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-y-auto p-4 text-sm ">
+        @if (description()) {
+          <p class="text-sm text-gray-500 leading-relaxed" [innerHTML]="description()"></p>
+        }
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+}

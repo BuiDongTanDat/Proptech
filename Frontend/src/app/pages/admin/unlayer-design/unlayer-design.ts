@@ -1,8 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EmailEditorComponent, EmailEditorModule } from 'angular-email-editor';
 import { Button } from '../../../shared/components/ui/button/button';
 import { LucideDynamicIcon } from '@lucide/angular';
+import { propertiesList } from '../../../shared/utils/data.mock';
 
 @Component({
   selector: 'app-unlayer-design',
@@ -10,12 +11,16 @@ import { LucideDynamicIcon } from '@lucide/angular';
   templateUrl: './unlayer-design.html',
   styleUrl: './unlayer-design.css',
 })
-export class UnlayerDesign {
+export class UnlayerDesign implements OnInit {
 
   @ViewChild(EmailEditorComponent)
   private emailEditor!: EmailEditorComponent;
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
+
 
   editorOptions = {
     projectId: 123456, //  Unlayer project ID
@@ -26,8 +31,18 @@ export class UnlayerDesign {
 
   loading = false;
   editorReady = false;
+  selectedProperty: any = null;
 
+  ngOnInit() {
+    const propertyId = Number(this.route.snapshot.paramMap.get('id'));
+    this.selectedProperty = propertiesList.find(p => p.id === propertyId);
+  }
   editorLoaded() {
+    this.editorReady = true;
+    if (this.selectedProperty?.jsonSource) {
+      this.emailEditor.editor.loadDesign(this.selectedProperty.jsonSource);
+      console.log('Design loaded into editor from Edit button');
+    }
 
     this.emailEditor.editor.addEventListener(
       'design:loaded',

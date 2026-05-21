@@ -1,23 +1,25 @@
 <aside
-  class="h-screen bg-white shadow-md border-r border-gray-100 flex flex-col justify-between transition-all duration-300 ease-in-out"
-  [ngClass]="isLeftSidebarCollapsed() ? 'w-18' : 'w-64'"
+  class="h-screen bg-white shadow-md border-r border-gray-100 flex flex-col justify-between transition-all duration-300 ease-in-out fixed md:relative top-0 left-0 z-40"
+  [ngClass]="[
+    isLeftSidebarCollapsed() ? '-translate-x-full md:translate-x-0' : 'translate-x-0',
+
+    isLeftSidebarCollapsed() ? 'md:w-18 w-64' : 'w-64',
+  ]"
 >
   <!-- Dùng div bọc nội dung cố định chiều rộng để không bị vỡ chữ khi đang transition -->
-  <div class="w-full">
+  <div class="flex-1 overflow-y-auto">
     <!-- Logo Section -->
     <div
       class="px-4 py-4 flex items-center"
       [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
     >
-      <!-- Logo Icon -->
-      <div class="size-10 shrink-0 overflow-hidden rounded-sm">
-        <img src="Protech_icon.png" alt="PROPTECH Logo" class="w-full h-full object-cover" />
-      </div>
+      <!-- Hình chữ nhật bên trái -->
+      <div class="w-1.5 h-10 bg-primary"></div>
 
       <!-- Full title -->
       @if (!isLeftSidebarCollapsed()) {
         <div class="flex flex-col slide-in-left transition duration-250">
-          <span class="text-xl font-bold tracking-tight text-primary"> PROPTECH </span>
+          <span class="text-xl font-bold tracking-tight text-primary"> AH.RPM </span>
 
           <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">
             Management
@@ -25,7 +27,6 @@
         </div>
       }
     </div>
-
 
     <!-- Navigation -->
     <nav class="flex flex-col gap-1 mt-4">
@@ -76,7 +77,7 @@
       }
     </nav>
   </div>
-
+<hr class="my-1 border-gray-200 mx-3" />
   <div>
     <nav class="flex flex-col gap-1">
       @for (item of bottomNavItems; track item.route) {
@@ -119,10 +120,10 @@
             </div>
           }
 
-           <!-- Thanh xanh bên phải -->
-  <span
-    class="absolute right-0 top-0 h-full w-1 bg-primary opacity-0 transition-all group-hover:opacity-100"
-  ></span>
+          <!-- Thanh xanh bên phải -->
+          <span
+            class="absolute right-0 top-0 h-full w-1 bg-primary opacity-0 transition-all group-hover:opacity-100"
+          ></span>
         </a>
       }
     </nav>
@@ -164,11 +165,36 @@
             </div>
           </div>
         }
-         <!-- Thanh xanh bên phải -->
-  <span
-    class="absolute right-0 top-0 h-full w-1 bg-red-500 opacity-0 transition-all group-hover:opacity-100"
-  ></span>
+        <!-- Thanh xanh bên phải -->
+        <span
+          class="absolute right-0 top-0 h-full w-1 bg-red-500 opacity-0 transition-all group-hover:opacity-100"
+        ></span>
       </button>
     </div>
   </div>
 </aside>
+<!-- Sign Out Dialog -->
+  <app-confirm-dialog
+    [show]="showSignOutDialog"
+    title="Xác nhận đăng xuất"
+    icon="triangle-alert"
+    (closed)="cancelSignOut()"
+    [closeOnBackdrop]="false"
+  >
+    <div class="flex flex-col gap-4 ">
+      <p class="text-sm text-gray-500">
+        Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?
+      </p>
+      <div class="flex justify-end gap-2">
+        <app-button variant="outline" (btnClick)="cancelSignOut()">
+          Hủy
+        </app-button>
+        <app-button variant="destructive" (btnClick)="confirmSignOut()">
+          <svg lucideIcon="log-out" class="size-4 mr-1"></svg>
+          Đăng xuất
+        </app-button>
+      </div>
+    </div>
+  </app-confirm-dialog>
+  
+

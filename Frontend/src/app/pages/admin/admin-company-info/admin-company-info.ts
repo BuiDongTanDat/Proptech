@@ -22,14 +22,14 @@ export class AdminCompanyInfo {
   isEditing = false;
 
   company = {
-    companyName: 'Tan Realty',
-    email: 'contact@tanrealty.vn',
-    phone: '0901234567',
-    website: 'https://tanrealty.vn',
-    address: '123 Nguyễn Huệ, Quận 1, TP.HCM',
-    taxCode: '0312345678',
+    companyName: 'Ann Home',
+    email: 'hello@annhome.vn',
+    phone: '0896.68.66.68',
+    website: 'https://www.annhome.vn/',
+    address: '122 Nguyễn Hoàng, Phường Bình Trưng, Thành phố Hồ Chí Minh',
+    taxCode: '0313944599 ',
     description:
-      'Tan Realty chuyên tư vấn, môi giới và phân phối các dự án bất động sản cao cấp.',
+      'Ann Home chuyên tư vấn, môi giới và phân phối các dự án bất động sản cao cấp.',
   };
 
   tempCompany = { ...this.company };

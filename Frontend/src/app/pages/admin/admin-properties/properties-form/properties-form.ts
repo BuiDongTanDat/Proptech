@@ -1,6 +1,6 @@
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { IProperty } from '../../../../types/type';
+import { IProperty } from '../../../../core/models/model';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';

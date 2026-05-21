@@ -1,94 +1,103 @@
 <!-- Background with overlay -->
-<div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat "
-  style="background-image: url('bg_purple.jpg')"></div>
-<div class="absolute inset-0 z-1 bg-cover bg-center bg-no-repeat opacity-50"
-  style="background-image: url('bg_card.png')"></div>
+<div
+  class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+  style="background-image: url('bg_purple.jpg')"
+></div>
+<div
+  class="absolute inset-0 z-1 bg-cover bg-center bg-no-repeat opacity-50"
+  style="background-image: url('bg_card.png')"
+></div>
 <div class="p-5 flex flex-col gap-6 min-h-screen justify-center items-center relative z-10">
   <!-- Card -->
   <div
-    class="fade-in transition duration-200 overflow-hidden border border-gray-100 rounded-sm w-full max-w-2xl shadow-2xl bg-card">
+    class="fade-in transition duration-200 overflow-hidden border border-gray-100 rounded-sm w-full max-w-2xl shadow-2xl bg-card"
+  >
     <div class="grid p-0 md:grid-cols-2">
+      <!-- Form -->
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+        class="p-6 md:p-8 gap-4 flex flex-col bg-white"
+      >
+        <!-- Header -->
+        <div class="flex flex-col items-center text-center gap-0">
+          <a href="/" class="mx-auto block w-fit text-center font-bold text-primary"> AH.RPM </a>
+          <h1 class="text-2xl font-semibold">Đăng nhập</h1>
+          <div class="text-sm text-slate-400">Đăng nhập để truy cập hệ thống</div>
+        </div>
 
-     <!-- Form -->
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="p-6 md:p-8 gap-4 flex flex-col bg-white ">
+        <!-- Email Field -->
+        <div class="space-y-1">
+          <div>
+            <label class="text-sm font-medium text-foreground">Email</label>
+            <app-custom-input
+              variant="outline"
+              icon="mail"
+              placeholder="email@example.com"
+              formControlName="email"
+            >
+            </app-custom-input>
+          </div>
+          @if (submitted && f['email'].errors) {
+            <p class="text-xs text-red-500">* Email không hợp lệ</p>
+          }
+        </div>
 
-  <!-- Header -->
-  <div class="flex flex-col items-center text-center gap-0">
-    <a href="/" class="mx-auto block w-fit text-center font-bold text-primary">
-      PROPTECH
-    </a>
-    <h1 class="text-2xl font-semibold">Đăng nhập</h1>
-    <div class="text-sm text-slate-400">Đăng nhập để truy cập hệ thống</div>
-  </div>
+        <!-- Password Field -->
 
-  <!-- Email Field -->
-  <div class="space-y-2">
-    <label class="text-sm font-medium text-foreground">Email</label>
-    <app-custom-input 
-      variant="outline" 
-      icon="mail" 
-      placeholder="email@example.com"
-      formControlName="email">
-    </app-custom-input>
-    @if (submitted && f['email'].errors) {
-      <p class="text-xs text-red-500">* Email không hợp lệ</p>
-    }
-  </div>
+        <div class="space-y-1">
+          <label class="text-sm font-medium text-foreground" for="password">Mật khẩu</label>
+          <div class="relative">
+            <!-- Input dùng custom component -->
+            <app-custom-input
+              [type]="showPassword ? 'text' : 'password'"
+              icon="lock"
+              variant="outline"
+              placeholder="Mật khẩu"
+              formControlName="password"
+            >
+            </app-custom-input>
 
-  <!-- Password Field -->
+            <!-- Nút toggle sử dụng app-button mới sửa -->
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex items-center">
+              <app-button
+                type="button"
+                variant="icon"
+                className="p-1 text-primary"
+                [endIcon]="showPassword ? 'eye' : 'eye-closed'"
+                (btnClick)="onTogglePasswordVisibility()"
+              >
+                <!-- <svg [lucideIcon]="showPassword ? 'eye-off' : 'eye'" class="size-4"></svg> -->
+              </app-button>
+            </div>
+          </div>
+          @if (submitted && f['password'].errors) {
+            <p class="text-xs text-red-500">* Mật khẩu không hợp lệ</p>
+          }
+        </div>
 
-<div class="space-y-2">
-  <label class="text-sm font-medium text-foreground" for="password">Mật khẩu</label>
-  <div class="relative">
-    
-    <!-- Input dùng custom component -->
-    <app-custom-input 
-      [type]="showPassword ? 'text' : 'password'" 
-      icon="lock"
-      variant="outline" 
-      placeholder="Mật khẩu"
-      formControlName="password">
-    </app-custom-input>
-    @if (submitted && f['password'].errors) {
-      <p class="text-xs text-red-500">* Mật khẩu không hợp lệ</p>
-    }
+        <!-- Forgot Password -->
+        <div class="flex justify-end">
+          <a
+            routerLink="/auth/forgot-password"
+            class="text-sm text-primary hover:text-primary/80 transition-colors underline"
+          >
+            Quên mật khẩu?
+          </a>
+        </div>
 
-    <!-- Nút toggle sử dụng app-button mới sửa -->
-    <div class="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex items-center">
-      <app-button
-        type="button"
-        variant="icon"
-        className="p-1 text-primary" 
-        [endIcon]="showPassword ? 'eye' : 'eye-closed'"
-        (btnClick)="onTogglePasswordVisibility()">
-        <!-- <svg [lucideIcon]="showPassword ? 'eye-off' : 'eye'" class="size-4"></svg> -->
-      </app-button>
-    </div>
-
-  </div>
-</div>
-
-  <!-- Forgot Password -->
-  <div class="flex justify-end">
-    <a routerLink="/auth/forgot-password"
-      class="text-sm text-primary hover:text-primary/80 transition-colors underline">
-      Quên mật khẩu?
-    </a>
-  </div>
-
-  <!-- Submit Button -->
-  <app-button type="submit" className="w-full">
-    ĐĂNG NHẬP
-  </app-button>
-
-</form>
+        <!-- Submit Button -->
+        <app-button type="submit" className="w-full"> ĐĂNG NHẬP </app-button>
+      </form>
 
       <!-- Right side image (hidden on mobile) -->
       <div class="bg-white relative hidden md:block">
-        <img src="login.png" alt="Image"
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover w-full h-auto" />
+        <img
+          src="login.png"
+          alt="Image"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover w-full h-auto"
+        />
       </div>
-
     </div>
   </div>
 
@@ -97,6 +106,6 @@
     Bằng cách nhấn tiếp tục, bạn đồng ý với
     <a class="cursor-pointer underline underline-offset-4">Điều khoản dịch vụ</a>
     và
-    <a class="cursor-pointer underline underline-offset-4 ">Chính sách bảo mật</a>.
+    <a class="cursor-pointer underline underline-offset-4">Chính sách bảo mật</a>.
   </div>
 </div>

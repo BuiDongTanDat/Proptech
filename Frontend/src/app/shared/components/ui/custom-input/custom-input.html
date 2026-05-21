@@ -1,8 +1,4 @@
-<div
-  class="relative"
-  [ngClass]="className"
->
-
+<div class="relative" [ngClass]="className">
   <!-- ICON -->
   @if (icon) {
     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -17,12 +13,7 @@
     [placeholder]="placeholder"
     [disabled]="disabled"
     (input)="onInput($event)"
-    class="rounded-sm w-full text-sm py-2 outline-none transition text-gray-600 placeholder-gray-300 "
-    [ngClass]="[
-      variantClasses,
-      disabledClasses,
-      icon ? 'pl-9 pr-3' : 'px-3'
-    ]"
+    class="rounded-sm w-full py-2 outline-none transition placeholder-gray-300 text-xs"
+    [ngClass]="[variantClasses, disabledClasses, icon ? 'pl-9 pr-3' : 'px-3']"
   />
-
 </div>

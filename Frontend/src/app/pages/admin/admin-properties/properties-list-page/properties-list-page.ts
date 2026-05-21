@@ -10,7 +10,7 @@ import { LucideDynamicIcon } from '@lucide/angular';
 import { PropertiesForm } from '../properties-form/properties-form';
 import { Dialog } from '../../../../shared/components/dialog/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IProperty } from '../../../../types/type';
+import { IProperty } from '../../../../core/models/model';
 import { propertiesList } from '../../../../shared/utils/data.mock';
 
 

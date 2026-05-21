@@ -1,5 +1,5 @@
 
-import { Component, Input, Output, EventEmitter, OnInit, input, output, signal, effect } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, input, output, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
@@ -7,7 +7,9 @@ import { Button } from '../../../../shared/components/ui/button/button';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { Dropdown } from "../../../../shared/components/dropdown/dropdown";
 import { CustomDatePicker } from '../../../../shared/components/custom-date-picker/custom-date-picker';
-import { IUserAccount } from '../../../../types/type';
+import { USER_ROLE_OPTIONS, USER_STATUS_OPTIONS } from '../../../../core/constants/user.constants';
+import { UserService } from '../../../../core/services/user/user.service';
+import { ToastService } from '../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-users-form',
@@ -19,12 +21,18 @@ import { IUserAccount } from '../../../../types/type';
     Button,
     LucideDynamicIcon,
     Dropdown,
-    CustomDatePicker
+    CustomDatePicker,
   ],
   templateUrl: './users-form.html',
   styleUrl: './users-form.css',
 })
 export class UsersForm {
+  readonly roleOptions = USER_ROLE_OPTIONS;
+  readonly statusOptions = USER_STATUS_OPTIONS;
+
+  private userService = inject(UserService);
+  private toastService = inject(ToastService);
+
   userModal = input<any>();
   mode = input<'view' | 'edit' | 'add'>('view');
   close = output<void>();
@@ -35,24 +43,12 @@ export class UsersForm {
   submitted: boolean = false;
 
   userForm = new FormGroup({
-    fullName: new FormControl('', Validators.required),
+    name: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
-    phone: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
-    role: new FormControl('staff', Validators.required),
-    avatar: new FormControl(''),
-    status: new FormControl('active', Validators.required),
-    createdAt: new FormControl(new Date(), Validators.required),
+    role: new FormControl('Nhân viên', Validators.required),
+    status: new FormControl('Chờ xác thực', Validators.required),
   });
 
-  roleOptions = [
-    { label: 'Admin', value: 'admin', },
-    { label: 'Staff', value: 'staff', },
-  ];
-
-  statusOptions = [
-    { label: 'Nhân viên', value: 'active', },
-    { label: 'Quản trị viên', value: 'inactive', },
-  ];
 
   get f() {
     return this.userForm.controls;
@@ -69,7 +65,7 @@ export class UsersForm {
       if (userModal) {
         this.userForm.patchValue(userModal);
       } else {
-        this.userForm.reset({ role: 'staff', status: 'active', createdAt: new Date() });
+        this.userForm.reset({ role: 'Nhân viên', status: 'Ngừng hoạt động' });
       }
 
       if (mode === 'view') {
@@ -118,6 +114,24 @@ export class UsersForm {
 
   onClose() {
     this.close.emit();
+  }
+
+  onResendPassword() {
+    const user = this.userModal();
+    if (!user) return;
+
+    // Gọi API resend password
+     this.userService.resend(user._id!).subscribe({
+      next: (res: any) => {
+        this.toastService.success(res?.message || 'Email xác thực đã được gửi lại thành công!');
+      },
+      error: (err) => {
+        console.error('Error resending password:', err);
+        alert(err?.message || 'Có lỗi xảy ra khi gửi lại email xác thực.');
+      }
+    });
+
+    console.log('Resend password for:', user.email);
   }
 
 

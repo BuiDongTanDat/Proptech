@@ -9,7 +9,7 @@ import { CustomInput } from '../../../../shared/components/ui/custom-input/custo
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 import { ContactForm } from '../contact-form/contact-form';
 import { Dialog } from '../../../../shared/components/dialog/dialog';
-import { IContactForm } from '../../../../types/type';
+import { IContactForm } from '../../../../core/models/model';
 import { contactFormsList } from '../../../../shared/utils/data.mock';
 
 @Component({
@@ -102,13 +102,13 @@ export class ContactListPage implements OnInit {
 
       case 'new':
         this.filteredForms.sort((a, b) =>
-          a.status === 'new' ? -1 : 1
+          a.status === 'Mới' ? -1 : 1
         );
         break;
 
       case 'contacted':
         this.filteredForms.sort((a, b) =>
-          a.status === 'contacted' ? -1 : 1
+          a.status === 'Đang xử lý' ? -1 : 1
         );
         break;
 

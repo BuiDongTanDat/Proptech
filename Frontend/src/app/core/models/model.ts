@@ -1,3 +1,5 @@
+import { AccountStatus, ContactStatus, UserRole } from "../enum/enums";
+
 export interface IProperty {
     id?: number;
     title: string;
@@ -15,14 +17,11 @@ export interface IProperty {
 }
 
 export interface IUserAccount {
-    id?: number;
-    fullName: string;
+    _id?: string;
+    name: string;
     email: string;
-    phone: string;
-    role: 'admin' | 'staff';
-    avatar?: string;
-    status: 'active' | 'inactive';
-    createdAt: string;
+    role: UserRole;
+    status?: AccountStatus;
 }
 
 export interface IContactForm {
@@ -32,6 +31,6 @@ export interface IContactForm {
   phone: string;
   message: string;
   createdAt: string;
-  status: 'new' | 'contacted' | 'closed';
+  status: ContactStatus;
 }
 

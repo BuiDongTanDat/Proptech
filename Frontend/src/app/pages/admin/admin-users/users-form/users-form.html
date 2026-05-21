@@ -1,4 +1,4 @@
-<div class="flex flex-col max-h-[80vh] w-full text-sm">
+<div class="flex flex-col max-h-[80vh]  w-full text-sm">
   <!-- HEADER -->
   <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shrink-0">
     <div class="relative flex items-center justify-center p-4">
@@ -20,141 +20,103 @@
     </div>
   </div>
 
+  <!-- FORM -->
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 min-h-0">
-    <div class="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-      <!-- AVATAR SECTION -->
-      <div class="flex flex-col items-center gap-3 mb-2">
-        <div class="relative group">
-          @if (userForm.get('avatar')?.value) {
-            <img
-              [src]="userForm.get('avatar')?.value"
-              alt="avatar"
-              class="size-24 rounded-full object-cover border-2 border-primary/10 shadow-md"
-            />
-          } @else {
-            <div
-              class="size-24 rounded-full bg-primary text-white flex items-center justify-center text-3xl font-bold uppercase border-2 border-primary/10"
-            >
-              {{ userForm.get('fullName')?.value?.charAt(0) || '?' }}
-            </div>
-          }
-        </div>
-
-        @if (currentMode() !== 'view') {
-          <div class="w-full">
-            <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"
-              >Link ảnh đại diện</label
-            >
-            <app-custom-input
-              formControlName="avatar"
-              placeholder="https://..."
-              variant="outline"
-            ></app-custom-input>
-          </div>
-        }
-      </div>
-
+    <div class="flex-1 px-5 py-4 space-y-4 overflow-y-auto">
       <!-- FULL NAME -->
       <div>
-        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">Họ tên</label>
-        @if (currentMode() === 'view') {
-          <div class="border border-gray-200 rounded-sm px-3 py-2 bg-gray-50">
-            {{ userModal()?.fullName }}
-          </div>
-        } @else {
-          <app-custom-input
-            formControlName="fullName"
-            placeholder="Nhập họ tên"
-            variant="outline"
-          ></app-custom-input>
-          @if (submitted && f.fullName.errors) {
-            <p class="text-[11px] text-red-500 mt-1">* Họ tên là bắt buộc</p>
-          }
+        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"> Họ tên </label>
+
+        <app-custom-input
+          formControlName="name"
+          placeholder="Nhập họ tên"
+          variant="outline"
+        ></app-custom-input>
+
+        @if (submitted && f.name.errors && currentMode() !== 'view') {
+          <p class="text-[11px] text-red-500 mt-1">* Họ tên là bắt buộc</p>
         }
       </div>
 
       <!-- EMAIL -->
       <div>
-        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">Email</label>
-        @if (currentMode() === 'view') {
-          <div class="border border-gray-200 rounded-sm px-3 py-2 bg-gray-50 italic">
-            {{ userModal()?.email }}
-          </div>
-        } @else {
-          <app-custom-input
-            formControlName="email"
-            placeholder="email@vi-du.com"
-            variant="outline"
-            type="email"
-          ></app-custom-input>
-          @if (submitted && f.email.errors) {
-            <p class="text-[11px] text-red-500 mt-1">* Email không hợp lệ</p>
-          }
+        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"> Email </label>
+
+        <app-custom-input
+          formControlName="email"
+          placeholder="email@vi-du.com"
+          variant="outline"
+          type="email"
+        ></app-custom-input>
+
+        @if (submitted && f.email.errors && currentMode() !== 'view') {
+          <p class="text-[11px] text-red-500 mt-1">* Email không hợp lệ</p>
         }
       </div>
 
-      <!-- PHONE -->
-      <div>
-        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"
-          >Số điện thoại</label
-        >
-        @if (currentMode() === 'view') {
-          <div class="border border-gray-200 rounded-sm px-3 py-2 bg-gray-50">
-            {{ userModal()?.phone }}
-          </div>
-        } @else {
-          <app-custom-input
-            formControlName="phone"
-            placeholder="Số điện thoại"
-            variant="outline"
-          ></app-custom-input>
-          @if (submitted && f.phone.errors) {
-            <p class="text-[11px] text-red-500 mt-1">* Số điện thoại không hợp lệ</p>
-          }
-        }
-      </div>
+  
+    <!-- ROLE & STATUS -->
+<div class="grid gap-4" [class]="currentMode() === 'add' ? 'grid-cols-1' : 'grid-cols-2'">
+  
+  <!-- ROLE -->
+  <div>
+    <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
+      Vai trò
+    </label>
 
-      <!-- ROLE & STATUS TRÊN CÙNG 1 DÒNG ĐỂ TIẾT KIỆM DIỆN TÍCH -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"
-            >Vai trò</label
-          >
-          <app-dropdown
-            formControlName="role"
-            [options]="roleOptions"
-            [disabled]="currentMode() === 'view'"
-            className="w-full"
-          ></app-dropdown>
+    <app-dropdown
+      formControlName="role"
+      [options]="roleOptions"
+      className="w-full"
+    ></app-dropdown>
+
+    @if (submitted && f.role.errors && currentMode() !== 'view') {
+      <p class="text-[11px] text-red-500 mt-1">* Vui lòng chọn vai trò</p>
+    }
+  </div>
+
+  <!-- STATUS: chỉ hiện khi view hoặc edit -->
+  @if (currentMode() !== 'add') {
+    <div>
+      <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
+        Trạng thái
+      </label>
+
+      <div class="flex items-center gap-2">
+        <div class="text-xs flex-1 flex items-center gap-2 px-3 py-2 border border-gray-200 bg-gray-50 rounded-sm">
+          <div
+            [class]="
+              f.status.value === 'Kích hoạt' ? 'bg-green-500' :
+              f.status.value === 'Chờ xác thực' ? 'bg-yellow-400' : 'bg-red-500'
+            "
+            class="size-2 rounded-full shrink-0"
+          ></div>
+          <span
+            class="text-xs"
+            [class]="
+              f.status.value === 'Kích hoạt' ? 'text-green-500' :
+              f.status.value === 'Chờ xác thực' ? 'text-yellow-400' : 'text-red-500'
+            "
+          >{{ f.status.value }}</span>
         </div>
-        <div>
-          <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"
-            >Trạng thái</label
-          >
-          <app-dropdown
-            formControlName="status"
-            [options]="statusOptions"
-            [disabled]="currentMode() === 'view'"
-            className="w-full"
-          ></app-dropdown>
-        </div>
-      </div>
 
-      <!-- CREATED DATE -->
-      <div>
-        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">Ngày tạo</label>
-        @if (currentMode() === 'view') {
-          <div class="border border-gray-200 rounded-sm px-3 py-2 bg-gray-50">
-            {{ userModal()?.createdAt | date: 'dd/MM/yyyy' }}
-          </div>
-        } @else {
-          <app-custom-date-picker
-            formControlName="createdAt"
-            placeholder="Chọn ngày tạo"
-            
-          ></app-custom-date-picker>
+        @if (f.status.value === 'Chờ xác thực') {
+          <app-button
+            type="button"
+            variant="accent"
+            title="Gửi lại mật khẩu"
+            (btnClick)="onResendPassword()"
+          >
+            Gửi lại email
+            <svg lucideIcon="send" class="size-4"></svg>
+
+          </app-button>
         }
       </div>
+    </div>
+  }
+
+</div>
     </div>
 
     <!-- FOOTER -->
@@ -162,17 +124,22 @@
       <div class="flex justify-end gap-2">
         @if (currentMode() === 'view') {
           <app-button type="button" variant="destructive" (btnClick)="onDelete()">
-            <svg lucideIcon="trash-2" class="size-4"></svg> Xóa
+            <svg lucideIcon="trash-2" class="size-4"></svg>
+            Xóa
           </app-button>
+
           <app-button type="button" className="bg-primary text-white" (btnClick)="onEdit()">
-            <svg lucideIcon="pencil" class="size-4"></svg> Chỉnh sửa
+            <svg lucideIcon="pencil" class="size-4"></svg>
+            Chỉnh sửa
           </app-button>
         } @else {
           <app-button type="button" variant="outline" (btnClick)="onCancel()">
             {{ currentMode() === 'edit' && userModal() ? 'Quay lại' : 'Hủy' }}
           </app-button>
+
           <app-button type="submit" className="bg-primary text-white">
-            <svg lucideIcon="save" class="size-4"></svg> Lưu
+            <svg lucideIcon="save" class="size-4"></svg>
+            Lưu
           </app-button>
         }
       </div>

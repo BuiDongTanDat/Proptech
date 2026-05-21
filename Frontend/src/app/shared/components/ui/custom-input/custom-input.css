@@ -1,0 +1,9 @@
+/* Dropdown direction helpers */
+.dropdown-down {
+	top: 100%;
+	bottom: auto;
+}
+.dropdown-up {
+	bottom: 100%;
+	top: auto;
+}

@@ -15,11 +15,20 @@ import {
 } from '@angular/forms';
 
 import { LucideDynamicIcon } from '@lucide/angular';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { PortalModule } from '@angular/cdk/portal';
+
 
 @Component({
   selector: 'app-dropdown',
   standalone: true,
-  imports: [CommonModule, LucideDynamicIcon, FormsModule],
+  imports: [
+    CommonModule, 
+    LucideDynamicIcon, 
+    FormsModule,
+    OverlayModule,
+    PortalModule
+  ],
   templateUrl: './dropdown.html',
   styleUrl: './dropdown.css',
 

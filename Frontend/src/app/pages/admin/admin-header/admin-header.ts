@@ -1,4 +1,4 @@
-import { Component, computed, signal, HostListener, ElementRef, inject } from '@angular/core';
+import { Component, computed, signal, HostListener, ElementRef, inject, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // Quan trọng: Phải có cái này để dùng ngModel
 import { LucideDynamicIcon } from '@lucide/angular';
@@ -21,6 +21,8 @@ export class AdminHeader {
   private router = inject(Router);
   private eRef = inject(ElementRef); // Dùng để kiểm tra click outside
 
+  toggleSidebar = output<void>();
+  
   search = signal('');
   showResults = signal(false); // Signal quản lý ẩn hiện kết quả
 
@@ -63,4 +65,5 @@ export class AdminHeader {
       this.showResults.set(false);
     }
   }
+
 }
