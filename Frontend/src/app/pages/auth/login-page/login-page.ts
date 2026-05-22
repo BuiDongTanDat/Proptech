@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { Form, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
@@ -37,7 +37,7 @@ export class LoginPage {
   });
 
   submitted = false;
-  loading = false;
+  loading = signal<boolean>(true);
 
   get f() {
     return this.loginForm.controls;
@@ -48,7 +48,7 @@ export class LoginPage {
     //console.log('Dữ liệu gửi đi:', this.loginForm.value);
     if (this.loginForm.invalid) return; // Dừng nếu form không hợp lệ
 
-    this.loading = true;
+    this.loading.set(true); // Bắt đầu loading khi gửi yêu cầu đăng nhập
     const { email, password } = this.loginForm.value;
     this.authService.login(email, password).subscribe({
       next: (response: any) => {
@@ -60,7 +60,7 @@ export class LoginPage {
       },
       error: (error) => {
         console.error('Đăng nhập thất bại:', error);
-        this.loading = false;
+        this.loading.set(true); // Kết thúc loading nếu có lỗi
         this.toastService.error(error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
       }
     });

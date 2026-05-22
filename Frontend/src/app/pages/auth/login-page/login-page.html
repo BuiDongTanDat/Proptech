@@ -87,7 +87,11 @@
         </div>
 
         <!-- Submit Button -->
-        <app-button type="submit" className="w-full"> ĐĂNG NHẬP </app-button>
+        <app-button type="submit" className="w-full"> 
+          @if (loading()) {
+            <svg lucideIcon="loader-2" class="size-4 animate-spin mr-2"></svg>
+          }
+          ĐĂNG NHẬP </app-button>
       </form>
 
       <!-- Right side image (hidden on mobile) -->
