@@ -1,260 +1,117 @@
-<div class="">
+<div class="max-w-5xl mx-auto p-4">
+  <!-- TOP BAR -->
+  <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+    <div>
+      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left">
+        Thông tin cá nhân
+      </h1>
+      <p class="text-sm text-gray-500 mt-1 slide-in-left">Quản lý hồ sơ và thông tin tài khoản</p>
+    </div>
 
-    <!-- TOP BAR -->
-    <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
-
-        <div>
- <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left ">                Thông tin cá nhân
-            </h1>
-
-            <p class="text-sm text-gray-500 mt-1 slide-in-left ">
-                Quản lý hồ sơ và thông tin tài khoản
-            </p>
-        </div>
-
-        <!-- ACTIONS -->
-
-
-        @if (!isEditing) {
-
-        <app-button variant="primary" startIcon="pencil" (btnClick)="onEdit()">
-
-            Chỉnh sửa
-
+    <div class="flex items-center gap-2">
+      @if (!isEditing()) {
+        <app-button variant="primary" (btnClick)="onEdit()">
+            <svg lucideIcon="pencil" size="14"></svg>
+          Chỉnh sửa
         </app-button>
+      } @else {
+        <app-button variant="outline" (btnClick)="onCancel()">Hủy</app-button>
+        <app-button variant="primary" (btnClick)="onSave()">
+            <svg lucideIcon="save" size="14"></svg>
+            Lưu thay đổi</app-button>
+      }
+    </div>
+  </div>
 
-        } @else {
+  <!-- PROFILE CARD -->
+  <div class="fade-in overflow-hidden border border-gray-200 bg-white shadow-sm rounded-lg">
+    <!-- COVER -->
+    <div class="relative h-48 overflow-hidden border-b border-gray-100 bg-primary/90">
+      <div
+        class="absolute inset-0 opacity-30 bg-cover bg-center"
+        style="background-image: url('bg_card.png')"
+      ></div>
 
-        <div class="flex items-center gap-2">
+      <div class="relative z-10 h-full flex items-end px-8 pb-6">
+        <div class="flex items-end gap-6 flex-wrap">
+          <!-- AVATAR: Sử dụng currentUser() để tránh cập nhật tức thời khi đang gõ -->
+          <div class="relative group">
+            <div
+              class="size-28 rounded-full bg-primary text-white flex items-center justify-center text-3xl font-bold border-4 border-white shadow-lg shrink-0"
+            >
+              {{ currentUser().name | customName }}
+            </div>
+            
+            @if (isEditing()) {
+              <app-button
+                variant="outline"
+                size="icon"
+                className="absolute bottom-0 right-0 bg-white shadow-md rounded-full!"
+              >
+                <svg lucideIcon="camera" size="14"></svg>
+              </app-button>
+            }
+          </div>
 
-            <app-button variant="outline" (btnClick)="onCancel()">
-
-                Hủy
-
-            </app-button>
-
-            <app-button variant="primary" startIcon="save" (btnClick)="onSave()">
-
-                Lưu thay đổi
-
-            </app-button>
-
+          <div class="pb-2">
+            <h2 class="text-2xl font-bold text-white tracking-tight">{{ currentUser().name }}</h2>
+            <p class="text-sm text-white/90">{{ currentUser().email }}</p>
+          </div>
         </div>
-
-        }
-
-
-
-
-
-
+      </div>
     </div>
 
-    <!-- PROFILE CARD -->
-    <div class="fade-in overflow-hidden border border-gray-200 bg-white shadow-sm">
+    <!-- BODY FORM -->
+    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- NAME -->
+      <div class="space-y-2">
+        <label for="userName" class="text-sm font-semibold text-gray-700">Họ và tên</label>
+        <app-custom-input
+          id="userName"
+          [ngModel]="tempUser().name"
+          (ngModelChange)="updateTempUser('name', $event)"
+          [disabled]="!isEditing()"
+          [class.bg-gray-50]="!isEditing()"
+          variant="outline"
+          placeholder="Nhập họ và tên"
+        ></app-custom-input>
+      </div>
 
-        <!-- COVER -->
-        <div class="relative h-52 overflow-hidden border-b border-gray-100">
+      <!-- EMAIL -->
+      <div class="space-y-2">
+        <label for="userEmail" class="text-sm font-semibold text-gray-700">Email</label>
+        <app-custom-input
+          id="userEmail"
+          [ngModel]="tempUser().email"
+          (ngModelChange)="updateTempUser('email', $event)"
+          [disabled]="!isEditing()"
+          [class.bg-gray-50]="!isEditing()"
+          variant="outline"
+          placeholder="Nhập email"
+        ></app-custom-input>
+      </div>
 
-            <div class="absolute inset-0 z-0 bg-primary/90 bg-center bg-no-repeat "></div>
-            <div class="absolute inset-0 z-1 bg-cover bg-center bg-no-repeat opacity-50"
-                style="background-image: url('bg_card.png')"></div>
-
-
-
-            <!-- Content -->
-            <div class="relative z-10 h-full flex items-end px-8 pb-8">
-
-                <div class="flex items-end gap-6 flex-wrap">
-
-                    <!-- AVATAR WRAPPER -->
-                    <div class="relative group">
-
-                        <!-- AVATAR -->
-                        <div
-                            class="size-32 rounded-full bg-primary text-white flex items-center justify-center text-4xl font-bold uppercase border-4 border-white shadow-xl shrink-0">
-
-                            {{ initials }}
-
-                        </div>
-
-                        <!-- CAMERA BUTTON -->
-                        <app-button variant="outline" size="icon" className="
-            absolute bottom-1 right-1
-            bg-white backdrop-blur
-            shadow-md rounded-full group/button
-        ">
-
-                            <svg lucideIcon="camera" size="16" class="transition-bounce"></svg>
-
-                        </app-button>
-
-                    </div>
-
-                    <!-- INFO -->
-                    <div class="pb-2">
-
-                        <h2 class="text-3xl font-bold text-white tracking-tight">
-                            {{ user.fullName }}
-                        </h2>
-
-                        <p class="text-sm text-white mt-2">
-                            {{ user.email }}
-                        </p>
-
-                        <div class="flex items-center gap-3 mt-4 flex-wrap">
-
-                            <!-- ROLE -->
-                            <span [class]="
-                  user.role === 'admin'
-                    ? 'bg-orange-100 text-orange-600'
-                    : 'bg-blue-100 text-blue-600'
-                " class="inline-flex items-center justify-center min-w-24 px-3 py-1 text-xs uppercase font-semibold">
-
-                                {{ user.role === 'admin' ? 'Admin' : 'Nhân viên' }}
-
-                            </span>
-
-                            <!-- STATUS -->
-                            <div class="flex items-center gap-2 text-sm text-white">
-
-                                <div class="size-2 rounded-full bg-green-500"></div>
-
-                                Đang hoạt động
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+      <!-- ROLE -->
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">Vai trò</label>
+        <div class="flex items-center h-10">
+          <span
+            [class]="currentUser().role === 'Quản lý' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'"
+            class="px-3 py-1 text-xs uppercase font-bold rounded"
+          >
+            {{ currentUser().role }}
+          </span>
         </div>
+      </div>
 
-        <!-- BODY -->
-        <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <!-- FULL NAME -->
-            <div>
-
-                <label class="block text-sm font-medium mb-2">
-                    Họ và tên
-                </label>
-
-                @if (!isEditing) {
-
-                <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-                    {{ user.fullName }}
-                </div>
-
-                } @else {
-
-                <app-custom-input [(ngModel)]="tempUser.fullName" variant="outline" placeholder="Họ và tên">
-
-                </app-custom-input>
-
-                }
-
-            </div>
-
-            <!-- EMAIL -->
-            <div>
-
-                <label class="block text-sm font-medium mb-2">
-                    Email
-                </label>
-
-                @if (!isEditing) {
-
-                <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-                    {{ user.email }}
-                </div>
-
-                } @else {
-
-                <app-custom-input [(ngModel)]="tempUser.email" variant="outline" placeholder="Email">
-
-                </app-custom-input>
-
-                }
-
-            </div>
-
-            <!-- PHONE -->
-            <div>
-
-                <label class="block text-sm font-medium mb-2">
-                    Số điện thoại
-                </label>
-
-                @if (!isEditing) {
-
-                <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-                    {{ user.phone }}
-                </div>
-
-                } @else {
-
-                <app-custom-input [(ngModel)]="tempUser.phone" variant="outline" placeholder="Số điện thoại">
-
-                </app-custom-input>
-
-                }
-
-            </div>
-
-            <!-- ADDRESS -->
-            <div>
-
-                <label class="block text-sm font-medium mb-2">
-                    Địa chỉ
-                </label>
-
-                @if (!isEditing) {
-
-                <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-                    {{ user.address }}
-                </div>
-
-                } @else {
-
-                <app-custom-input [(ngModel)]="tempUser.address" variant="outline" placeholder="Địa chỉ">
-
-                </app-custom-input>
-
-                }
-
-            </div>
-
-            <!-- BIO -->
-            <div class="md:col-span-2">
-
-                <label class="block text-sm font-medium mb-2">
-                    Giới thiệu
-                </label>
-
-                @if (!isEditing) {
-
-                <div class="border border-gray-200 bg-gray-50 px-3 py-3 text-sm leading-relaxed">
-                    {{ user.bio }}
-                </div>
-
-                } @else {
-
-                <textarea [(ngModel)]="tempUser.bio" rows="5"
-                    class="w-full border border-gray-200 px-3 py-2 outline-none focus:border-primary resize-none"
-                    placeholder="Giới thiệu">
-          </textarea>
-
-                }
-
-            </div>
-
+      <!-- STATUS -->
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">Trạng thái</label>
+        <div class="flex items-center gap-2 text-sm text-green-600 font-medium h-10">
+          <span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+          Đang hoạt động
         </div>
-
+      </div>
     </div>
-
+  </div>
 </div>

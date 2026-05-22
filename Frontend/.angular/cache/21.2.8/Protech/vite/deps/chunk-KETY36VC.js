@@ -1,38 +1,49 @@
 import {
-  withHttpTransferCache
-} from "./chunk-GZ4RGNAT.js";
-import {
   CommonModule,
   PLATFORM_BROWSER_ID
-} from "./chunk-DB5DED3M.js";
+} from "./chunk-T5UBILHQ.js";
+import {
+  withHttpTransferCache
+} from "./chunk-J74NILW4.js";
 import {
   DomAdapter,
   XhrFactory,
   getDOM,
   parseCookieValue,
   setRootDomAdapter
-} from "./chunk-57HPKDM2.js";
+} from "./chunk-ZMARQYBK.js";
 import {
   APP_ID,
   ApplicationModule,
   ApplicationRef,
   CSP_NONCE,
   Console,
+  DOCUMENT,
+  ENVIRONMENT_INITIALIZER,
+  ErrorHandler,
+  INJECTOR_SCOPE,
   IS_ENABLED_BLOCKING_INITIAL_NAVIGATION,
   Inject,
   Injectable,
+  InjectionToken,
+  Injector,
   NgModule,
+  NgZone,
   Optional,
   PLATFORM_ID,
   PLATFORM_INITIALIZER,
   RendererFactory2,
   RendererStyleFlags2,
+  RuntimeError,
   SecurityContext,
   TESTABILITY,
   TESTABILITY_GETTER,
   Testability,
   TracingService,
+  Version,
   ViewEncapsulation,
+  XSS_SECURITY_URL,
+  _global,
   _sanitizeHtml,
   _sanitizeUrl,
   allLeavingAnimations,
@@ -43,7 +54,11 @@ import {
   bypassSanitizationTrustStyle,
   bypassSanitizationTrustUrl,
   createPlatformFactory,
+  formatRuntimeError,
+  forwardRef,
+  inject,
   internalCreateApplication,
+  makeEnvironmentProviders,
   platformCore,
   provideStabilityDebugging,
   setClassMetadata,
@@ -53,28 +68,11 @@ import {
   withEventReplay,
   withI18nSupport,
   withIncrementalHydration,
-  ɵɵdefineNgModule
-} from "./chunk-3T35MVF5.js";
-import {
-  DOCUMENT,
-  ENVIRONMENT_INITIALIZER,
-  ErrorHandler,
-  INJECTOR_SCOPE,
-  InjectionToken,
-  Injector,
-  NgZone,
-  RuntimeError,
-  Version,
-  XSS_SECURITY_URL,
-  _global,
-  formatRuntimeError,
-  forwardRef,
-  inject,
-  makeEnvironmentProviders,
   ɵɵdefineInjectable,
   ɵɵdefineInjector,
+  ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-6AKB5EJF.js";
+} from "./chunk-BJPSW4SK.js";
 import {
   __spreadValues
 } from "./chunk-U7EDC2PH.js";
@@ -1748,4 +1746,4 @@ export {
   provideClientHydration,
   VERSION
 };
-//# sourceMappingURL=chunk-6SIOB54J.js.map
+//# sourceMappingURL=chunk-KETY36VC.js.map

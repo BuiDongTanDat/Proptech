@@ -1,8 +1,10 @@
-import { Component, computed, signal, HostListener, ElementRef, inject, output } from '@angular/core';
+import { Component, computed, signal, HostListener, ElementRef, inject, output, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // Quan trọng: Phải có cái này để dùng ngModel
 import { LucideDynamicIcon } from '@lucide/angular';
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
+import { CustomNamePipe } from '../../../core/pipes/custom-name.pipe';
+import { AuthStore } from '../../../core/stores/auth.store';
 
 interface SearchItem {
   label: string;
@@ -13,16 +15,22 @@ interface SearchItem {
 @Component({
   selector: 'app-admin-header',
   standalone: true,
-  imports: [LucideDynamicIcon, CustomInput, FormsModule], // Thêm FormsModule
+  imports: [LucideDynamicIcon, CustomInput, FormsModule, CustomNamePipe], // Thêm FormsModule
   templateUrl: './admin-header.html',
   styleUrl: './admin-header.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:click)': 'onClickOutside($event)'
+  }
 })
 export class AdminHeader {
   private router = inject(Router);
   private eRef = inject(ElementRef); // Dùng để kiểm tra click outside
-
-  toggleSidebar = output<void>();
+  private readonly authStore = inject(AuthStore);
   
+  readonly currentUser = this.authStore.user; // Signal từ AuthStore
+  toggleSidebar = output<void>();
+
   search = signal('');
   showResults = signal(false); // Signal quản lý ẩn hiện kết quả
 
@@ -59,8 +67,8 @@ export class AdminHeader {
   }
 
   // Bắt sự kiện click toàn màn hình để đóng kết quả khi click ra ngoài
-  @HostListener('document:click', ['$event'])
-  clickout(event: any) {
+  // Xử lý click outside thay cho @HostListener
+  onClickOutside(event: MouseEvent) {
     if (!this.eRef.nativeElement.contains(event.target)) {
       this.showResults.set(false);
     }

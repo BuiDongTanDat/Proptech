@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { propertiesList } from '../../../../shared/utils/data.mock';
+import { MOCK_PROPERTIES } from '../../../../shared/utils/data.mock';
 import { Button } from '../../../../shared/components/ui/button/button';
 import { LucideDynamicIcon } from '@lucide/angular';
 
@@ -26,7 +26,7 @@ export class PropertyPreview implements OnInit, OnDestroy {
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    const property = propertiesList.find(p => p.id === id);
+    const property = MOCK_PROPERTIES.find(p => p.id === id);
 
     if (property?.htmlSource) {
       this.propertyId = id;

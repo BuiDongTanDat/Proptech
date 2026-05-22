@@ -1,22 +1,32 @@
-<button [type]="type"  (click)="onClick($event)" [disabled]="disabled" [ngClass]="
-    'rounded-sm cursor-pointer inline-flex items-center justify-center gap-2  transition ' +
-    sizeClasses + ' ' +
-    variantClasses + ' ' +
-    disabledClasses + ' ' +
+<button
+  [type]="type"
+  (click)="onClick($event)"
+  [disabled]="disabled"
+  [ngClass]="
+    'rounded-md cursor-pointer inline-flex items-center justify-center gap-2  transition ' +
+    sizeClasses +
+    ' ' +
+    variantClasses +
+    ' ' +
+    disabledClasses +
+    ' ' +
     className
-  ">
-
-    <!-- ===== ICON LEFT -Property binding ===== -->
-    @if (startIcon){
-    <svg [lucideIcon]="startIcon"></svg>
+  "
+>
+  <!-- ===== LOADING ICON ===== -->
+  @if (startIcon) {
+    @if (loading) {
+      <svg lucideIcon="loader-circle" class="animate-spin" [size]="14"></svg>
+    } @else {
+      <svg [lucideIcon]="startIcon"></svg>
     }
+  }
 
-    <!-- ===== CONTENT ===== -->
-    <ng-content></ng-content>
+  <!-- ===== CONTENT ===== -->
+  <ng-content></ng-content>
 
-    <!-- ===== ICON RIGHT  -Property binding ===== -->
-    @if (endIcon){
+  <!-- ===== ICON RIGHT  -Property binding ===== -->
+  @if (endIcon) {
     <svg [lucideIcon]="endIcon" [size]="15"></svg>
-    }
-
+  }
 </button>

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
+
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
 import { Button } from '../../../shared/components/ui/button/button';
 
@@ -19,33 +20,40 @@ import { Button } from '../../../shared/components/ui/button/button';
   styleUrl: './admin-company-info.css',
 })
 export class AdminCompanyInfo {
-  isEditing = false;
+  isEditing = signal(false);
 
-  company = {
+  company = signal({
     companyName: 'Ann Home',
     email: 'hello@annhome.vn',
     phone: '0896.68.66.68',
     website: 'https://www.annhome.vn/',
     address: '122 Nguyễn Hoàng, Phường Bình Trưng, Thành phố Hồ Chí Minh',
-    taxCode: '0313944599 ',
+    taxCode: '0313944599',
     description:
       'Ann Home chuyên tư vấn, môi giới và phân phối các dự án bất động sản cao cấp.',
-  };
+  });
 
-  tempCompany = { ...this.company };
+  tempCompany = signal({ ...this.company() });
 
   onEdit() {
-    this.isEditing = true;
-    this.tempCompany = { ...this.company };
+    this.isEditing.set(true);
+    this.tempCompany.set({ ...this.company() });
   }
 
   onCancel() {
-    this.isEditing = false;
-    this.tempCompany = { ...this.company };
+    this.isEditing.set(false);
+    this.tempCompany.set({ ...this.company() });
   }
 
   onSave() {
-    this.company = { ...this.tempCompany };
-    this.isEditing = false;
+    this.company.set({ ...this.tempCompany() });
+    this.isEditing.set(false);
+  }
+
+  updateTempCompany(field: keyof ReturnType<typeof this.company>, value: string) {
+    this.tempCompany.update(company => ({
+      ...company,
+      [field]: value,
+    }));
   }
 }

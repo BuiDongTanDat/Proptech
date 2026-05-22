@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IUserAccount } from '../../models/model';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { ApiService } from '../api.service';
 
 export interface UserRequest {

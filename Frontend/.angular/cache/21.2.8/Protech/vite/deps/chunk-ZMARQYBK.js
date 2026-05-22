@@ -1,13 +1,11 @@
 import {
-  Injectable,
-  setClassMetadata
-} from "./chunk-3T35MVF5.js";
-import {
   DOCUMENT,
+  Injectable,
   InjectionToken,
   inject,
+  setClassMetadata,
   ɵɵdefineInjectable
-} from "./chunk-6AKB5EJF.js";
+} from "./chunk-BJPSW4SK.js";
 
 // node_modules/@angular/common/fesm2022/_platform_location-chunk.mjs
 var _DOM = null;
@@ -150,4 +148,4 @@ export {
   parseCookieValue,
   XhrFactory
 };
-//# sourceMappingURL=chunk-57HPKDM2.js.map
+//# sourceMappingURL=chunk-ZMARQYBK.js.map

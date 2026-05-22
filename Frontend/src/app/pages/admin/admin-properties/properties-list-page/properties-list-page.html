@@ -1,358 +1,275 @@
 <div class="min-h-screen">
-  <!-- Top Bar -->
+  <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
     <div class="flex flex-col">
-      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left ">Bất động sản</h1>
-        <p class="text-sm text-gray-500 mt-1 slide-in-left ">
-          Quản lý tin đăng thông tin nhà đất</p>
+      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left">
+        Tin đăng BĐS
+      </h1>
+
+      <p class="text-sm text-gray-500 mt-1 slide-in-left">
+        Quản lý tin đăng bất động sản
+      </p>
     </div>
+
     <div class="flex items-center gap-2">
-      <app-button text="Thêm BĐS" startIcon="download" variant="outline" (click)="onExport()">
-        Xuất file</app-button
-      >
-      <app-button text="Thêm BĐS" startIcon="plus" variant="primary" (click)="onAdd()">
-        Thêm mới</app-button
-      >
+      <app-button variant="outline" startIcon="download" (btnClick)="onExport()">
+        Xuất file
+      </app-button>
+
+      <app-button variant="primary" startIcon="plus" (btnClick)="onAdd()">
+        Thêm mới
+      </app-button>
     </div>
   </div>
 
-  <!-- Toolbar -->
+  <!-- TOOLBAR -->
   <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
-    <!-- Search -->
-
     <app-custom-input
       [(ngModel)]="searchQuery"
       (ngModelChange)="onSearch()"
-      placeholder="Tìm kiếm..."
+      placeholder="Tìm kiếm theo tên hoặc địa chỉ..."
       icon="search"
       variant="outline"
-      className="w-52  text-xs"
-    ></app-custom-input>
+      className="w-64 text-xs"
+    >
+    </app-custom-input>
 
-    <div class="flex items-center gap-2 flex-wrap">
-      <!-- View Toggle (ẩn trên mobile) -->
-      <div class="hidden md:flex">
-        <app-button
-          (click)="setView(false)"
-          [variant]="!isListView ? 'primary' : 'outline'"
-          title="Chế độ lưới"
-          size="icon"
-        >
-          <svg lucideIcon="layout-grid" size="18"></svg>
-        </app-button>
-        <app-button
-          (click)="setView(true)"
-          [variant]="isListView ? 'primary' : 'outline'"
-          title="Chế độ danh sách"
-          size="icon"
-        >
-          <svg lucideIcon="list" size="18"></svg>
-        </app-button>
-      </div>
-
-      <!-- Sort -->
-      <div class="relative flex items-center">
-        <app-dropdown
-          [options]="sortOptions"
-          [(ngModel)]="selectedSort"
-          (ngModelChange)="onSortChange()"
-          placeholder="Sắp xếp"
-          className="min-w-40"
-        >
-        </app-dropdown>
-      </div>
+    <div class="flex items-center gap-2">
+      <app-dropdown
+        [options]="sortOptions"
+        [(ngModel)]="selectedSort"
+        (ngModelChange)="onSortChange()"
+        placeholder="Sắp xếp"
+        className="min-w-40"
+      >
+      </app-dropdown>
     </div>
   </div>
 
-  <!-- CARD VIEW (mobile luôn hiện, desktop khi !isListView) -->
+  <!-- CARD VIEW -->
   @if (!isListView || isMobile) {
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 fade-in transition duration-150"
-    >
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 fade-in">
       @for (p of properties; track p.id) {
         <div
-          class="fade-in  group bg-white border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          class="group bg-white border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
         >
-          <!-- IMAGE -->
-          <div class="relative overflow-hidden aspect-4/3 bg-gray-100">
-            <img
-              [src]="p.image"
-              [alt]="p.title"
-              class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-            />
+          <!-- HEADER -->
+          <div class="p-5 border-b border-gray-100 bg-gray-50">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="text-base font-semibold text-primary line-clamp-2">
+                  {{ p.title || 'Chưa có tiêu đề' }}
+                </h3>
 
-            <!-- Badge -->
-            @if (p.badge) {
-              <div
-                [class]="
-                  'absolute top-2 right-2 px-2 py-1 text-[9px] uppercase tracking-wider font-medium ' +
-                  (p.badge === 'Featured'
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-white text-primary border border-gray-200')
-                "
-              >
-                {{ p.badge === 'Featured' ? 'Nổi bật' : p.badge }}
+                <p class="text-xs text-gray-400 mt-1 line-clamp-1">
+                  {{ p.address || 'Chưa có địa chỉ' }}
+                </p>
               </div>
-            }
 
-            <!-- Overlay -->
-            <div
-              class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-200"
-            ></div>
+              <!-- STATUS -->
+              <span
+                [class]="
+                  p.status === 'Xuất bản'
+                    ? 'bg-green-100 text-green-600'
+                    : p.status === 'Chờ duyệt'
+                    ? 'bg-yellow-100 text-yellow-600'
+                    : p.status === 'Riêng tư'
+                    ? 'bg-purple-100 text-purple-600'
+                    : p.status === 'Đã lên lịch'
+                    ? 'bg-blue-100 text-blue-600'
+                    : 'bg-gray-100 text-gray-500'
+                "
+                class="px-2 py-1 text-[10px] font-semibold uppercase shrink-0"
+              >
+                {{ p.status || 'Bản nháp' }}
+              </span>
+            </div>
           </div>
 
           <!-- CONTENT -->
-          <div class="p-5">
-            <!-- TITLE + PRICE -->
-            <div class="flex items-start justify-between gap-4 mb-2">
-              <div>
-                <h3 class="text-lg font-semibold text-primary leading-snug line-clamp-1">
-                  {{ p.title }}
-                </h3>
+          <div class="p-5 space-y-4">
+            <!-- CREATED BY -->
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-gray-400">
+                Người tạo
+              </p>
 
-                <p class="text-xs uppercase tracking-wide text-gray-400 mt-1">
-                  {{ p.location }}
-                </p>
-              </div>
+              <p class="text-sm text-primary">
+                {{ p.createdBy?.name || 'Không xác định' }}
+              </p>
 
-              <span class="text-lg font-bold text-primary whitespace-nowrap"> ${{ p.price }} </span>
+              <p class="text-xs text-gray-400">
+                {{ p.createdBy?.role || 'Nhân viên' }}
+              </p>
             </div>
 
-            <!-- INFO -->
-            <div class="grid grid-cols-3 gap-3 py-4 border-y border-gray-100">
-              <!-- Bedrooms -->
-              <div class="flex flex-col items-center gap-1">
-                <svg lucideIcon="bed" size="18" class="text-gray-400"></svg>
-                <span class="text-xs text-gray-500"> {{ p.suites }} Phòng ngủ </span>
-              </div>
+            <!-- APPROVAL -->
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-gray-400">
+                Duyệt bài
+              </p>
 
-              <!-- Bathrooms -->
-              <div class="flex flex-col items-center gap-1">
-                <svg lucideIcon="bed" size="18" class="text-gray-400"></svg>
-                <span class="text-xs text-gray-500"> {{ p.baths }} Phòng tắm </span>
-              </div>
-
-              <!-- Area -->
-              <div class="flex flex-col items-center gap-1">
-                <svg lucideIcon="square" size="18" class="text-gray-400"></svg>
-                <span class="text-xs text-gray-500"> {{ p.sqft | number }} m² </span>
-              </div>
+              <p class="text-sm text-primary">
+                {{
+                  p.approval?.approvedBy?.name ||
+                  (p.approval?.needApproval ? 'Chờ duyệt' : 'Không cần duyệt')
+                }}
+              </p>
             </div>
 
-            <!-- FOOTER -->
-            <div class="flex items-center justify-between pt-4">
-              <div>
-                <p class="text-[10px] uppercase tracking-wide text-gray-400">CHỦ ĐẦU TƯ</p>
+            <!-- SCHEDULE -->
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-gray-400">
+                Lên lịch
+              </p>
 
-                <p class="text-sm font-medium text-primary">
-                  {{ p.architect }}
-                </p>
-              </div>
+              <p class="text-sm text-primary">
+                {{ p.publishAt || 'Chưa lên lịch' }}
+              </p>
+            </div>
 
-              <!-- ACTIONS -->
-              <div class="flex items-center gap-2">
-                <app-button
-                  variant="action"
-                  size="icon"
-                  title="Xem chi tiết"
-                  className="group/button"
-                  (btnClick)="onView(p)"
-                >
-                  <svg lucideIcon="eye" size="18" class="transition-bounce"></svg>
-                </app-button>
-                <app-button
-                  variant="action"
-                  size="icon"
-                  title="Sửa"
-                  className="group/button"
-                  (btnClick)="onEdit(p)"
-                >
-                  <svg lucideIcon="pencil" size="18" class="transition-bounce"></svg>
-                </app-button>
-                <app-button
-                  (click)="onDelete(p)"
-                  variant="destructive"
-                  size="icon"
-                  title="Xóa"
-                  className="group/button"
-                >
-                  <svg lucideIcon="trash" size="18" class="transition-bounce"></svg>
-                </app-button>
-              </div>
+            <!-- PRIVATE ACCESS -->
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-gray-400">
+                Chia sẻ
+              </p>
+
+              <p class="text-sm text-primary">
+                {{ p.shared?.length || 0 }} người
+              </p>
+            </div>
+          </div>
+
+          <!-- FOOTER -->
+          <div class="p-5 border-t border-gray-100 flex items-center justify-between">
+            <p class="text-xs text-gray-400">
+              {{ p.createdAt || 'Chưa có ngày tạo' }}
+            </p>
+
+            <div class="flex items-center gap-2">
+              <app-button
+                variant="action"
+                size="icon"
+                (btnClick)="onView(p)"
+              >
+                <svg lucideIcon="eye" size="18"></svg>
+              </app-button>
+
+              <app-button
+                variant="action"
+                size="icon"
+                (btnClick)="onEdit(p)"
+              >
+                <svg lucideIcon="pencil" size="18"></svg>
+              </app-button>
+
+              <app-button
+                variant="destructive"
+                size="icon"
+                (btnClick)="onDelete(p)"
+              >
+                <svg lucideIcon="trash" size="18"></svg>
+              </app-button>
             </div>
           </div>
         </div>
       }
     </div>
   }
-  <!-- LIST VIEW (chỉ desktop) -->
+
+  <!-- LIST VIEW -->
   @if (isListView && !isMobile) {
-    <div
-      class="overflow-hidden border border-gray-200 bg-white fade-in transition duration-150 shadow-md"
-    >
+    <div class="overflow-hidden border border-gray-200 bg-white shadow-md fade-in">
       <table class="w-full border-collapse">
-        <!-- HEADER -->
         <thead class="bg-gray-50 border-b border-gray-200">
           <tr>
-            <th
-              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400 w-[38%]"
-            >
-              Bất động sản
+            <th class="px-5 py-4 text-left text-xs text-gray-400 uppercase">
+              Tin đăng
             </th>
 
-            <th
-              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400"
-            >
-              Thông tin
+            <th class="px-5 py-4 text-left text-xs text-gray-400 uppercase">
+              Người tạo
             </th>
 
-            <th
-              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400"
-            >
-              Phong cách
+            <th class="px-5 py-4 text-left text-xs text-gray-400 uppercase">
+              Trạng thái
             </th>
 
-            <th
-              class="px-5 py-4 text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400"
-            >
-              Giá
+            <th class="px-5 py-4 text-left text-xs text-gray-400 uppercase">
+              Lịch đăng
             </th>
 
-            <th
-              class="px-5 py-4 text-right text-[11px] uppercase tracking-wider font-semibold text-gray-400"
-            >
+            <th class="px-5 py-4 text-left text-xs text-gray-400 uppercase">
+              Chia sẻ
+            </th>
+
+            <th class="px-5 py-4 text-right text-xs text-gray-400 uppercase">
               Thao tác
             </th>
           </tr>
         </thead>
 
-        <!-- BODY -->
         <tbody>
           @for (p of properties; track p.id) {
-            <tr class="group border-b border-gray-100 hover:bg-gray-50/70 transition duration-300">
-              <!-- PROPERTY -->
+            <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+              <!-- TITLE -->
               <td class="px-5 py-4">
-                <div class="flex items-center gap-4">
-                  <!-- IMAGE -->
-                  <div class="relative w-36 aspect-4/3 overflow-hidden bg-gray-100 shrink-0">
-                    <img
-                      [src]="p.image"
-                      [alt]="p.title"
-                      class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                    />
+                <div>
+                  <h3 class="text-sm font-medium text-primary">
+                    {{ p.title || 'Chưa có tiêu đề' }}
+                  </h3>
 
-                    <!-- BADGE -->
-                    @if (p.badge) {
-                      <div
-                        [class]="
-                          'absolute top-2 right-2 px-2 py-1 text-[9px] uppercase tracking-wider font-medium ' +
-                          (p.badge === 'Featured'
-                            ? 'bg-orange-600 text-white'
-                            : 'bg-white text-primary border border-gray-200')
-                        "
-                      >
-                        {{ p.badge === 'Featured' ? 'Nổi bật' : p.badge }}
-                      </div>
-                    }
-                  </div>
-
-                  <!-- CONTENT -->
-                  <div class="min-w-0">
-                    <h3 class="text-base text-primary leading-tight mb-1 line-clamp-1">
-                      {{ p.title }}
-                    </h3>
-
-                    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">
-                      {{ p.location }}
-                    </p>
-
-                    <div class="flex items-center gap-4">
-                      <div class="flex items-center gap-1.5">
-                        <svg lucideIcon="bed" size="14" class="text-gray-400"></svg>
-
-                        <span class="text-xs text-gray-500">
-                          {{ p.suites }}
-                        </span>
-                      </div>
-
-                      <div class="flex items-center gap-1.5">
-                        <svg lucideIcon="bath" size="14" class="text-gray-400"></svg>
-
-                        <span class="text-xs text-gray-500">
-                          {{ p.baths }}
-                        </span>
-                      </div>
-
-                      <div class="flex items-center gap-1.5">
-                        <svg lucideIcon="square" size="14" class="text-gray-400"></svg>
-
-                        <span class="text-xs text-gray-500"> {{ p.sqft | number }} m² </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-
-              <!-- INFO -->
-              <td class="px-5 py-4 align-middle">
-                <div class="space-y-1">
-                  <p class="text-[10px] uppercase tracking-wider text-gray-400">CHỦ ĐẦU TƯ</p>
-
-                  <p class="text-sm text-primary">
-                    {{ p.architect }}
+                  <p class="text-xs text-gray-400 mt-1">
+                    {{ p.address || 'Chưa có địa chỉ' }}
                   </p>
                 </div>
               </td>
 
-              <!-- TYPOLOGIES -->
-              <td class="px-5 py-4 align-middle">
-                <div class="flex flex-wrap gap-1.5">
-                  @for (t of p.typologies; track t) {
-                    <span
-                      class="text-[10px] uppercase tracking-wide border border-gray-200 px-2 py-1 text-gray-500 bg-white"
-                    >
-                      {{ t }}
-                    </span>
-                  }
-                </div>
+              <!-- CREATED BY -->
+              <td class="px-5 py-4">
+                <p class="text-sm text-primary">
+                  {{ p.createdBy?.name || 'Không xác định' }}
+                </p>
+
+                <p class="text-xs text-gray-400">
+                  {{ p.createdBy?.role || 'Nhân viên' }}
+                </p>
               </td>
 
-              <!-- PRICE -->
-              <td class="px-5 py-4 align-middle">
-                <span class="text-lg font-bold text-primary whitespace-nowrap">
-                  ${{ p.price }}
+              <!-- STATUS -->
+              <td class="px-5 py-4">
+                <span class="text-sm text-primary">
+                  {{ p.status || 'Bản nháp' }}
                 </span>
               </td>
 
-              <!-- ACTIONS -->
-              <td class="px-5 py-4 align-middle">
-                <div
-                  class="flex items-center justify-end gap-2 opacity-0 translate-x-3 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-300"
-                >
-                  <!-- VIEW -->
-                  <app-button
-                    variant="action"
-                    size="icon"
-                    title="Xem chi tiết"
-                    className="group/button"
-                  >
-                    <svg lucideIcon="eye" size="18" class="transition-bounce"></svg>
+              <!-- SCHEDULE -->
+              <td class="px-5 py-4">
+                <span class="text-sm text-primary">
+                  {{ p.publishAt || 'Chưa lên lịch' }}
+                </span>
+              </td>
+
+              <!-- SHARED -->
+              <td class="px-5 py-4">
+                <span class="text-sm text-primary">
+                  {{ p.shared?.length || 0 }} người
+                </span>
+              </td>
+
+              <!-- ACTION -->
+              <td class="px-5 py-4">
+                <div class="flex justify-end gap-2">
+                  <app-button variant="action" size="icon" (btnClick)="onView(p)">
+                    <svg lucideIcon="eye" size="18"></svg>
                   </app-button>
 
-                  <!-- EDIT -->
-                  <app-button variant="action" size="icon" title="Sửa" className="group/button">
-                    <svg lucideIcon="pencil" size="18" class="transition-bounce"></svg>
+                  <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
+                    <svg lucideIcon="pencil" size="18"></svg>
                   </app-button>
 
-                  <!-- DELETE -->
-                  <app-button
-                    (btnClick)="onDelete(p)"
-                    variant="destructive"
-                    size="icon"
-                    title="Xóa"
-                    className="group/button"
-                  >
-                    <svg lucideIcon="trash" size="18" class="transition-bounce"></svg>
+                  <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
+                    <svg lucideIcon="trash" size="18"></svg>
                   </app-button>
                 </div>
               </td>
@@ -363,7 +280,7 @@
     </div>
   }
 
-  <!-- Pagination -->
+  <!-- PAGINATION -->
   <div class="flex justify-center pt-6">
     <app-pagination
       [currentPage]="currentPage"
@@ -373,15 +290,4 @@
     />
   </div>
 
-  @if (showFormDialog) {
-    <app-dialog [show]="showFormDialog" (closed)="closeFormDialog()">
-      <app-properties-form
-        [mode]="formMode"
-        [property]="selectedProperty"
-        (close)="closeFormDialog()"
-        (save)="({})"
-      >
-      </app-properties-form>
-    </app-dialog>
-  }
 </div>

@@ -53,7 +53,16 @@
         </div>
 
         <!-- Submit Button -->
-        <app-button type="submit" variant="primary" className="w-full">
+        <app-button 
+        type="submit" 
+        variant="primary" 
+        className="w-full"
+        [loading]="loading()"
+        [disabled]="loading()"
+        >
+        @if (loading()) {
+          <svg lucideIcon="loader-circle" class="animate-spin" [size]="14"></svg>
+        }
           Đặt lại mật khẩu
         </app-button>
 

@@ -27,6 +27,7 @@ export class AuthService {
   }
 
   setUser(user: any) {
+    localStorage.clear(); // Xóa tất cả dữ liệu cũ trước khi lưu user mới
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
   }
 

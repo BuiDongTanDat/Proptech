@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
@@ -25,6 +25,7 @@ export class ResetPassword {
   token: string | null = null;
 
   submitted = false;
+  loading = signal<boolean>(false);
   showNewPassword = false;
   showConfirmPassword = false;
 
@@ -57,6 +58,7 @@ export class ResetPassword {
 
   onSubmit() {
     this.submitted = true;
+    this.loading.set(true);
     if (this.resetForm.invalid) return;
     if (this.passwordMismatch) return;
 
@@ -72,15 +74,17 @@ export class ResetPassword {
     this.authService.resetPassword(this.token, password).subscribe({
       next: (res) => {
         this.toastService.success(res?.message || 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.');
-
+        this.loading.set(false);
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 1500);
+
       },
 
       error: (err) => {
         console.error('Lỗi đặt lại mật khẩu:', err);
         this.toastService.error(err?.message || 'Đặt lại mật khẩu thất bại. Vui lòng thử lại.');
+        this.loading.set(false);
       }
     });
   }
