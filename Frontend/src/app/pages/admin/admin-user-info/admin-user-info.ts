@@ -1,60 +1,60 @@
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
+
 import { Button } from '../../../shared/components/ui/button/button';
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
-
+import { AuthStore } from '../../../core/stores/auth.store';
+import { ToastService } from '../../../core/services/toast/toast.service';
+import { IUserAccount } from '../../../core/models/model';
+import { CustomNamePipe } from '../../../core/pipes/custom-name.pipe';
 
 @Component({
   selector: 'app-admin-user-info',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    LucideDynamicIcon,
-    Button,
-    CustomInput,
-  ],
+  imports: [CommonModule, FormsModule, LucideDynamicIcon, Button, CustomInput, CustomNamePipe],
   templateUrl: './admin-user-info.html',
   styleUrl: './admin-user-info.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminUserInfo {
+  private authStore = inject(AuthStore);
+  private toast = inject(ToastService);
 
-  isEditing = false;
+  // State
+  isEditing = signal(false);
+  tempUser = signal<IUserAccount>({} as IUserAccount);
 
-  user = {
-    fullName: 'Tan Da Tan',
-    email: 'tan.nguyen@gmail.com',
-    phone: '0901234567',
-    role: 'admin',
-    address: 'Quận 1, TP.HCM',
-    bio: 'Quản trị viên hệ thống nền tảng bất động sản.',
-  };
+  // Derived State (Computed)
+  // Đảm bảo luôn có object để tránh lỗi template khi user null
+  currentUser = computed(() => this.authStore.user() ?? ({} as IUserAccount));
 
-  tempUser = { ...this.user };
+  constructor() {
+    // Tự động cập nhật form khi dữ liệu gốc thay đổi hoặc khi tắt chế độ edit
+    effect(() => {
+      if (!this.isEditing()) {
+        this.tempUser.set({ ...this.currentUser() });
+      }
+    });
+  }
 
   onEdit() {
-    this.isEditing = true;
-    this.tempUser = { ...this.user };
+    this.isEditing.set(true);
   }
 
   onCancel() {
-    this.isEditing = false;
-    this.tempUser = { ...this.user };
+    this.isEditing.set(false);
   }
 
   onSave() {
-    this.user = { ...this.tempUser };
-    this.isEditing = false;
+    // Gọi API cập nhật ở đây nếu có, sau đó cập nhật store
+    this.authStore.setUser(this.tempUser());
+    this.isEditing.set(false);
+    this.toast.success('Cập nhật thông tin thành công!');
   }
 
-  get initials(): string {
-    return this.user.fullName
-      .split(' ')
-      .map(n => n.charAt(0))
-      .slice(-2)
-      .join('')
-      .toUpperCase();
+  // Helper update signal cho template
+  updateTempUser(field: keyof IUserAccount, value: string) {
+    this.tempUser.update(prev => ({ ...prev, [field]: value }));
   }
 }

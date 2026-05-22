@@ -1,6 +1,10 @@
 import {
+  DOCUMENT,
   Directive,
   ElementRef,
+  EnvironmentInjector,
+  EventEmitter,
+  Injector,
   Input,
   NgModule,
   NgModuleRef$1,
@@ -8,19 +12,13 @@ import {
   TemplateRef,
   ViewContainerRef,
   createComponent,
+  inject,
   setClassMetadata,
   ɵɵInheritDefinitionFeature,
   ɵɵdefineDirective,
+  ɵɵdefineInjector,
   ɵɵdefineNgModule
-} from "./chunk-3T35MVF5.js";
-import {
-  DOCUMENT,
-  EnvironmentInjector,
-  EventEmitter,
-  Injector,
-  inject,
-  ɵɵdefineInjector
-} from "./chunk-6AKB5EJF.js";
+} from "./chunk-BJPSW4SK.js";
 
 // node_modules/@angular/cdk/fesm2022/portal.mjs
 function throwNullPortalError() {
@@ -441,4 +439,4 @@ export {
   CdkPortalOutlet,
   PortalModule
 };
-//# sourceMappingURL=chunk-T2PUWYNC.js.map
+//# sourceMappingURL=chunk-Z3C7YJ2W.js.map

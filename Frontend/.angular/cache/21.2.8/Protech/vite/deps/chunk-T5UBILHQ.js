@@ -1,18 +1,23 @@
 import {
   PlatformLocation
-} from "./chunk-57HPKDM2.js";
+} from "./chunk-ZMARQYBK.js";
 import {
   ApplicationRef,
   Attribute,
   ChangeDetectorRef,
   DEFAULT_CURRENCY_CODE,
+  DOCUMENT,
+  DestroyRef,
   Directive,
   ElementRef,
   Host,
   IMAGE_CONFIG,
   IMAGE_CONFIG_DEFAULTS,
+  INTERNAL_APPLICATION_ERROR_HANDLER,
   Inject,
   Injectable,
+  InjectionToken,
+  Injector,
   Input,
   IterableDiffers,
   KeyValueDiffers,
@@ -20,17 +25,22 @@ import {
   LocaleDataIndex,
   NgModule,
   NgModuleRef$1,
+  NgZone,
   Optional,
   Pipe,
   Renderer2,
   RendererStyleFlags2,
+  RuntimeError,
   TemplateRef,
+  Version,
   ViewContainerRef,
   booleanAttribute,
   createNgModule,
   findLocaleData,
+  formatRuntimeError,
   getLocaleCurrencyCode,
   getLocalePluralCase,
+  inject,
   isPromise,
   isSignal,
   isSubscribable,
@@ -38,33 +48,21 @@ import {
   performanceMarkFeature,
   registerLocaleData,
   setClassMetadata,
+  stringify,
+  untracked,
   unwrapSafeValue,
   ɵɵNgOnChangesFeature,
   ɵɵdefineDirective,
+  ɵɵdefineInjectable,
+  ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵdefinePipe,
   ɵɵdirectiveInject,
   ɵɵgetInheritedFactory,
+  ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-3T35MVF5.js";
-import {
-  DOCUMENT,
-  DestroyRef,
-  INTERNAL_APPLICATION_ERROR_HANDLER,
-  InjectionToken,
-  Injector,
-  NgZone,
-  RuntimeError,
-  Version,
-  formatRuntimeError,
-  inject,
-  stringify,
-  untracked,
-  ɵɵdefineInjectable,
-  ɵɵdefineInjector,
-  ɵɵinject
-} from "./chunk-6AKB5EJF.js";
+} from "./chunk-BJPSW4SK.js";
 import {
   Subject,
   __spreadProps,
@@ -4665,4 +4663,4 @@ export {
   PRECONNECT_CHECK_BLOCKLIST,
   NgOptimizedImage
 };
-//# sourceMappingURL=chunk-DB5DED3M.js.map
+//# sourceMappingURL=chunk-T5UBILHQ.js.map

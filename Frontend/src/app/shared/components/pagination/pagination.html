@@ -1,46 +1,88 @@
-<div class="flex items-center justify-center gap-3" [ngClass]="className">
-	<!-- Prev -->
-	<button
-		class="flex items-center gap-1.5 text-xs uppercase text-gray-400 hover:text-primary transition disabled:opacity-30 cursor-pointer"
-		[disabled]="disabled || currentPage === 1"
-		(click)="goToPage(currentPage - 1)"
-	>
-		<svg 
-		lucideIcon="chevron-left"
-		>
-			
-		</svg>
-		Trước
-	</button>
+@if (!disabled) {
+  <div class="flex items-center justify-center gap-3" [class]="className">
 
-	<!-- Pages -->
-	<div class="flex gap-2">
-		<ng-container *ngFor="let page of pages">
-			<button
-				(click)="goToPage(page)"
-				[disabled]="disabled || page === currentPage"
-				[ngClass]="
-					page === currentPage
-						? 'cursor-pointer w-8 h-8 text-xs bg-primary text-white flex items-center justify-center'
-						: 'cursor-pointer w-8 h-8 text-xs text-gray-400 hover:text-primary transition flex items-center justify-center border border-transparent hover:border-gray-200 '
-				"
-			>
-				{{ page < 10 ? '0' + page : page }}
-			</button>
-		</ng-container>
-	</div>
+    <!-- Prev -->
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="flex items-center gap-1.5 text-xs uppercase transition"
+      [ngClass]="
+        currentPage === 1
+          ? 'text-gray-300 cursor-not-allowed opacity-50'
+          : 'text-gray-400 hover:text-primary cursor-pointer'
+      "
+    >
+      <svg lucideIcon="chevron-left"></svg>
+      Trước
+    </button>
 
-	<!-- Next -->
-	<button
-		class="flex items-center gap-1.5 text-xs uppercase text-gray-400 hover:text-primary transition disabled:opacity-30 cursor-pointer"
-		[disabled]="disabled || currentPage === totalPages"
-		(click)="goToPage(currentPage + 1)"
-	>
-		Sau
-		<svg 
-		lucideIcon="chevron-right"
-		>
-			
-		</svg>
-	</button>
-</div>
+    <!-- Pages -->
+    <div class="flex gap-2">
+      @for (page of pages; track page) {
+        <button
+          (click)="goToPage(page)"
+          [disabled]="page === currentPage"
+          class="rounded-md w-8 h-8 text-xs flex items-center justify-center transition"
+          [ngClass]="
+            page === currentPage
+              ? 'bg-primary text-white cursor-default'
+              : 'text-gray-400 border border-transparent hover:text-primary hover:border-gray-200 cursor-pointer'
+          "
+        >
+          {{ page < 10 ? '0' + page : page }}
+        </button>
+      }
+    </div>
+
+    <!-- Next -->
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="flex items-center gap-1.5 text-xs uppercase transition"
+      [ngClass]="
+        currentPage === totalPages
+          ? 'text-gray-300 cursor-not-allowed opacity-50'
+          : 'text-gray-400 hover:text-primary cursor-pointer'
+      "
+    >
+      Sau
+      <svg lucideIcon="chevron-right"></svg>
+    </button>
+  </div>
+} @else {
+  <div
+    class="flex items-center justify-center gap-3 opacity-50 pointer-events-none select-none"
+    [class]="className"
+  >
+
+    <!-- Prev -->
+    <button
+      class="flex items-center gap-1.5 text-xs uppercase text-gray-400 rounded-md w-16 h-8 cursor-not-allowed"
+      disabled
+    >
+      <svg lucideIcon="chevron-left"></svg>
+      Trước
+    </button>
+
+    <!-- Pages -->
+    <div class="flex gap-2">
+      @for (page of pages; track page) {
+        <button
+          class="rounded-md w-8 h-8 text-xs text-gray-400 bg-gray-100 flex items-center justify-center cursor-not-allowed"
+          disabled
+        >
+          {{ page < 10 ? '0' + page : page }}
+        </button>
+      }
+    </div>
+
+    <!-- Next -->
+    <button
+      class="flex items-center gap-1.5 text-xs uppercase text-gray-400 rounded-md w-16 h-8 cursor-not-allowed"
+      disabled
+    >
+      Sau
+      <svg lucideIcon="chevron-right"></svg>
+    </button>
+  </div>
+}

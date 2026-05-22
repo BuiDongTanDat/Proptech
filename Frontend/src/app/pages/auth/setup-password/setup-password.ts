@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Toast } from '../../../shared/components/toast/toast';
 import {
@@ -31,6 +31,7 @@ export class SetupPassword implements AfterViewInit {
   submitted = false;
   showNewPassword = false;
   showConfirmPassword = false;
+  loading = signal<boolean>(false);
 
   setupForm: FormGroup = new FormGroup({
     newPassword: new FormControl('', [
@@ -75,6 +76,7 @@ export class SetupPassword implements AfterViewInit {
 
   onSubmit() {
     this.submitted = true;
+    this.loading.set(true);
 
     if (this.setupForm.invalid) return;
     if (this.passwordMismatch) return;
@@ -89,7 +91,7 @@ export class SetupPassword implements AfterViewInit {
     this.authService.setupPassword(this.token, password).subscribe({
       next: (res) => {
         this.toastService.success(res?.message || 'Thiết lập mật khẩu thành công! Vui lòng đăng nhập.');
-
+        this.loading.set(false);
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 1500);
@@ -97,6 +99,7 @@ export class SetupPassword implements AfterViewInit {
 
       error: (err) => {
         this.toastService.error(err?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
+        this.loading.set(false);
       }
     });
   }

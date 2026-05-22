@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { Form, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
@@ -7,6 +7,9 @@ import { Button } from '../../../shared/components/ui/button/button';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { Toast } from '../../../shared/components/toast/toast';
 import { ToastService } from '../../../core/services/toast/toast.service';
+import { AuthStore } from '../../../core/stores/auth.store';
+import { delay, finalize } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-login-page',
@@ -18,18 +21,16 @@ import { ToastService } from '../../../core/services/toast/toast.service';
     CustomInput,
     Button,
     Toast
-],
+  ],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
 export class LoginPage {
 
-  constructor(
-    private authService: AuthService,
-    private toastService: ToastService, 
-    private router: Router
-  ) { }
-
+  private authService = inject(AuthService);
+  private toastService = inject(ToastService);
+  private authStore = inject(AuthStore);
+  private router = inject(Router);
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -37,33 +38,33 @@ export class LoginPage {
   });
 
   submitted = false;
-  loading = false;
+  loading = signal<boolean>(false);
 
   get f() {
     return this.loginForm.controls;
   }
 
   onSubmit() {
-    this.submitted = true;
-    //console.log('Dữ liệu gửi đi:', this.loginForm.value);
-    if (this.loginForm.invalid) return; // Dừng nếu form không hợp lệ
 
-    this.loading = true;
+    this.submitted = true;
+    if (this.loginForm.invalid) return;
+
+    this.loading.set(true);
     const { email, password } = this.loginForm.value;
-    this.authService.login(email, password).subscribe({
-      next: (response: any) => {
-        console.log('Đăng nhập thành công:', response);
-        // Lưu data user vào AuthService
-        this.authService.setUser(response.data);
-        this.toastService.success(response.message || 'Đăng nhập thành công');
-        this.router.navigate(['/admin/dashboard']); // Chuyển hướng sau khi đăng nhập thành công
-      },
-      error: (error) => {
-        console.error('Đăng nhập thất bại:', error);
-        this.loading = false;
-        this.toastService.error(error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
-      }
-    });
+    this.authService.login(email, password)
+      .subscribe({
+        next: (response: any) => {
+          this.loading.set(false);
+          this.authStore.setUser(response.data);
+          this.toastService.success(response.message || 'Đăng nhập thành công');
+          this.router.navigate(['/admin/dashboard']);
+        },
+        error: (error) => {
+          this.loading.set(false);
+          this.toastService.error(error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+        },
+
+      });
 
 
   }

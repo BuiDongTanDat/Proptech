@@ -32,6 +32,10 @@ export class Button {
   @Input() startIcon?: string;
   @Input() endIcon?: string;
 
+
+  // ===== LOADING =====
+  @Input() loading: boolean = false;
+
   // ===== EVENT =====
   @Output() btnClick = new EventEmitter<Event>();
 

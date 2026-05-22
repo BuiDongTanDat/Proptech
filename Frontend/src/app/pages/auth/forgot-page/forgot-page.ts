@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
@@ -6,6 +6,7 @@ import { Button } from '../../../shared/components/ui/button/button';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { ToastService } from '../../../core/services/toast/toast.service';
+import { OverlayModule } from "@angular/cdk/overlay";
 
 @Component({
   selector: 'app-forgot-page',
@@ -14,6 +15,7 @@ import { ToastService } from '../../../core/services/toast/toast.service';
     LucideDynamicIcon,
     CustomInput,
     Button,
+    OverlayModule
 ],
   templateUrl: './forgot-page.html',
   styleUrl: './forgot-page.css',
@@ -24,6 +26,7 @@ export class ForgotPage {
   });
 
   submitted = false;
+  loading = signal<boolean>(false);
 
 
   constructor(
@@ -38,6 +41,7 @@ export class ForgotPage {
 
   onSubmit() {
     this.submitted = true;
+    this.loading.set(true);
     // Xử lý gửi email tại đây
     console.log(this.forgotForm.value);
 
@@ -49,14 +53,17 @@ export class ForgotPage {
       next: (response) => {
         this.toastService.success('Yêu cầu đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.');
         this.clearInput();
+        this.loading.set(false);
       },
       error: (error) => {
         this.toastService.error(error?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
+        this.loading.set(false);
       }
+
     });
   }
 
-  clearInput(){
+  clearInput() {
     this.forgotForm.reset();
     this.submitted = false;
   }

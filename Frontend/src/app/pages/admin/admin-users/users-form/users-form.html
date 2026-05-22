@@ -1,4 +1,4 @@
-<div class="flex flex-col max-h-[80vh]  w-full text-sm">
+<div class="flex flex-col max-h-[80vh] w-full text-sm">
   <!-- HEADER -->
   <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shrink-0">
     <div class="relative flex items-center justify-center p-4">
@@ -54,69 +54,80 @@
         }
       </div>
 
-  
-    <!-- ROLE & STATUS -->
-<div class="grid gap-4" [class]="currentMode() === 'add' ? 'grid-cols-1' : 'grid-cols-2'">
-  
-  <!-- ROLE -->
-  <div>
-    <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
-      Vai trò
-    </label>
+      <!-- ROLE & STATUS -->
+      <div class="grid gap-4" [class]="currentMode() === 'add' ? 'grid-cols-1' : 'grid-cols-2'">
+        <!-- ROLE -->
+        <div>
+          <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
+            Vai trò
+          </label>
 
-    <app-dropdown
-      formControlName="role"
-      [options]="roleOptions"
-      className="w-full"
-    ></app-dropdown>
+          <app-dropdown
+            formControlName="role"
+            [options]="roleOptions"
+            className="w-full"
+          ></app-dropdown>
 
-    @if (submitted && f.role.errors && currentMode() !== 'view') {
-      <p class="text-[11px] text-red-500 mt-1">* Vui lòng chọn vai trò</p>
-    }
-  </div>
-
-  <!-- STATUS: chỉ hiện khi view hoặc edit -->
-  @if (currentMode() !== 'add') {
-    <div>
-      <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
-        Trạng thái
-      </label>
-
-      <div class="flex items-center gap-2">
-        <div class="text-xs flex-1 flex items-center gap-2 px-3 py-2 border border-gray-200 bg-gray-50 rounded-sm">
-          <div
-            [class]="
-              f.status.value === 'Kích hoạt' ? 'bg-green-500' :
-              f.status.value === 'Chờ xác thực' ? 'bg-yellow-400' : 'bg-red-500'
-            "
-            class="size-2 rounded-full shrink-0"
-          ></div>
-          <span
-            class="text-xs"
-            [class]="
-              f.status.value === 'Kích hoạt' ? 'text-green-500' :
-              f.status.value === 'Chờ xác thực' ? 'text-yellow-400' : 'text-red-500'
-            "
-          >{{ f.status.value }}</span>
+          @if (submitted && f.role.errors && currentMode() !== 'view') {
+            <p class="text-[11px] text-red-500 mt-1">* Vui lòng chọn vai trò</p>
+          }
         </div>
 
-        @if (f.status.value === 'Chờ xác thực') {
-          <app-button
-            type="button"
-            variant="accent"
-            title="Gửi lại mật khẩu"
-            (btnClick)="onResendPassword()"
-          >
-            Gửi lại email
-            <svg lucideIcon="send" class="size-4"></svg>
+        <!-- STATUS: chỉ hiện khi view hoặc edit -->
+        @if (currentMode() !== 'add') {
+          <div>
+            <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
+              Trạng thái
+            </label>
 
-          </app-button>
+            <div class="flex items-center gap-2">
+              <div
+                class="text-xs flex-1 flex items-center gap-2 px-3 py-2 border border-gray-200 bg-gray-50 rounded-sm"
+              >
+                <div
+                  [class]="
+                    f.status.value === 'Kích hoạt'
+                      ? 'bg-green-500'
+                      : f.status.value === 'Chờ xác thực'
+                        ? 'bg-yellow-400'
+                        : 'bg-red-500'
+                  "
+                  class="size-2 rounded-full shrink-0"
+                ></div>
+                <span
+                  class="text-xs"
+                  [class]="
+                    f.status.value === 'Kích hoạt'
+                      ? 'text-green-500'
+                      : f.status.value === 'Chờ xác thực'
+                        ? 'text-yellow-400'
+                        : 'text-red-500'
+                  "
+                  >{{ f.status.value }}</span
+                >
+              </div>
+
+              @if (f.status.value === 'Chờ xác thực') {
+                <app-button
+                  type="button"
+                  variant="accent"
+                  title="Gửi lại mật khẩu"
+                  (btnClick)="onResendPassword()"
+                  [loading]="store.resendLoading()"
+                  [disabled]="store.resendLoading()"
+                >
+                  @if (store.resendLoading()) {
+                    <svg lucideIcon="loader-circle" class="animate-spin" [size]="16"></svg>
+                  } @else {
+                    <svg lucideIcon="mail" class="size-4"></svg>
+                  }
+                  Gửi lại email
+                </app-button>
+              }
+            </div>
+          </div>
         }
       </div>
-    </div>
-  }
-
-</div>
     </div>
 
     <!-- FOOTER -->
@@ -128,17 +139,36 @@
             Xóa
           </app-button>
 
-          <app-button type="button" className="bg-primary text-white" (btnClick)="onEdit()">
+          <app-button
+            type="button"
+            className="bg-primary text-white"
+            (btnClick)="onEdit()"
+            [disabled]="store.resendLoading() || store.loading()"
+          >
             <svg lucideIcon="pencil" class="size-4"></svg>
             Chỉnh sửa
           </app-button>
         } @else {
-          <app-button type="button" variant="outline" (btnClick)="onCancel()">
+          <app-button
+            type="button"
+            variant="outline"
+            (btnClick)="onCancel()"
+            [disabled]="store.resendLoading() || store.loading()"
+          >
             {{ currentMode() === 'edit' && userModal() ? 'Quay lại' : 'Hủy' }}
           </app-button>
 
-          <app-button type="submit" className="bg-primary text-white">
-            <svg lucideIcon="save" class="size-4"></svg>
+          <app-button
+            type="submit"
+            className="bg-primary text-white"
+            [loading]="store.loading()"
+            [disabled]="store.resendLoading() || store.loading()"
+          >
+            @if (store.loading()) {
+              <svg lucideIcon="loader-circle" class="animate-spin" [size]="16"></svg>
+            } @else {
+              <svg lucideIcon="save" class="size-4"></svg>
+            }
             Lưu
           </app-button>
         }

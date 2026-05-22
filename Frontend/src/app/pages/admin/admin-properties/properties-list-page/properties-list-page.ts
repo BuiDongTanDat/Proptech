@@ -7,11 +7,10 @@ import { Button } from '../../../../shared/components/ui/button/button';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 import { LucideDynamicIcon } from '@lucide/angular';
-import { PropertiesForm } from '../properties-form/properties-form';
 import { Dialog } from '../../../../shared/components/dialog/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IProperty } from '../../../../core/models/model';
-import { propertiesList } from '../../../../shared/utils/data.mock';
+import { MOCK_PROPERTIES } from '../../../../shared/utils/data.mock';
 
 
 @Component({
@@ -25,7 +24,6 @@ import { propertiesList } from '../../../../shared/utils/data.mock';
     Button,
     CustomInput,
     Dropdown,
-    PropertiesForm,
     Dialog,
   ],
   templateUrl: './properties-list-page.html',
@@ -64,7 +62,7 @@ export class PropertiesListPage implements OnInit {
 
   ngOnInit() {
     this.checkMobile();
-    this.allProperties = propertiesList;
+    this.allProperties = [...MOCK_PROPERTIES];
     this.filteredProperties = [...this.allProperties];
     this.onSortChange();
     this.updatePage();
@@ -156,11 +154,9 @@ export class PropertiesListPage implements OnInit {
         break;
 
       case 'price-desc':
-        this.filteredProperties.sort((a, b) => Number(b.price) - Number(a.price));
         break;
 
       case 'price-asc':
-        this.filteredProperties.sort((a, b) => Number(a.price) - Number(b.price));
         break;
     }
 
@@ -181,9 +177,7 @@ export class PropertiesListPage implements OnInit {
   onSearch() {
     const q = this.searchQuery.toLowerCase();
     this.filteredProperties = this.allProperties.filter(p =>
-      p.title.toLowerCase().includes(q) ||
-      p.location.toLowerCase().includes(q) ||
-      p.typologies.some(t => t.toLowerCase().includes(q))
+      p.title.toLowerCase().includes(q)
     );
     this.currentPage = 1;
     this.updatePage();

@@ -1,274 +1,180 @@
-<div class="">
-
+<div class="max-w-5xl mx-auto p-4">
   <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-
     <div>
- <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left ">        Thông tin doanh nghiệp
+      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left">
+        Thông tin doanh nghiệp
       </h1>
 
-      <p class="text-sm text-gray-500 mt-1 slide-in-left ">
+      <p class="text-sm text-gray-500 mt-1 slide-in-left">
         Quản lý thông tin hiển thị của doanh nghiệp
       </p>
     </div>
 
-    @if (!isEditing) {
-
-      <app-button
-        variant="primary"
-        startIcon="pencil"
-        (btnClick)="onEdit()">
-
-        Chỉnh sửa
-
-      </app-button>
-
-    } @else {
-
-      <div class="flex items-center gap-2">
-
-        <app-button
-          variant="outline"
-          (btnClick)="onCancel()">
-
+    <div class="flex items-center gap-2">
+      @if (!isEditing()) {
+        <app-button variant="primary" startIcon="pencil" (btnClick)="onEdit()">
+          Chỉnh sửa
+        </app-button>
+      } @else {
+        <app-button variant="outline" (btnClick)="onCancel()">
           Hủy
-
         </app-button>
 
-        <app-button
-          variant="primary"
-          startIcon="save"
-          (btnClick)="onSave()">
-
+        <app-button variant="primary" startIcon="save" (btnClick)="onSave()">
           Lưu thay đổi
-
         </app-button>
-
-      </div>
-
-    }
-
+      }
+    </div>
   </div>
 
   <!-- CONTENT -->
-  <div class="bg-white border border-gray-200 shadow-sm overflow-hidden fade-in">
-
+  <div class="fade-in overflow-hidden border border-gray-200 bg-white shadow-sm rounded-lg">
     <!-- HEADER -->
-    <div class="px-6 py-5 border-b border-gray-100">
+    <div class="px-8 py-6 border-b border-gray-100 bg-primary/90 relative">
+      <div
+        class="absolute inset-0 opacity-30 bg-cover bg-center"
+        style="background-image: url('bg_card.png')"
+      ></div>
 
-      <div class="flex items-center gap-4">
-
+      <div class="relative z-10 flex items-end gap-6 flex-wrap">
         <!-- LOGO -->
         <div
-          class="size-18 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold uppercase">
-
-          {{ company.companyName.charAt(0) }}
-
+          class="size-28 rounded-full bg-primary text-white flex items-center justify-center text-3xl font-bold border-4 border-white shadow-lg shrink-0"
+        >
+          {{ tempCompany().companyName?.charAt(0) || 'C' }}
         </div>
 
-        <div>
-
-          <h2 class="text-lg font-semibold text-gray-900">
-            {{ company.companyName }}
+        <div class="pb-2">
+          <h2 class="text-2xl font-bold text-white tracking-tight">
+            {{ tempCompany().companyName }}
           </h2>
 
-          <p class="text-sm text-gray-500 mt-1">
+          <p class="text-sm text-white/90">
             Hồ sơ doanh nghiệp
           </p>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- FORM -->
-    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-
+    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- COMPANY NAME -->
-      <div>
-
-        <label class="block text-sm font-medium mb-2">
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">
           Tên doanh nghiệp
         </label>
 
-        @if (!isEditing) {
-
-          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-            {{ company.companyName }}
-          </div>
-
-        } @else {
-
-          <app-custom-input
-            [(ngModel)]="tempCompany.companyName"
-            variant="outline"
-            placeholder="Tên doanh nghiệp">
-
-          </app-custom-input>
-
-        }
-
+        <app-custom-input
+          [ngModel]="tempCompany().companyName"
+          (ngModelChange)="updateTempCompany('companyName', $event)"
+          [disabled]="!isEditing()"
+          variant="outline"
+          placeholder="Tên doanh nghiệp"
+        >
+        </app-custom-input>
       </div>
 
       <!-- EMAIL -->
-      <div>
-
-        <label class="block text-sm font-medium mb-2">
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">
           Email
         </label>
 
-        @if (!isEditing) {
-
-          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-            {{ company.email }}
-          </div>
-
-        } @else {
-
-          <app-custom-input
-            [(ngModel)]="tempCompany.email"
-            variant="outline"
-            placeholder="Email">
-
-          </app-custom-input>
-
-        }
-
+        <app-custom-input
+          [ngModel]="tempCompany().email"
+          (ngModelChange)="updateTempCompany('email', $event)"
+          [disabled]="!isEditing()"
+          variant="outline"
+          placeholder="Email"
+        >
+        </app-custom-input>
       </div>
 
       <!-- PHONE -->
-      <div>
-
-        <label class="block text-sm font-medium mb-2">
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">
           Số điện thoại
         </label>
 
-        @if (!isEditing) {
-
-          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-            {{ company.phone }}
-          </div>
-
-        } @else {
-
-          <app-custom-input
-            [(ngModel)]="tempCompany.phone"
-            variant="outline"
-            placeholder="Số điện thoại">
-
-          </app-custom-input>
-
-        }
-
+        <app-custom-input
+          [ngModel]="tempCompany().phone"
+          (ngModelChange)="updateTempCompany('phone', $event)"
+          [disabled]="!isEditing()"
+          variant="outline"
+          placeholder="Số điện thoại"
+        >
+        </app-custom-input>
       </div>
 
       <!-- WEBSITE -->
-      <div>
-
-        <label class="block text-sm font-medium mb-2">
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">
           Website
         </label>
 
-        @if (!isEditing) {
-
-          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-            {{ company.website }}
-          </div>
-
-        } @else {
-
-          <app-custom-input
-            [(ngModel)]="tempCompany.website"
-            variant="outline"
-            placeholder="Website">
-
-          </app-custom-input>
-
-        }
-
+        <app-custom-input
+          [ngModel]="tempCompany().website"
+          (ngModelChange)="updateTempCompany('website', $event)"
+          [disabled]="!isEditing()"
+          variant="outline"
+          placeholder="Website"
+        >
+        </app-custom-input>
       </div>
 
       <!-- TAX CODE -->
-      <div>
-
-        <label class="block text-sm font-medium mb-2">
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">
           Mã số thuế
         </label>
 
-        @if (!isEditing) {
-
-          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-            {{ company.taxCode }}
-          </div>
-
-        } @else {
-
-          <app-custom-input
-            [(ngModel)]="tempCompany.taxCode"
-            variant="outline"
-            placeholder="Mã số thuế">
-
-          </app-custom-input>
-
-        }
-
+        <app-custom-input
+          [ngModel]="tempCompany().taxCode"
+          (ngModelChange)="updateTempCompany('taxCode', $event)"
+          [disabled]="!isEditing()"
+          variant="outline"
+          placeholder="Mã số thuế"
+        >
+        </app-custom-input>
       </div>
 
       <!-- ADDRESS -->
-      <div>
-
-        <label class="block text-sm font-medium mb-2">
+      <div class="space-y-2">
+        <label class="text-sm font-semibold text-gray-700">
           Địa chỉ
         </label>
 
-        @if (!isEditing) {
-
-          <div class="border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-            {{ company.address }}
-          </div>
-
-        } @else {
-
-          <app-custom-input
-            [(ngModel)]="tempCompany.address"
-            variant="outline"
-            placeholder="Địa chỉ">
-
-          </app-custom-input>
-
-        }
-
+        <app-custom-input
+          [ngModel]="tempCompany().address"
+          (ngModelChange)="updateTempCompany('address', $event)"
+          [disabled]="!isEditing()"
+          variant="outline"
+          placeholder="Địa chỉ"
+        >
+        </app-custom-input>
       </div>
 
       <!-- DESCRIPTION -->
-      <div class="md:col-span-2">
-
-        <label class="block text-sm font-medium mb-2">
+      <div class="md:col-span-2 space-y-2">
+        <label class="text-sm font-semibold text-gray-700">
           Mô tả doanh nghiệp
         </label>
 
-        @if (!isEditing) {
-
-          <div class="border border-gray-200 bg-gray-50 px-3 py-3 text-sm leading-relaxed">
-            {{ company.description }}
-          </div>
-
-        } @else {
-
-          <textarea
-            [(ngModel)]="tempCompany.description"
-            rows="5"
-            class="w-full border border-gray-200 px-3 py-2 outline-none focus:border-primary resize-none"
-            placeholder="Mô tả doanh nghiệp">
-          </textarea>
-
-        }
-
+        <textarea
+          [ngModel]="tempCompany().description"
+          (ngModelChange)="updateTempCompany('description', $event)"
+          [disabled]="!isEditing()"
+          rows="5"
+          class="
+            w-full border border-gray-200 px-3 py-2 outline-none
+            focus:border-primary resize-none
+            disabled:bg-gray-50 disabled:text-gray-500
+            disabled:cursor-not-allowed disabled:focus:border-gray-200
+          "
+          placeholder="Mô tả doanh nghiệp"
+        ></textarea>
       </div>
-
     </div>
-
   </div>
-
 </div>

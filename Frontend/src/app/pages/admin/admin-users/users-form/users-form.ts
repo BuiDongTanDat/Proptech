@@ -1,15 +1,13 @@
 
-import { Component, Input, Output, EventEmitter, OnInit, input, output, signal, effect, inject } from '@angular/core';
+import { Component, input, output, signal, effect, inject } from '@angular/core';
+import { UserStore } from '../../../../core/stores/users.store';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
 import { Button } from '../../../../shared/components/ui/button/button';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { Dropdown } from "../../../../shared/components/dropdown/dropdown";
-import { CustomDatePicker } from '../../../../shared/components/custom-date-picker/custom-date-picker';
 import { USER_ROLE_OPTIONS, USER_STATUS_OPTIONS } from '../../../../core/constants/user.constants';
-import { UserService } from '../../../../core/services/user/user.service';
-import { ToastService } from '../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-users-form',
@@ -20,18 +18,16 @@ import { ToastService } from '../../../../core/services/toast/toast.service';
     CustomInput,
     Button,
     LucideDynamicIcon,
-    Dropdown,
-    CustomDatePicker,
+    Dropdown
   ],
   templateUrl: './users-form.html',
   styleUrl: './users-form.css',
 })
 export class UsersForm {
+  store = inject(UserStore);
   readonly roleOptions = USER_ROLE_OPTIONS;
   readonly statusOptions = USER_STATUS_OPTIONS;
 
-  private userService = inject(UserService);
-  private toastService = inject(ToastService);
 
   userModal = input<any>();
   mode = input<'view' | 'edit' | 'add'>('view');
@@ -118,20 +114,13 @@ export class UsersForm {
 
   onResendPassword() {
     const user = this.userModal();
-    if (!user) return;
+    if (!user?._id) return;
 
-    // Gọi API resend password
-     this.userService.resend(user._id!).subscribe({
-      next: (res: any) => {
-        this.toastService.success(res?.message || 'Email xác thực đã được gửi lại thành công!');
-      },
-      error: (err) => {
-        console.error('Error resending password:', err);
-        alert(err?.message || 'Có lỗi xảy ra khi gửi lại email xác thực.');
-      }
-    });
+    // Gọi action từ Store thay vì gọi service trực tiếp
+    this.store.resendVerification(user._id);
 
     console.log('Resend password for:', user.email);
+
   }
 
 

@@ -1,7 +1,6 @@
 import {
   Title
-} from "./chunk-6SIOB54J.js";
-import "./chunk-GZ4RGNAT.js";
+} from "./chunk-KETY36VC.js";
 import {
   HashLocationStrategy,
   Location,
@@ -11,11 +10,12 @@ import {
   PathLocationStrategy,
   PlatformNavigation,
   ViewportScroller
-} from "./chunk-DB5DED3M.js";
+} from "./chunk-T5UBILHQ.js";
+import "./chunk-J74NILW4.js";
 import {
   LOCATION_INITIALIZED,
   PlatformLocation
-} from "./chunk-57HPKDM2.js";
+} from "./chunk-ZMARQYBK.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   ApplicationRef,
@@ -26,80 +26,78 @@ import {
   Component,
   Console,
   ContentChildren,
+  DOCUMENT,
+  DestroyRef,
   Directive,
+  ENVIRONMENT_INITIALIZER,
   ElementRef,
+  EnvironmentInjector,
+  EventEmitter,
   HostAttributeToken,
   HostListener,
+  INTERNAL_APPLICATION_ERROR_HANDLER,
   IS_ENABLED_BLOCKING_INITIAL_NAVIGATION,
   Injectable,
+  InjectionToken,
+  Injector,
   Input,
   NgModule,
   NgModuleFactory$1,
+  NgZone,
   Output,
+  PendingTasksInternal,
   Renderer2,
+  RuntimeError,
+  Version,
   ViewContainerRef,
   afterNextRender,
   booleanAttribute,
+  computed,
   createEnvironmentInjector,
+  effect,
+  formatRuntimeError,
+  inject,
   input,
+  isInjectable,
   isNgModule,
   isPromise,
+  isStandalone,
+  linkedSignal,
+  makeEnvironmentProviders,
   performanceMarkFeature,
   promiseWithResolvers,
   provideAppInitializer,
+  provideEnvironmentInitializer,
   publishExternalGlobalUtil,
   reflectComponentType,
+  runInInjectionContext,
   setClassMetadata,
+  signal,
+  untracked,
   ɵɵNgOnChangesFeature,
   ɵɵattribute,
   ɵɵcontentQuery,
   ɵɵdefineComponent,
   ɵɵdefineDirective,
+  ɵɵdefineInjectable,
+  ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵdirectiveInject,
   ɵɵelement,
   ɵɵgetInheritedFactory,
+  ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵinvalidFactory,
   ɵɵlistener,
   ɵɵloadQuery,
   ɵɵqueryRefresh,
   ɵɵsanitizeUrlOrResourceUrl
-} from "./chunk-3T35MVF5.js";
-import {
-  DOCUMENT,
-  DestroyRef,
-  ENVIRONMENT_INITIALIZER,
-  EnvironmentInjector,
-  EventEmitter,
-  INTERNAL_APPLICATION_ERROR_HANDLER,
-  InjectionToken,
-  Injector,
-  NgZone,
-  PendingTasksInternal,
-  RuntimeError,
-  Version,
-  computed,
-  effect,
-  formatRuntimeError,
-  inject,
-  isInjectable,
-  isStandalone,
-  linkedSignal,
-  makeEnvironmentProviders,
-  provideEnvironmentInitializer,
-  runInInjectionContext,
-  signal,
-  untracked,
-  ɵɵdefineInjectable,
-  ɵɵdefineInjector,
-  ɵɵinject
-} from "./chunk-6AKB5EJF.js";
+} from "./chunk-BJPSW4SK.js";
+import "./chunk-4YCCEXQQ.js";
 import {
   defer,
   isObservable
 } from "./chunk-J46EEYGT.js";
-import "./chunk-4YCCEXQQ.js";
 import {
   BehaviorSubject,
   EMPTY,

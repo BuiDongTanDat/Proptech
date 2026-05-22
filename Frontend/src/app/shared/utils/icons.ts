@@ -1,4 +1,4 @@
-import { LucidePencil, LucideTrash, LucideUser, LucideVariable, LucideDatabase, LucideSettings, LucidePalette, LucideX, LucideUsers, LucideMail, LucideLock, LucideMapPin, LucideGlobe, LucideSave, LucideHash, LucideAtSign, LucidePhone, LucidePhoneCall, LucideShield, LucideSparkle, LucideChevronRight, LucideSearch, LucideArchive, LucideChevronLeft, LucideEye, LucideEyeClosed, LucidePanelRight, LucideLogOut, LucideLogIn, LucideBuilding2, LucideHouse, LucideCheck, LucideTriangleAlert, LucideCircleAlert, LucideChevronDown, LucideChevronUp, LucideCircleUser, LucideDownload, LucideUpload, LucideList, LucideLayoutGrid, LucidePlus, LucidePin, LucideBed, LucideBriefcase, LucideBath, LucideSquare, LucideInfo, LucideCalendar, LucideCamera, LucideArrowRight, LucideWallpaper, LucideColumns3, LucideImage, LucideBlocks, LucideType, LucideCuboid, LucideLayoutTemplate, LucideCopy, LucideTrash2, LucideArrowLeft, LucideSend } from '@lucide/angular';
+import { LucidePencil, LucideTrash, LucideUser, LucideVariable, LucideDatabase, LucideSettings, LucidePalette, LucideX, LucideUsers, LucideMail, LucideLock, LucideMapPin, LucideGlobe, LucideSave, LucideHash, LucideAtSign, LucidePhone, LucidePhoneCall, LucideShield, LucideSparkle, LucideChevronRight, LucideSearch, LucideArchive, LucideChevronLeft, LucideEye, LucideEyeClosed, LucidePanelRight, LucideLogOut, LucideLogIn, LucideBuilding2, LucideHouse, LucideCheck, LucideTriangleAlert, LucideCircleAlert, LucideChevronDown, LucideChevronUp, LucideCircleUser, LucideDownload, LucideUpload, LucideList, LucideLayoutGrid, LucidePlus, LucidePin, LucideBed, LucideBriefcase, LucideBath, LucideSquare, LucideInfo, LucideCalendar, LucideCamera, LucideArrowRight, LucideWallpaper, LucideColumns3, LucideImage, LucideBlocks, LucideType, LucideCuboid, LucideLayoutTemplate, LucideCopy, LucideTrash2, LucideArrowLeft, LucideSend, LucideLoaderCircle } from '@lucide/angular';
 
 export const LUCIDE_ICON_SET = [
     LucidePencil,
@@ -66,7 +66,8 @@ export const LUCIDE_ICON_SET = [
     LucideCopy,
     LucideTrash2,
     LucideArrowLeft,
-    LucideSend
+    LucideSend,
+    LucideLoaderCircle
 
     
 ];

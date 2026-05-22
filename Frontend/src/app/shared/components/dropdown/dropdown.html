@@ -6,7 +6,7 @@
     type="button"
     (click)="toggle()"
     [disabled]="disabled"
-    class="rounded-sm w-full flex items-center justify-between border px-3 py-2 transition"
+    class="rounded-md w-full flex items-center justify-between border px-3 py-2 transition"
     [ngClass]="
       disabled
         ? 'bg-gray-50 text-primary border-gray-200 cursor-not-allowed'
@@ -33,7 +33,7 @@
     [cdkConnectedOverlayWidth]="trigger.elementRef.nativeElement.offsetWidth"
   >
     <ul
-      class="rounded-sm bg-white border border-gray-200 shadow-lg max-h-60 overflow-y-auto w-full slide-down transition-all duration-100"
+      class="rounded-md bg-white border border-gray-200 shadow-lg max-h-60 overflow-y-auto w-full slide-down transition-all duration-100"
     >
       @for (opt of options; track opt.value) {
         <li
