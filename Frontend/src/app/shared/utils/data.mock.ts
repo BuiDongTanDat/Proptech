@@ -1,5 +1,6 @@
-import { AccountStatus, UserRole } from "../../core/enum/enums";
-import { IContactForm, IProperty, IUserAccount } from "../../core/models/model";
+
+import { ContactStatus, PropertyStatus } from "../../core/enum/enums";
+import { IContactForm, IPost, IUserAccount } from "../../core/models/model";
 
 
 // ===== PROPERTIES DATA =====
@@ -662,7 +663,7 @@ export const contactFormsList: IContactForm[] = [
     phone: '0901234567',
     message: 'Tôi muốn tìm hiểu thêm về dự án căn hộ tại Quận 2.',
     createdAt: '2026-05-01 09:15',
-    status: 'Mới',
+    status: ContactStatus.NEW,
   },
   {
     id: 2,
@@ -671,7 +672,7 @@ export const contactFormsList: IContactForm[] = [
     phone: '0912345678',
     message: 'Cho tôi xin bảng giá và chính sách thanh toán mới nhất.',
     createdAt: '2026-05-01 14:20',
-    status: 'Đang xử lý',
+    status: ContactStatus.CONTACTED,
   },
   {
     id: 3,
@@ -680,7 +681,7 @@ export const contactFormsList: IContactForm[] = [
     phone: '0987654321',
     message: 'Tôi muốn đặt lịch tham quan nhà mẫu vào cuối tuần.',
     createdAt: '2026-05-02 10:45',
-    status: 'Mới',
+    status: ContactStatus.NEW,
   },
   {
     id: 4,
@@ -689,7 +690,7 @@ export const contactFormsList: IContactForm[] = [
     phone: '0934567890',
     message: 'Dự án có hỗ trợ vay ngân hàng không?',
     createdAt: '2026-05-02 16:05',
-    status: 'Đã hoàn thành',
+    status: ContactStatus.PROCESSED,
   },
   {
     id: 5,
@@ -698,7 +699,7 @@ export const contactFormsList: IContactForm[] = [
     phone: '0978123456',
     message: 'Tôi cần tư vấn căn hộ 2 phòng ngủ giá dưới 3 tỷ.',
     createdAt: '2026-05-03 08:30',
-    status: 'Đang xử lý',
+    status: ContactStatus.CONTACTED,
   },
   {
     id: 6,
@@ -707,7 +708,7 @@ export const contactFormsList: IContactForm[] = [
     phone: '0945678123',
     message: 'Xin gửi thêm thông tin về tiến độ xây dựng dự án.',
     createdAt: '2026-05-03 13:10',
-    status: 'Mới',
+    status: ContactStatus.NEW,
   },
   {
     id: 7,
@@ -716,7 +717,7 @@ export const contactFormsList: IContactForm[] = [
     phone: '0923456789',
     message: 'Tôi muốn đăng ký nhận thông tin mở bán sớm.',
     createdAt: '2026-05-04 11:25',
-    status: 'Mới',
+    status: ContactStatus.CANCELED,
   },
   {
     id: 8,
@@ -725,58 +726,27 @@ export const contactFormsList: IContactForm[] = [
     phone: '0961237894',
     message: 'Cho tôi hỏi phí quản lý hàng tháng là bao nhiêu?',
     createdAt: '2026-05-04 17:40',
-    status: 'Đã hoàn thành',
+    status: ContactStatus.PROCESSED,
   },
 ];
 
 
 
-// ======================
-// MOCK PROPERTIES
-// ======================
-export const MOCK_USERS: IUserAccount[] = [
+export const MOCK_POSTS: IPost[] = [
   {
-    _id: 'u001',
-    name: 'Nguyễn Văn A',
-    email: 'admin@protech.vn',
-    role: 'Quản lý',
-    status: 'Kích hoạt',
-  },
-  {
-    _id: 'u002',
-    name: 'Trần Thị B',
-    email: 'staff1@protech.vn',
-    role: 'Nhân viên',
-    status: 'Kích hoạt',
-  },
-  {
-    _id: 'u003',
-    name: 'Lê Minh C',
-    email: 'staff2@protech.vn',
-    role: 'Nhân viên',
-    status: 'Ngưng hoạt động',
-  },
-  {
-    _id: 'u004',
-    name: 'Phạm Hoàng D',
-    email: 'intern@protech.vn',
-    role: 'Thực tập sinh',
-    status: 'Kích hoạt',
-  },
-  {
-    _id: 'u005',
-    name: 'Võ Thanh E',
-    email: 'newuser@protech.vn',
-    role: 'Nhân viên',
-    status: 'Chờ xác thực',
-  },
-];
-export const MOCK_PROPERTIES: IProperty[] = [
-  {
-    id: 1,
+    _id: '6a11eb07c6f922bfda0216b2',
     title: 'Căn hộ Vinhomes Grand Park 2PN',
-    address: 'TP Thủ Đức, TP.HCM',
-    status: 'Bản nháp',
+
+    cover_picture: {
+      url: 'https://res.cloudinary.com/dt4fsjkst/image/upload/v1779559175/Proptech/whmpufwdpmagxcbxr7d5.png',
+      publicId: 'Proptech/whmpufwdpmagxcbxr7d5',
+    },
+
+    developer: 'Vinhomes',
+    location: 'TP Thủ Đức',
+    region: 'Miền Nam',
+    status: PropertyStatus.DRAFT,
+
 
     htmlSource: `<!doctype html>
 <html>
@@ -916,7 +886,7 @@ body { font-family: arial,helvetica,sans-serif; font-size: 1rem; line-height: 1.
   </body>
 </html>
 `,
-    jsonSource: {
+    jsonSource: JSON.stringify({
       "counters": {
         "u_column": 2,
         "u_row": 2,
@@ -1264,116 +1234,11 @@ body { font-family: arial,helvetica,sans-serif; font-size: 1rem; line-height: 1.
         }
       },
       "schemaVersion": 24
-    },
+    })
+    ,
 
-    createdBy: MOCK_USERS[1],
-
-    approval: {
-      needApproval: true,
-    },
-
-    createdAt: '2026-05-22T08:00:00Z',
-    updatedAt: '2026-05-22T08:00:00Z',
-  },
-
-  {
-    id: 2,
-    title: 'Biệt thự Sala Quận 2',
-    address: 'Quận 2, TP.HCM',
-    status: 'Chờ duyệt',
-
-    htmlSource: '<html><body><h1>Biệt thự Sala</h1></body></html>',
-    jsonSource: {
-      body: { rows: [] },
-    },
-
-    createdBy: MOCK_USERS[1],
-
-    approval: {
-      needApproval: true,
-    },
-
-    createdAt: '2026-05-21T10:00:00Z',
-    updatedAt: '2026-05-21T15:30:00Z',
-  },
-
-  {
-    id: 3,
-    title: 'Nhà phố Lakeview City',
-    address: 'Quận 2, TP.HCM',
-    status: 'Riêng tư',
-
-    shared: [
-      {
-        userId: 'u001',
-        permission: ['Xem', 'Chỉnh sửa'],
-      },
-      {
-        userId: 'u002',
-        permission: ['Xem'],
-      },
-    ],
-
-    htmlSource: '<html><body><h1>Lakeview City</h1></body></html>',
-    jsonSource: {
-      body: { rows: [] },
-    },
-
-    createdBy: MOCK_USERS[0],
-
-    approval: {
-      needApproval: true,
-    },
-
-    createdAt: '2026-05-18T09:00:00Z',
-    updatedAt: '2026-05-20T11:00:00Z',
-  },
-
-  {
-    id: 4,
-    title: 'Shophouse Empire City',
-    address: 'Thủ Thiêm, TP.HCM',
-    status: 'Đã lên lịch',
-
-    publishAt: '2026-05-30T08:00:00Z',
-
-    htmlSource: '<html><body><h1>Empire City</h1></body></html>',
-    jsonSource: {
-      body: { rows: [] },
-    },
-
-    createdBy: MOCK_USERS[1],
-
-    approval: {
-      needApproval: true,
-      approvedBy: MOCK_USERS[0],
-      approvedAt: '2026-05-22T09:30:00Z',
-    },
-
-    createdAt: '2026-05-20T08:00:00Z',
-    updatedAt: '2026-05-22T09:30:00Z',
-  },
-
-  {
-    id: 5,
-    title: 'Căn hộ Masteri Thảo Điền',
-    address: 'Quận 2, TP.HCM',
-    status: 'Xuất bản',
-
-    htmlSource: '<html><body><h1>Masteri Thảo Điền</h1></body></html>',
-    jsonSource: {
-      body: { rows: [] },
-    },
-
-    createdBy: MOCK_USERS[1],
-
-    approval: {
-      needApproval: true,
-      approvedBy: MOCK_USERS[0],
-      approvedAt: '2026-05-19T14:00:00Z',
-    },
-
-    createdAt: '2026-05-18T10:00:00Z',
-    updatedAt: '2026-05-19T14:00:00Z',
+    createdAt: '2026-05-23T17:59:35.144Z',
+    updatedAt: '2026-05-23T17:59:35.144Z',
+    __v: 0,
   },
 ];

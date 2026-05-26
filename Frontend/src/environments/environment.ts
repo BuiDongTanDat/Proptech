@@ -1,6 +1,12 @@
 export const environment = {
-  production: true,
-  defaultUrl: 'http://website:4000/api/v1', // Gateway API
-  listingServiceUrl: 'http://website:4001/api/v1', // Listing Service
-  userServiceUrl: 'http://website:4003/api/v1', // User Service - Auth
+  production: false,
+
+  apiUrl: 'http://localhost:3000/api',
+
+  endpoints: {
+    auth: '/auth',
+    posts: '/posts',
+    contacts: '/contacts',
+    users: '/users',
+  },
 };

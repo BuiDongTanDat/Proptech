@@ -65,7 +65,7 @@
           <app-dropdown
             formControlName="role"
             [options]="roleOptions"
-            className="w-full"
+            class="w-full"
           ></app-dropdown>
 
           @if (submitted && f.role.errors && currentMode() !== 'view') {
@@ -73,48 +73,40 @@
           }
         </div>
 
-        <!-- STATUS: chỉ hiện khi view hoặc edit -->
         @if (currentMode() !== 'add') {
           <div>
             <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
               Trạng thái
             </label>
 
-            <div class="flex items-center gap-2">
-              <div
-                class="text-xs flex-1 flex items-center gap-2 px-3 py-2 border border-gray-200 bg-gray-50 rounded-sm"
-              >
+            @if (userModal().status === 'Chờ xác thực') {
+              <div class="flex flex-row items-center gap-2 h-9">
+                <!-- Status -->
                 <div
-                  [class]="
-                    f.status.value === 'Kích hoạt'
-                      ? 'bg-green-500'
-                      : f.status.value === 'Chờ xác thực'
-                        ? 'bg-yellow-400'
-                        : 'bg-red-500'
-                  "
-                  class="size-2 rounded-full shrink-0"
-                ></div>
-                <span
-                  class="text-xs"
-                  [class]="
-                    f.status.value === 'Kích hoạt'
-                      ? 'text-green-500'
-                      : f.status.value === 'Chờ xác thực'
-                        ? 'text-yellow-400'
-                        : 'text-red-500'
-                  "
-                  >{{ f.status.value }}</span
+                  class="flex-1 flex items-center gap-1 px-3 py-2 border border-gray-300 rounded-md cursor-not-allowed"
                 >
-              </div>
+                  <div
+                    [class]="getAccountStatusBgClass(userModal().status)"
+                    class="size-1.5 rounded-full shrink-0"
+                  ></div>
 
-              @if (f.status.value === 'Chờ xác thực') {
+                  <span
+                    [class]="getAccountStatusTextClass(userModal().status)"
+                    class="text-xs flex-1"
+                  >
+                    {{ userModal().status }}
+                  </span>
+                </div>
+
+                <!-- Button -->
                 <app-button
                   type="button"
                   variant="accent"
                   title="Gửi lại mật khẩu"
                   (btnClick)="onResendPassword()"
                   [loading]="store.resendLoading()"
-                  [disabled]="store.resendLoading()"
+                  class="shrink-0"
+                  className="w-full px-3"
                 >
                   @if (store.resendLoading()) {
                     <svg lucideIcon="loader-circle" class="animate-spin" [size]="16"></svg>
@@ -123,8 +115,15 @@
                   }
                   Gửi lại email
                 </app-button>
-              }
-            </div>
+              </div>
+            } @else {
+              <!-- Bỏ div bọc ngoài không cần thiết, dùng class w-full trực tiếp -->
+              <app-dropdown
+                formControlName="status"
+                [options]="statusOptions"
+                class="w-full"
+              ></app-dropdown>
+            }
           </div>
         }
       </div>
@@ -143,7 +142,7 @@
             type="button"
             className="bg-primary text-white"
             (btnClick)="onEdit()"
-            [disabled]="store.resendLoading() || store.loading()"
+            [disabled]="store.resendLoading() || store.submitLoading()"
           >
             <svg lucideIcon="pencil" class="size-4"></svg>
             Chỉnh sửa
@@ -153,7 +152,7 @@
             type="button"
             variant="outline"
             (btnClick)="onCancel()"
-            [disabled]="store.resendLoading() || store.loading()"
+            [disabled]="store.resendLoading() || store.submitLoading()"
           >
             {{ currentMode() === 'edit' && userModal() ? 'Quay lại' : 'Hủy' }}
           </app-button>
@@ -161,10 +160,10 @@
           <app-button
             type="submit"
             className="bg-primary text-white"
-            [loading]="store.loading()"
-            [disabled]="store.resendLoading() || store.loading()"
+            [loading]="store.submitLoading()"
+            [disabled]="store.resendLoading() || store.submitLoading()"
           >
-            @if (store.loading()) {
+            @if (store.submitLoading()) {
               <svg lucideIcon="loader-circle" class="animate-spin" [size]="16"></svg>
             } @else {
               <svg lucideIcon="save" class="size-4"></svg>

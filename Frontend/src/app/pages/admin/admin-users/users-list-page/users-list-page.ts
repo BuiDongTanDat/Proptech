@@ -12,12 +12,15 @@ import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/conf
 import { IUserAccount } from '../../../../core/models/model';
 import { UserStore } from '../../../../core/stores/users.store';
 import { Loading } from '../../../../shared/components/loading/loading';
-
+import { getAccountStatusBgClass, getAccountStatusClass, getRoleClass } from '../../../../shared/utils/helper';
+import { AccountStatus, UserRole } from '../../../../core/enum/enums';
+import { ToastService } from '../../../../core/services/toast/toast.service';
+import { AuthStore } from '../../../../core/stores/auth.store';
 @Component({
   selector: 'app-users-list-page',
   imports: [
     CommonModule, FormsModule, LucideDynamicIcon, Pagination,
-    Button, CustomInput, Dropdown, UsersForm, Dialog, ConfirmDialog, Loading
+    Button, CustomInput, Dropdown, UsersForm, Dialog, ConfirmDialog, Loading,
   ],
   templateUrl: './users-list-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +31,8 @@ import { Loading } from '../../../../shared/components/loading/loading';
 export class UsersListPage implements OnInit {
   // Inject store công khai để template truy cập trực tiếp
   protected readonly store = inject(UserStore);
+  protected toastService = inject(ToastService);
+  protected readonly authStore = inject(AuthStore);
 
   // UI State (Chỉ giữ lại state liên quan đến hiển thị)
   isListView = signal(false);
@@ -38,12 +43,16 @@ export class UsersListPage implements OnInit {
   selectedUser = signal<IUserAccount | null>(null);
 
   sortOptions = [
-     { label: 'Sắp xếp', value: 'default' },
+    { label: 'Sắp xếp', value: 'default' },
     { label: 'Mới nhất', value: 'newest' },
     { label: 'Cũ nhất', value: 'oldest' },
     { label: 'Quản lý', value: 'admin' },
     { label: 'Nhân viên', value: 'staff' },
   ];
+
+  isCurrentUser(user: IUserAccount): boolean {
+    return user._id === this.authStore.user()?._id;
+  }
 
   ngOnInit(): void {
     this.onResize();
@@ -85,7 +94,8 @@ export class UsersListPage implements OnInit {
     this.showFormDialog.set(true);
   }
 
-  onDelete(user: IUserAccount) {
+  onDelete(user: IUserAccount | null) {
+    // Called from form: keep form open, just show confirm dialog
     this.selectedUser.set(user);
     this.showDeleteConfirm.set(true);
   }
@@ -94,17 +104,32 @@ export class UsersListPage implements OnInit {
     const user = this.selectedUser();
     if (user?._id) {
       this.store.removeUser(user._id);
-      this.showDeleteConfirm.set(false);
     }
+    this.showDeleteConfirm.set(false);
+    this.showFormDialog.set(false); // Close the form after confirm
   }
 
   onSaveUser(userData: any) {
-    if (this.formMode() === 'add') {
-      this.store.addUser(userData);
-    } else {
-      this.store.updateUser({ ...this.selectedUser()!, ...userData });
+    const action$ = this.formMode() === 'add'
+      ? this.store.addUser(userData)
+      : this.store.updateUser({ ...this.selectedUser()!, ...userData });
+
+    if (action$) {
+      action$.subscribe({
+        next: (res) => {
+          // Chỉ đóng form khi API trả về thành công
+          this.showFormDialog.set(false);
+          this.selectedUser.set(null);
+          this.toastService.success(res.message || 'Lưu thành công'); // Hiển thị toast thành công
+
+        },
+        error: (err) => {
+          // Không đóng form để user thấy lỗi hoặc sửa lại dữ liệu
+          console.error('Save failed', err.message);
+          this.toastService.error(err.message || 'Lưu thất bại'); // Hiển thị toast lỗi
+        }
+      });
     }
-    this.showFormDialog.set(false);
   }
 
   // Xem user (mở dialog readonly)
@@ -123,6 +148,18 @@ export class UsersListPage implements OnInit {
   // Hủy delete dialog
   cancelDelete() {
     this.showDeleteConfirm.set(false);
-    this.selectedUser.set(null);
+    // Do not close the form, just hide confirm dialog
+  }
+
+  getStatusTextClass(status: AccountStatus) {
+    return getAccountStatusClass(status);
+  }
+
+  getStatusBgClass(status: AccountStatus) {
+    return getAccountStatusBgClass(status);
+  }
+
+  getRoleClass(role: UserRole) {
+    return getRoleClass(role);
   }
 }

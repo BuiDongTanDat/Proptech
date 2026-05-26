@@ -1,0 +1,11 @@
+<div class="relative" [ngClass]="className">
+	<textarea
+		[rows]="rows"
+		[value]="value"
+		[placeholder]="placeholder"
+		[disabled]="disabled"
+		(input)="onInput($event)"
+		class="rounded-md w-full py-2 outline-none transition placeholder-gray-300 text-xs resize-none"
+		[ngClass]="[variantClasses, disabledClasses, 'px-3']"
+	></textarea>
+</div>

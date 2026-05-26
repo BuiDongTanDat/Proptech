@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export class AuthService {
   private readonly USER_KEY = 'auth_user';
 
-  baseUrl = environment.userServiceUrl; // Sử dụng URL từ environment
+  baseUrl = `${environment.apiUrl}${environment.endpoints.auth}`; // Sử dụng URL từ environment
 
   constructor(
     private apiService: ApiService,

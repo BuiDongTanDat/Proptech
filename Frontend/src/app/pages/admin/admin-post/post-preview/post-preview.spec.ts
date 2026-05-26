@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PropertiesForm } from './properties-form';
+import { PostReview } from './post-preview';
 
-describe('PropertiesForm', () => {
-  let component: PropertiesForm;
-  let fixture: ComponentFixture<PropertiesForm>;
+describe('PostReview', () => {
+  let component: PostReview;
+  let fixture: ComponentFixture<PostReview>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PropertiesForm],
+      imports: [PostReview],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PropertiesForm);
+    fixture = TestBed.createComponent(PostReview);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

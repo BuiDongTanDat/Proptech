@@ -1,54 +1,60 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from "@angular/common/http";
 import { catchError, Observable, throwError, timeout } from "rxjs";
-import { environment } from "../../../environments/environment.development";
+import { environment } from "../../../environments/environment";
+import { ApiErrorResponse, ApiResponse } from "../models/response";
+
+
+//Interface cho các tùy chọn bổ sung khi gọi API
 
 export interface ApiOptions {
     params?: Record<string, any>;
-    token?: string;
-    baseUrl?: string;
+    headers?: Record<string, string>;
+    token?: string;    // Chỉ dùng khi cần gửi token thủ công (ngoài Cookie)
+    baseUrl?: string;  // Dùng khi gọi sang một domain khác hoàn toàn
 }
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class ApiService {
-
-    private apiUrl = environment.defaultUrl || ''; // Lấy domain từ environment
-    private readonly DEFAULT_TIMEOUT = 30000;
+    private readonly apiUrl = environment.apiUrl;
+    private readonly DEFAULT_TIMEOUT = 20000;
 
     constructor(private http: HttpClient) { }
-    // Build URL 
+
+    // Xây dựng URL hoàn chỉnh
     private buildUrl(endpoint: string, baseUrl?: string): string {
         if (endpoint.startsWith('http')) return endpoint;
         const base = baseUrl ?? this.apiUrl;
-        return `${base}/${endpoint.replace(/^\//, '')}`;
+        // Loại bỏ dấu / thừa ở giữa base và endpoint
+        const cleanBase = base.replace(/\/$/, '');
+        const cleanEndpoint = endpoint.replace(/^\//, '');
+        return cleanEndpoint ? `${cleanBase}/${cleanEndpoint}` : cleanBase;
     }
 
-    //Create header 
-    private buildHeaders(
-        token?: string,
-        isFormData: boolean = false
-    ): HttpHeaders {
-        let headers = new HttpHeaders();
+    /*
+      Headers
+      Lưu ý: Không set Content-Type thủ công để HttpClient tự động xử lý 
+      (JSON sẽ tự set application/json, FormData sẽ tự set multipart/form-data với boundary)
+     */
+    private buildHeaders(options?: ApiOptions): HttpHeaders {
+        let headers = new HttpHeaders(options?.headers || {});
 
-        // Bearer token nếu có
-        if (token) {
-            headers = headers.set('Authorization', `Bearer ${token}`);
-        }
-
-        // Content-Type cho form data
-        if (isFormData) {
-            headers = headers.set('Content-Type', 'multipart/form-data');
+        if (options?.token) {
+            headers = headers.set('Authorization', `Bearer ${options.token}`);
         }
         return headers;
     }
 
+    /*
+     Query Params
+     */
     private buildParams(params?: Record<string, any>): HttpParams {
         let httpParams = new HttpParams();
         if (params) {
-            Object.keys(params).forEach(key => {
-                const value = params[key];
+            Object.entries(params).forEach(([key, value]) => {
                 if (value !== null && value !== undefined) {
                     httpParams = httpParams.set(key, value.toString());
                 }
@@ -57,136 +63,77 @@ export class ApiService {
         return httpParams;
     }
 
-    //Error Handler 
-    private handleError(error: any): Observable<never> {
-        console.error('[ApiService]', error);
+    /*
+     Xử lý lỗi tập trung theo format backend
+     */
+    private handleError(error: HttpErrorResponse): Observable<never> {
+        console.error('[ApiService Error]', error);
 
-        const message =
-            error?.error?.message ||
-            error?.message ||
-            'Có lỗi xảy ra';
-
-        return throwError(() => ({
-            status: error?.status,
-            message: message,
+        const errorRes: ApiErrorResponse = {
+            message: error.error?.message || 'Có lỗi xảy ra, vui lòng thử lại',
+            error: error.error?.error || 'Unknown Error',
+            statusCode: error.status,
             raw: error
-        }));
+        };
+
+        return throwError(() => errorRes);
     }
 
-    //  GET 
-    get<T>(
-        endpoint: string,
-        options?: ApiOptions
-    ): Observable<T> {
-
-        return this.http.get<T>(
-            this.buildUrl(endpoint, options?.baseUrl),
-            {
-                headers: this.buildHeaders(options?.token),
-                params: this.buildParams(options?.params),
-                withCredentials: true,
-            }
-        ).pipe(
+    // --- CÁC PHƯƠNG THỨC HTTP ---
+    // KHi call T/\. API response sẽ trả về 1 object 
+    // Bao gồm message, data (theo type T) và có thể có pagination
+    get<T>(endpoint: string, options?: ApiOptions): Observable<ApiResponse<T>> {
+        return this.http.get<ApiResponse<T>>(this.buildUrl(endpoint, options?.baseUrl), {
+            headers: this.buildHeaders(options),
+            params: this.buildParams(options?.params),
+            withCredentials: true, // Gửi Cookie kèm theo
+        }).pipe(
             timeout(this.DEFAULT_TIMEOUT),
             catchError(err => this.handleError(err))
         );
     }
 
-    //  POST JSON 
-    post<T>(
-        endpoint: string,
-        body: unknown,
-        options?: ApiOptions
-    ): Observable<T> {
-
-        return this.http.post<T>(
-            this.buildUrl(endpoint, options?.baseUrl),
-            body,
-            {
-                headers: this.buildHeaders(options?.token),
-                withCredentials: true,
-            }
-        ).pipe(
+    post<T>(endpoint: string, body: any, options?: ApiOptions): Observable<ApiResponse<T>> {
+        return this.http.post<ApiResponse<T>>(this.buildUrl(endpoint, options?.baseUrl), body, {
+            headers: this.buildHeaders(options),
+            params: this.buildParams(options?.params),
+            withCredentials: true,
+        }).pipe(
             timeout(this.DEFAULT_TIMEOUT),
             catchError(err => this.handleError(err))
         );
     }
 
-    // POST FormData 
-    postFormData<T>(
-        endpoint: string,
-        formData: FormData,
-        options?: ApiOptions
-    ): Observable<T> {
-        return this.http.post<T>(
-            this.buildUrl(endpoint, options?.baseUrl),
-            formData,
-            {
-                headers: this.buildHeaders(options?.token, true),
-                withCredentials: true,
-            }
-        ).pipe(
+    put<T>(endpoint: string, body: any, options?: ApiOptions): Observable<ApiResponse<T>> {
+        return this.http.put<ApiResponse<T>>(this.buildUrl(endpoint, options?.baseUrl), body, {
+            headers: this.buildHeaders(options),
+            params: this.buildParams(options?.params),
+            withCredentials: true,
+        }).pipe(
             timeout(this.DEFAULT_TIMEOUT),
             catchError(err => this.handleError(err))
         );
     }
 
-    //PUT 
-    put<T>(
-        endpoint: string,
-        body: unknown,
-        options?: ApiOptions
-    ): Observable<T> {
-
-        return this.http.put<T>(
-            this.buildUrl(endpoint, options?.baseUrl),
-            body,
-            {
-                headers: this.buildHeaders(options?.token),
-                withCredentials: true,
-            }
-        ).pipe(
+    patch<T>(endpoint: string, body: any, options?: ApiOptions): Observable<ApiResponse<T>> {
+        return this.http.patch<ApiResponse<T>>(this.buildUrl(endpoint, options?.baseUrl), body, {
+            headers: this.buildHeaders(options),
+            params: this.buildParams(options?.params),
+            withCredentials: true,
+        }).pipe(
             timeout(this.DEFAULT_TIMEOUT),
             catchError(err => this.handleError(err))
         );
     }
 
-    //  PATCH
-    patch<T>(
-        endpoint: string,
-        body: unknown,
-        options?: ApiOptions
-    ): Observable<T> {
-        return this.http.patch<T>(
-            this.buildUrl(endpoint, options?.baseUrl),
-            body,
-            {
-                headers: this.buildHeaders(options?.token),
-                withCredentials: true,
-            }
-        ).pipe(
+    delete<T>(endpoint: string, options?: ApiOptions): Observable<ApiResponse<T>> {
+        return this.http.delete<ApiResponse<T>>(this.buildUrl(endpoint, options?.baseUrl), {
+            headers: this.buildHeaders(options),
+            params: this.buildParams(options?.params),
+            withCredentials: true,
+        }).pipe(
             timeout(this.DEFAULT_TIMEOUT),
             catchError(err => this.handleError(err))
         );
     }
-
-    // DELETE 
-    delete<T>(
-        endpoint: string,
-        options?: ApiOptions
-    ): Observable<T> {
-
-        return this.http.delete<T>(
-            this.buildUrl(endpoint, options?.baseUrl),
-            {
-                headers: this.buildHeaders(options?.token),
-                withCredentials: true,
-            }
-        ).pipe(
-            timeout(this.DEFAULT_TIMEOUT),
-            catchError(err => this.handleError(err))
-        );
-    }
-
-
 }

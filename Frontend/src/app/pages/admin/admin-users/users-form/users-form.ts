@@ -7,7 +7,9 @@ import { CustomInput } from '../../../../shared/components/ui/custom-input/custo
 import { Button } from '../../../../shared/components/ui/button/button';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { Dropdown } from "../../../../shared/components/dropdown/dropdown";
-import { USER_ROLE_OPTIONS, USER_STATUS_OPTIONS } from '../../../../core/constants/user.constants';
+import { USER_ROLE_OPTIONS, USER_STATUS_OPTIONS } from '../../../../core/constants/user.constant';
+import { getAccountStatusBgClass, getAccountStatusClass } from '../../../../shared/utils/helper';
+import { AccountStatus, UserRole } from '../../../../core/enum/enums';
 
 @Component({
   selector: 'app-users-form',
@@ -39,10 +41,24 @@ export class UsersForm {
   submitted: boolean = false;
 
   userForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    role: new FormControl('Nhân viên', Validators.required),
-    status: new FormControl('Chờ xác thực', Validators.required),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+
+    role: new FormControl<UserRole>(UserRole.STAFF, {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    status: new FormControl<AccountStatus>(AccountStatus.PENDING, {
+      nonNullable: false,
+    }),
+
   });
 
 
@@ -61,7 +77,11 @@ export class UsersForm {
       if (userModal) {
         this.userForm.patchValue(userModal);
       } else {
-        this.userForm.reset({ role: 'Nhân viên', status: 'Ngừng hoạt động' });
+        this.userForm.reset({
+          name: '',
+          email: '',
+          role: UserRole.STAFF,
+        });
       }
 
       if (mode === 'view') {
@@ -103,9 +123,7 @@ export class UsersForm {
   }
 
   onDelete() {
-    if (confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) {
-      this.delete.emit();
-    }
+    this.delete.emit();
   }
 
   onClose() {
@@ -121,6 +139,14 @@ export class UsersForm {
 
     console.log('Resend password for:', user.email);
 
+  }
+
+  getAccountStatusTextClass(status: AccountStatus) {
+    return getAccountStatusClass(status);
+  }
+
+  getAccountStatusBgClass(status: AccountStatus) {
+    return getAccountStatusBgClass(status);
   }
 
 

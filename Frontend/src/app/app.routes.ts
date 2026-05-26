@@ -1,28 +1,10 @@
 import { Routes } from '@angular/router';
 import { ClientLayout } from './shared/layout/client-layout/client-layout';
-import { NotFound } from './pages/not-found/not-found';
-import { PropertyDetail } from './pages/client/property-detail/property-detail';
-import { TestPage } from './pages/test-page/test-page';
-import { LoginPage } from './pages/auth/login-page/login-page';
-import { ForgotPage } from './pages/auth/forgot-page/forgot-page';
-import { AdminLayout } from './shared/layout/admin-layout/admin-layout';
 import { AuthGuard } from './core/guards/auth.guard';
-import { ResetPassword } from './pages/auth/reset-password/reset-password';
 import { NoAuthGuard } from './core/guards/no-auth.guard';
 import { TokenGuard } from './core/guards/token.guard';
-import { LandingPage } from './pages/client/landing-page/landing-page';
-import { AboutUs } from './pages/client/about-us/about-us';
-import { PropertiesPage } from './pages/client/properties-client/properties-page/properties-page';
-import { PropertiesListPage } from './pages/admin/admin-properties/properties-list-page/properties-list-page';
-import { UsersListPage } from './pages/admin/admin-users/users-list-page/users-list-page';
-import { ContactListPage } from './pages/admin/admin-contact/contact-list-page/contact-list-page';
-import { AdminCompanyInfo } from './pages/admin/admin-company-info/admin-company-info';
-import { AdminUserInfo } from './pages/admin/admin-user-info/admin-user-info';
-import { AdminSetting } from './pages/admin/admin-setting/admin-setting';
-import { AdminDashboard } from './pages/admin/admin-dashboard/admin-dashboard';
 import { UnlayerDesign } from './pages/admin/unlayer-design/unlayer-design';
-import { PropertyPreview } from './pages/admin/admin-properties/property-preview/property-preview';
-import { SetupPassword } from './pages/auth/setup-password/setup-password';
+import { PostReview } from './pages/admin/admin-post/post-preview/post-preview';
 
 export const routes: Routes = [
     {
@@ -31,7 +13,7 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: LandingPage,
+                loadComponent: () => import('./pages/client/landing-page/landing-page').then(m => m.LandingPage),
                 title: 'AH.RPM - Nơi tìm kiếm bất động sản mơ ước của bạn',
             },
             {
@@ -42,22 +24,22 @@ export const routes: Routes = [
             },
             {
                 path: 'properties',
-                component: PropertiesPage,
+                loadComponent: () => import('./pages/client/properties-client/properties-page/properties-page').then(m => m.PropertiesPage),
                 title: 'Bất động sản',
             },
             {
                 path: 'properties/:id',
-                component: PropertyDetail, // Sử dụng cùng component để hiển thị chi tiết
+                loadComponent: () => import('./pages/client/property-detail/property-detail').then(m => m.PropertyDetail),
                 title: 'Chi tiết bất động sản',
             },
             {
                 path: 'about',
-                component: AboutUs,
+                loadComponent: () => import('./pages/client/about-us/about-us').then(m => m.AboutUs),
                 title: 'Về chúng tôi',
             },
             {
                 path: 'test',
-                component: TestPage,
+                loadComponent: () => import('./pages/test-page/test-page').then(m => m.TestPage),
             }
 
         ]
@@ -75,25 +57,25 @@ export const routes: Routes = [
             },
             {
                 path: 'login',
-                component: LoginPage,
+                loadComponent: () => import('./pages/auth/login-page/login-page').then(m => m.LoginPage),
                 title: 'Đăng nhập',
                 canActivate: [NoAuthGuard]
             },
             {
                 path: 'forgot-password',
-                component: ForgotPage,
+                loadComponent: () => import('./pages/auth/forgot-page/forgot-page').then(m => m.ForgotPage),
                 title: 'Quên mật khẩu',
                 canActivate: [NoAuthGuard]
             },
             {
                 path: 'reset-password',
-                component: ResetPassword,
+                loadComponent: () => import('./pages/auth/reset-password/reset-password').then(m => m.ResetPassword),
                 title: 'Đặt lại mật khẩu',
                 canActivate: [TokenGuard]
             },
             {
                 path: 'setup-password',
-                component: SetupPassword,
+                loadComponent: () => import('./pages/auth/setup-password/setup-password').then(m => m.SetupPassword),
                 title: 'Thiết lập mật khẩu',
                 canActivate: [TokenGuard]
             }
@@ -103,7 +85,7 @@ export const routes: Routes = [
     // --- ADMIN SIDE (Dùng AdminLayout) ---
     {
         path: 'admin',
-        component: AdminLayout,
+        loadComponent: () => import('./shared/layout/admin-layout/admin-layout').then(m => m.AdminLayout),
         canActivate: [AuthGuard],
         children: [
             {
@@ -114,38 +96,38 @@ export const routes: Routes = [
             },
             {
                 path: 'dashboard',
-                component: AdminDashboard,
+                loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard),
                 title: 'Dashboard',
 
             },
             {
-                path: 'properties',
-                component: PropertiesListPage,
-                title: 'Quản lý bất động sản',
+                path: 'post',
+                loadComponent: () => import('./pages/admin/admin-post/post-list-page/post-list-page').then(m => m.PostListPage),
+                title: 'Quản lý tin bất động sản',
             },
             {
                 path: 'contact',
-                component: ContactListPage,
+                loadComponent: () => import('./pages/admin/admin-contact/contact-list-page/contact-list-page').then(m => m.ContactListPage),
                 title: 'Quản lý liên hệ',
             },
             {
                 path: 'account',
-                component: UsersListPage,
+                loadComponent: () => import('./pages/admin/admin-users/users-list-page/users-list-page').then(m => m.UsersListPage),
                 title: 'Quản lý tài khoản',
             },
             {
                 path: 'info',
-                component: AdminCompanyInfo,
+                loadComponent: () => import('./pages/admin/admin-company-info/admin-company-info').then(m => m.AdminCompanyInfo),
                 title: 'Thông tin doanh nghiệp',
             },
             {
                 path: 'profile',
-                component: AdminUserInfo,
+                loadComponent: () => import('./pages/admin/admin-user-info/admin-user-info').then(m => m.AdminUserInfo),
                 title: 'Thông tin cá nhân',
             },
             {
                 path: 'setting',
-                component: AdminSetting,
+                loadComponent: () => import('./pages/admin/admin-setting/admin-setting').then(m => m.AdminSetting),
                 title: 'Cài đặt',
             }
         ]
@@ -154,23 +136,23 @@ export const routes: Routes = [
     // Admin Post Add page (Không lồng bên trong AdminLayout)
     {
 
-        path: 'admin/properties/add',
+        path: 'admin/post/add',
         component: UnlayerDesign,
         title: 'Thêm tin bất động sản',
 
     },
     {
-        path: 'admin/properties/view/:id',
-        component: PropertyPreview
+        path: 'admin/post/view/:id',
+        component: PostReview
     },
 
     {
-        path: 'admin/properties/editor/:id',
+        path: 'admin/post/editor/:id',
         component: UnlayerDesign
     },
     // Error pages 
     {
         path: '**',
-        component: NotFound,
+        loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFound),
     }
 ];

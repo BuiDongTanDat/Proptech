@@ -1,14 +1,49 @@
-<div class="w-full h-screen flex items-center justify-center bg-white">
-  <div class="flex flex-col items-center text-center gap-4">
-    <img src="404.png" alt="404 Not Found" class="w-64 md:w-80 lg:w-96 object-contain" />
+<div class="relative w-full h-screen flex items-center justify-center bg-linear-to-b from-white to-gray-50 overflow-hidden">
 
-    <h1 class="text-2xl font-bold text-primary">404 - Không tìm thấy trang</h1>
+  <!-- BACKGROUND -->
+  <div
+    class="absolute inset-0 z-0 pointer-events-none opacity-90 "
+    style="
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        #f3f4f6 2px,
+        #f3f4f6 4px
+      );
+    "
+  ></div>
 
-    <p class="text-sm text-gray-500">Trang bạn đang tìm không tồn tại hoặc đã bị di chuyển.</p>
+  <!-- CONTENT -->
+  <div class="relative z-10 flex flex-col items-center text-center gap-4">
 
-    <app-button class="group mt-4" color="primary" size="md" (click)="onBack()">
-      <svg lucideIcon="chevron-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-all duration-75"></svg>
+    <img
+      src="404.png"
+      alt="404 Not Found"
+      class="w-64 md:w-80 lg:w-96 object-contain"
+    />
+
+    <h1 class="text-2xl font-bold text-primary">
+      404 - Không tìm thấy trang
+    </h1>
+
+    <p class="text-sm text-gray-500">
+      Trang bạn đang tìm không tồn tại hoặc đã bị di chuyển.
+    </p>
+
+    <app-button
+      class="group mt-4"
+      color="primary"
+      size="md"
+      (click)="onBack()"
+    >
+      <svg
+        lucideIcon="chevron-left"
+        class="w-4 h-4 group-hover:-translate-x-0.5 transition-all duration-75"
+      ></svg>
+
       Về trang chủ
     </app-button>
+
   </div>
 </div>

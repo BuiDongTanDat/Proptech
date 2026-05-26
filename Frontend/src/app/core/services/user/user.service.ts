@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { IUserAccount } from '../../models/model';
 import { environment } from '../../../../environments/environment';
 import { ApiService } from '../api.service';
+import { UserRole } from '../../enum/enums';
+import { ApiResponse } from '../../models/response';
 
 export interface UserRequest {
   name: string;
   email: string;
-  role: 'Quản lý' | 'Nhân viên' | 'Thực tập sinh';
+  role: UserRole;
 }
 
 export interface UserResponse {
@@ -22,17 +24,17 @@ export class UserService {
     private apiService: ApiService
   ) { }
 
-  baseUrl = environment.userServiceUrl; // Sử dụng URL từ environment
+  private baseUrl = `${environment.apiUrl}${environment.endpoints.auth}`;
 
   getUsers() {
-    return this.apiService.get<UserResponse>(
+    return this.apiService.get<IUserAccount[]>(
       '',
       { baseUrl: this.baseUrl }
     );
   }
 
   register(request: UserRequest) {
-    return this.apiService.post<UserResponse>(
+    return this.apiService.post<IUserAccount>(
       'register',
       request,
       { baseUrl: this.baseUrl });

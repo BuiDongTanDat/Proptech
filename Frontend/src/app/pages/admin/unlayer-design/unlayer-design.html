@@ -1,49 +1,231 @@
-<div class="h-screen flex flex-col bg-gray-100">
-  <!-- TOPBAR -->
-  <div
-    class="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-gray-100 bg-white shadow-sm"
+<div class="h-screen flex bg-gray-100 overflow-hidden relative">
+  <!-- OPEN BUTTON -->
+  @if (!leftOpen()) {
+    <app-button
+      size="icon"
+      variant="outline"
+      class="fixed top-4 left-4 z-50"
+      (btnClick)="toggleLeft()"
+    >
+      <svg lucideIcon="chevron-right" size="18"></svg>
+    </app-button>
+  }
+
+  <!-- MOBILE BACKDROP -->
+  @if (leftOpen()) {
+    <div class="fixed inset-0 bg-black/30 z-30 md:hidden" (click)="toggleLeft()"></div>
+  }
+
+  <!-- SIDEBAR -->
+  <aside
+    class="fixed md:relative inset-y-0 left-0 z-40 bg-white border-r border-gray-200 shadow-sm transition-all duration-300 flex flex-col shrink-0"
+    [class]="leftOpen() ? 'w-80 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'"
   >
-    <!-- LEFT -->
-    <div class="flex items-center gap-3">
-      <app-button variant="outline" startIcon="arrow-left" (btnClick)="goBack()">
-        Quay lại
-      </app-button>
+    <!-- Close -->
+    <app-button
+      size="icon"
+      variant="outline"
+      class="absolute top-4 right-4 z-20 rounded-full bg-white"
+      [class.opacity-100]="leftOpen()"
+      [class.opacity-0]="!leftOpen()"
+      [class.pointer-events-none]="!leftOpen()"
+      (btnClick)="toggleLeft()"
+    >
+      <svg lucideIcon="x" size="16"></svg>
+    </app-button>
 
-      <div>
-        <h2 class="text-lg font-semibold text-primary">Thiết kế tin đăng</h2>
+    <!-- Sidebar content -->
+    <div
+      class="flex flex-col h-full transition-opacity duration-200"
+      [class.opacity-100]="leftOpen()"
+      [class.opacity-0]="!leftOpen()"
+      [class.pointer-events-none]="!leftOpen()"
+    >
+      <!-- Header -->
+      <div class="flex items-center gap-2 px-4 py-4 border-b border-gray-100 shrink-0">
+        <app-button size="icon" variant="outline" (btnClick)="goBack()">
+          <svg lucideIcon="arrow-left" size="16"></svg>
+        </app-button>
 
-        <p class="text-xs text-gray-500">Thiết kế tin đăng bất động sản</p>
+        <div>
+          @if (isEditMode()) {
+            <h2 class="text-sm font-bold text-primary">Chỉnh sửa bài đăng</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Cập nhật thông tin và thiết kế</p>
+          } @else {
+            <h2 class="text-sm font-bold text-primary">Tạo bài đăng mới</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Nhập thông tin và thiết kế</p>
+          }
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <form [formGroup]="postForm" class="flex flex-col flex-1 min-h-0">
+        <div class="flex-1 px-5 py-4 space-y-4 overflow-y-auto">
+          <!-- TITLE -->
+          <div>
+            <label class="block text-xs font-semibold mb-1 text-gray-400 uppercase">Tiêu đề</label>
+            <app-custom-input
+              formControlName="title"
+              placeholder="Nhập tiêu đề bài đăng"
+              variant="outline"
+            ></app-custom-input>
+            @if (submitted() && f['title'].errors?.['required']) {
+              <p class="text-xs text-red-500 mt-1">* Tiêu đề là bắt buộc</p>
+            }
+          </div>
+
+          <!-- DEVELOPER -->
+          <div>
+            <label class="block text-xs font-semibold mb-1 text-gray-400 uppercase"
+              >Chủ đầu tư</label
+            >
+            <app-custom-input
+              formControlName="developer"
+              placeholder="Nhập tên chủ đầu tư"
+              variant="outline"
+            ></app-custom-input>
+            @if (submitted() && f['developer'].errors?.['required']) {
+              <p class="text-xs text-red-500 mt-1">* Chủ đầu tư là bắt buộc</p>
+            }
+          </div>
+
+          <!-- LOCATION -->
+
+          <div>
+            <label class="block text-xs font-semibold mb-1 text-gray-400 uppercase">Vị trí</label>
+            <app-custom-input
+              formControlName="location"
+              placeholder="Nhập vị trí"
+              variant="outline"
+            ></app-custom-input>
+            @if (submitted() && f['location'].errors?.['required']) {
+              <p class="text-xs text-red-500 mt-1">* Vị trí là bắt buộc</p>
+            }
+          </div>
+          <div>
+            <!-- REGION -->
+            <div>
+              <label class="block text-xs font-semibold mb-1 text-gray-400 uppercase"
+                >Khu vực</label
+              >
+              <app-dropdown
+                formControlName="region"
+                [options]="regionOptions"
+                className="w-full"
+              ></app-dropdown>
+            </div>
+          </div>
+
+          <!-- STATUS -->
+          <div>
+            <label class="block text-xs font-semibold mb-1 text-gray-400 uppercase"
+              >Trạng thái</label
+            >
+            <app-dropdown
+              formControlName="status"
+              [options]="statusOptions"
+              className="w-full"
+              [disabled]="true"
+            ></app-dropdown>
+          </div>
+          <!-- COVER PICTURE -->
+          <div>
+            <label class="block text-xs font-semibold mb-2 text-gray-400 uppercase">Ảnh bìa</label>
+
+            <div
+              class="border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary transition overflow-hidden p-2"
+              (click)="coverInput.click()"
+              (dragover)="$event.preventDefault()"
+              (drop)="onCoverDrop($event)"
+            >
+              @if (coverPreview()) {
+                <img
+                  [src]="coverPreview()!"
+                  width="400"
+                  height="300"
+                  class="w-full h-48 object-cover rounded-lg"
+                />
+              } @else {
+                <div class="h-40 flex flex-col items-center justify-center text-center space-y-2">
+                  <svg lucideIcon="image-plus" class="size-6 text-gray-400"></svg>
+                  <p class="text-xs text-gray-600">Click hoặc kéo ảnh vào đây</p>
+                </div>
+              }
+            </div>
+            <input
+              #coverInput
+              type="file"
+              accept="image/*"
+              class="hidden"
+              (change)="onCoverSelected($event)"
+            />
+          </div>
+        </div>
+      </form>
+
+      <!-- Footer -->
+
+      <div class="p-4 border-t border-gray-100 bg-white shrink-0 space-y-3">
+        <!-- Row JSON actions -->
+
+        <div class="flex gap-2 w-full text-xs">
+          @if (!isEditMode()) {
+            <div class="flex-1">
+              <label
+                class="h-9 w-full flex items-center justify-center gap-2 px-3 py-2 border border-gray-200 rounded-md bg-white hover:bg-gray-50 cursor-pointer transition"
+              >
+                <svg lucideIcon="upload" class="size-4"></svg>
+                <span>Nhập JSON</span>
+
+                <input type="file" accept=".json" class="hidden" (change)="loadDesign($event)" />
+              </label>
+            </div>
+          }
+
+          <div class="flex-1">
+            <app-button
+              variant="outline"
+              className="w-full"
+              startIcon="download"
+              [disabled]="!editorReady()"
+              (btnClick)="exportJson()"
+            >
+              Xuất JSON
+            </app-button>
+          </div>
+        </div>
+
+        <div class="flex gap-2 w-full">
+          <div class="flex-1">
+            <app-button
+              variant="primary"
+              className="w-full"
+              [disabled]="store.loading()"
+              (btnClick)="saveDesign()"
+            >
+              @if (store.loading()) {
+                <svg lucideIcon="loader-2" class="animate-spin size-4"></svg>
+              }
+              <svg lucideIcon="save" class="size-4"></svg>
+              {{ store.loading() ? 'Đang lưu...' : 'Lưu thiết kế' }}
+            </app-button>
+          </div>
+        </div>
       </div>
     </div>
+  </aside>
 
-    <!-- RIGHT -->
-    <div class="flex items-center gap-2">
-      <!-- IMPORT JSON -->
-      <label
-        class="rounded-sm py-2.5 px-3 inline-flex items-center justify-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 cursor-pointer transition"
-      >
-        <svg lucideIcon="upload" size="16"></svg>
-
-        <span class="text-xs rounded-sm">Import JSON</span>
-
-        <input type="file" accept=".json" hidden (change)="loadDesign($event)" />
-      </label>
-
-      <!-- SAVE -->
-      <app-button variant="primary" startIcon="save" [disabled]="loading" (btnClick)="saveDesign()">
-        {{ loading ? 'Đang lưu...' : 'Lưu thiết kế' }}
-      </app-button>
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- EDITOR -->
+    <div class="flex-1 overflow-hidden bg-gray-200">
+      <div class="w-full h-full bg-white shadow-sm overflow-hidden">
+        <email-editor
+          class="block h-full"
+          [options]="editorOptions"
+          (loaded)="editorLoaded()"
+        ></email-editor>
+      </div>
     </div>
-  </div>
-
-  <!-- EDITOR -->
-  <div class="flex-1 overflow-hidden">
-    <email-editor
-      class="block h-full"
-      (loaded)="editorLoaded()"
-      [options]="editorOptions"
-      [projectId]="123456"
-    >
-    </email-editor>
   </div>
 </div>

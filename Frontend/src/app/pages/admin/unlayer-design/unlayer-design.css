@@ -1,0 +1,467 @@
+/* ============================================================
+   UNLAYER DESIGN – Scoped Styles
+   ============================================================ */
+
+/* ---------- layout wrapper ---------- */
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.ud-wrapper {
+  display: flex;
+  height: 100vh;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+/* ---------- center editor ---------- */
+.ud-editor {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ud-editor__inner {
+  flex: 1;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.ud-editor__canvas {
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  border: 1px solid #e5e7eb;
+}
+
+.ud-editor__email {
+  display: block;
+  height: 100%;
+}
+
+/* loading overlay */
+.ud-editor__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  z-index: 20;
+  gap: 12px;
+}
+
+.ud-editor__loading-text {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.ud-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-primary, #2563eb);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ud-spin 0.7s linear infinite;
+}
+
+@keyframes ud-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- sidebar ---------- */
+.ud-sidebar {
+  position: relative;
+  width: 340px;
+  flex-shrink: 0;
+  background: #fff;
+  border-left: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(.4,0,.2,1), opacity 0.2s;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.ud-sidebar--collapsed {
+  width: 0;
+  border-left-color: transparent;
+}
+
+.ud-sidebar--collapsed .ud-sidebar__content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ud-sidebar__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 340px;
+  opacity: 1;
+  transition: opacity 0.2s 0.1s;
+}
+
+/* ---------- toggle button ---------- */
+.ud-sidebar__toggle {
+  position: absolute;
+  top: 16px;
+  left: -40px;
+  z-index: 30;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #6b7280;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  transition: all 0.2s;
+}
+
+.ud-sidebar__toggle:hover {
+  color: var(--color-primary, #2563eb);
+  border-color: var(--color-primary, #2563eb);
+  background: #f0f5ff;
+  box-shadow: 0 4px 12px rgba(37,99,235,.15);
+}
+
+/* ---------- fixed header ---------- */
+.ud-sidebar__header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  flex-shrink: 0;
+}
+
+.ud-sidebar__header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ud-sidebar__title-group {
+  min-width: 0;
+}
+
+.ud-sidebar__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.ud-sidebar__subtitle {
+  font-size: 10px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 2px 0 0;
+}
+
+/* ---------- scrollable body ---------- */
+.ud-sidebar__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.ud-sidebar__body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ud-sidebar__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ud-sidebar__body::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 99px;
+}
+
+.ud-sidebar__body::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ---------- fixed footer ---------- */
+.ud-sidebar__footer {
+  padding: 16px 20px;
+  border-top: 1px solid #f3f4f6;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+/* ---------- form styles ---------- */
+.ud-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ud-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ud-section--bordered {
+  border-top: 1px solid #f3f4f6;
+  padding-top: 24px;
+}
+
+.ud-section__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+}
+
+.ud-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ud-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ud-field__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.ud-field__error {
+  font-size: 10px;
+  color: #ef4444;
+  margin: 0;
+}
+
+/* ---------- inputs ---------- */
+.ud-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 12px;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  color: #111827;
+  box-sizing: border-box;
+}
+
+.ud-input::placeholder {
+  color: #c4c9d2;
+}
+
+.ud-input:focus {
+  border-color: var(--color-primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+.ud-input--sm {
+  padding: 8px 10px;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.ud-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+/* ---------- upload zone ---------- */
+.ud-upload {
+  position: relative;
+  border: 2px dashed #d1d5db;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: #fafbfc;
+  outline: none;
+}
+
+.ud-upload:hover,
+.ud-upload:focus-visible {
+  border-color: var(--color-primary, #2563eb);
+  background: #f0f5ff;
+}
+
+.ud-upload--has-preview {
+  border-style: solid;
+  border-color: #e5e7eb;
+  background: #f9fafb;
+}
+
+.ud-upload--has-preview:hover {
+  border-color: var(--color-primary, #2563eb);
+}
+
+/* Empty state */
+.ud-upload__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 16px;
+  gap: 8px;
+}
+
+.ud-upload__icon-wrapper {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+  border-radius: 14px;
+  color: var(--color-primary, #2563eb);
+  margin-bottom: 4px;
+}
+
+.ud-upload__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.ud-upload__hint {
+  font-size: 10px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Preview state */
+.ud-upload__preview {
+  position: relative;
+  aspect-ratio: 16/9;
+}
+
+.ud-upload__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ud-upload__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(0,0,0,.45);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.ud-upload:hover .ud-upload__overlay {
+  opacity: 1;
+}
+
+.ud-upload__overlay-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ud-upload__overlay svg {
+  color: #fff;
+}
+
+/* Remove button */
+.ud-upload__remove {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  margin-top: 6px;
+  border: none;
+  background: none;
+  font-size: 11px;
+  color: #ef4444;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.ud-upload__remove:hover {
+  color: #dc2626;
+  text-decoration: underline;
+}
+
+/* ---------- note ---------- */
+.ud-note {
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  padding: 12px 14px;
+}
+
+.ud-note__text {
+  font-size: 10px;
+  color: #9ca3af;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---------- icons sizing ---------- */
+.ud-icon-xs {
+  width: 12px;
+  height: 12px;
+}
+
+.ud-icon-sm {
+  width: 16px;
+  height: 16px;
+}
+
+.ud-icon-md {
+  width: 20px;
+  height: 20px;
+}
+
+.ud-icon-lg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ---------- screen-reader only ---------- */
+.ud-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}

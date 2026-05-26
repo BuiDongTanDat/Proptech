@@ -1,68 +1,51 @@
-import { AccountStatus, ContactStatus, PropertyPermission, PropertyStatus, UserRole } from "../enum/enums";
+import { 
+  AccountStatus, 
+  ContactStatus, 
+  PropertyStatus, 
+  UserRole } from "../enum/enums";
 
 export interface IContactForm {
-    id?: number;
-    fullName: string;
-    email: string;
-    phone: string;
-    message: string;
-    createdAt: string;
-    status: ContactStatus;
+  id?: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  message: string;
+  createdAt: string;
+  status: ContactStatus;
 }
 
 export interface IUserAccount {
-    _id?: string;
-    name: string;
-    email: string;
-    role: UserRole;
-    status?: AccountStatus;
+  _id?: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  status: AccountStatus;
 }
 
-
-
-// Định nghĩa interface cho quyền truy cập tin đăng
-export interface IPropertyAccess {
-    userId: string;
-    permission: PropertyPermission[];
+// Ảnh tn đăng
+export interface IPostImage {
+  _id?: string;
+  url: string;
+  publicId: string;
 }
 
-// Người duyệt tin đăng
-export interface IPropertyApproval {
-    needApproval: boolean; // tạo mới luôn true
-    approvedBy?: IUserAccount;
-    approvedAt?: string;
-    rejectReason?: string;
+// Bài đăng
+export interface IPost {
+  _id?: string;
+  title: string;
+  cover_picture: IPostImage;
+
+  developer: string;
+  location: string;
+  region: string;
+
+  status: PropertyStatus;
+
+  htmlSource: string;
+  jsonSource: string;
+  
+  createdAt?: string;
+  updatedAt?: string;
+
+  __v?: number;
 }
-
-
-export interface IProperty {
-    id?: number;
-
-    title: string;
-    address: string;
-
-    // Trạng thái tin đăng
-    status: PropertyStatus;
-
-    // private access
-    // Nếu status là 'Riêng tư', 
-    // thì sẽ có trường này để lưu thông tin ai được xem/chỉnh sửa
-    shared?: IPropertyAccess[]; 
-    
-    htmlSource?: string;
-    jsonSource?: any;
-
-    // Schedule khi status là 'Đã lên lịch'
-    publishAt?: string;
-
-    // Người tạo bài đăng
-    createdBy?: IUserAccount;
-
-    // Người duyệt bài đăng
-    approval?: IPropertyApproval;
-
-    // Timestamp
-    createdAt?: string;
-    updatedAt?: string;
-}
-

@@ -23,8 +23,8 @@ import { PortalModule } from '@angular/cdk/portal';
   selector: 'app-dropdown',
   standalone: true,
   imports: [
-    CommonModule, 
-    LucideDynamicIcon, 
+    CommonModule,
+    LucideDynamicIcon,
     FormsModule,
     OverlayModule,
     PortalModule

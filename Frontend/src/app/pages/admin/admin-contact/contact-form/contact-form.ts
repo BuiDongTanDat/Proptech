@@ -1,28 +1,39 @@
-import { Component, effect, input, output, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LucideDynamicIcon } from '@lucide/angular';
+import { Component, input, output, signal, effect, inject } from '@angular/core';
+import { ContactsStore } from '../../../../core/stores/contacts.store';
+import { CommonModule } from '@angular/common';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
 import { Button } from '../../../../shared/components/ui/button/button';
+import { LucideDynamicIcon } from '@lucide/angular';
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
+import { CONTACT_STATUS_OPTIONS } from '../../../../core/constants/contact.constant';
+import { CustomTextarea } from "../../../../shared/components/ui/custom-textarea/custom-textarea";
 
 @Component({
   selector: 'app-contact-form',
-  imports: [LucideDynamicIcon, Button, CustomInput, ReactiveFormsModule, Dropdown],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CustomInput,
+    Button,
+    LucideDynamicIcon,
+    Dropdown,
+    CustomTextarea
+],
   templateUrl: './contact-form.html',
   styleUrl: './contact-form.css',
 })
 export class ContactForm {
+  store = inject(ContactsStore);
 
-  contact = input<any>();
+  // Add statusOptions for dropdown
+  readonly statusOptions = CONTACT_STATUS_OPTIONS
+
+  contactModal = input<any>();
   mode = input<'view' | 'edit' | 'add'>('view');
   close = output<void>();
-  save = output<{
-    fullName: string | null;
-    email: string | null;
-    phone: string | null;
-    message: string | null;
-    status: string | null;
-  }>();
+  save = output<any>();
   delete = output<void>();
 
   currentMode = signal<'view' | 'edit' | 'add'>('view');
@@ -31,25 +42,10 @@ export class ContactForm {
   contactForm = new FormGroup({
     fullName: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
-    phone: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]), // Thêm pattern cho phone
+    phone: new FormControl('', Validators.required),
     message: new FormControl('', Validators.required),
-    status: new FormControl('new', Validators.required),
+    status: new FormControl('Mới', Validators.required),
   });
-
-  statusOptions = [
-    {
-      label: 'Mới',
-      value: 'new',
-    },
-    {
-      label: 'Đã liên hệ',
-      value: 'contacted',
-    },
-    {
-      label: 'Đã đóng',
-      value: 'closed',
-    },
-  ];
 
   get f() {
     return this.contactForm.controls;
@@ -58,16 +54,16 @@ export class ContactForm {
   constructor() {
     effect(() => {
       const mode = this.mode();
-      const contact = this.contact();
+      const contactModal = this.contactModal();
 
+      this.currentMode.set(mode); 
+      
+      this.submitted = false;
 
-      this.currentMode.set(mode);
-      this.submitted = false; // Reset trạng thái khi đổi mode
-
-      if (contact) {
-        this.contactForm.patchValue(contact);
+      if (contactModal) {
+        this.contactForm.patchValue(contactModal);
       } else {
-        this.contactForm.reset({ status: 'new' });
+        this.contactForm.reset({ status: 'Mới' });
       }
 
       if (mode === 'view') {
@@ -84,38 +80,31 @@ export class ContactForm {
   }
 
   onCancel() {
-    // Nếu đang chỉnh sửa (edit) một liên hệ đã có dữ liệu (contact)
-    // thì quay lại chế độ xem (view).
-    if (this.currentMode() === 'edit' && this.contact()) {
-      this.contactForm.patchValue(this.contact());
+    if (this.currentMode() === 'edit' && this.contactModal()) {
+      this.contactForm.patchValue(this.contactModal());
       this.contactForm.disable();
       this.currentMode.set('view');
     } else {
-      // Nếu đang ở mode 'add' hoặc mode 'view' mà bấm hủy/đóng thì thoát luôn
       this.close.emit();
     }
   }
 
   onSubmit() {
     this.submitted = true;
-    // Mark all as touched để hiện lỗi nếu user chưa bấm vào input nào
     this.contactForm.markAllAsTouched();
 
     if (this.contactForm.invalid) {
       console.log('Form invalid:', this.contactForm.errors);
       return;
     }
-
-    this.save.emit(this.contactForm.getRawValue());
+    this.save.emit(this.contactForm.value);
   }
 
   onDelete() {
     this.delete.emit();
   }
 
-  // Gọi để tắt form luôn không cần quan tâm đang ở mode nào
   onClose() {
     this.close.emit();
   }
-
 }

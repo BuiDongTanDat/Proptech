@@ -1,0 +1,248 @@
+<div class="min-h-screen">
+  <!-- TOP BAR -->
+  <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <div class="flex flex-col">
+      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left">
+        Tin đăng BĐS
+      </h1>
+      <p class="text-sm text-gray-500 mt-1 slide-in-left">Quản lý tin đăng bất động sản</p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <app-button variant="outline" startIcon="download" (btnClick)="onExport()">
+        Xuất file
+      </app-button>
+
+      <app-button variant="primary" startIcon="plus" (btnClick)="onAdd()"> Thêm mới </app-button>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+    <app-custom-input
+      [ngModel]="store.searchQuery()"
+      (ngModelChange)="onSearch($event)"
+      placeholder="Tìm kiếm theo tên hoặc địa chỉ..."
+      icon="search"
+      variant="outline"
+      className="w-64 text-xs"
+    ></app-custom-input>
+
+    <div class="flex items-center gap-2 flex-wrap">
+      <div class="hidden md:flex">
+        <app-button
+          (btnClick)="setListView(false)"
+          [variant]="!isListView() ? 'primary' : 'outline'"
+          size="icon"
+        >
+          <svg lucideIcon="layout-grid" size="16"></svg>
+        </app-button>
+
+        <app-button
+          (btnClick)="setListView(true)"
+          [variant]="isListView() ? 'primary' : 'outline'"
+          size="icon"
+        >
+          <svg lucideIcon="list" size="16"></svg>
+        </app-button>
+      </div>
+
+      <app-dropdown
+        [options]="sortOptions"
+        [ngModel]="store.selectedSort()"
+        (ngModelChange)="onSortChange($event)"
+        placeholder="Sắp xếp"
+        className="min-w-40"
+      ></app-dropdown>
+    </div>
+  </div>
+
+  <!-- CARD VIEW -->
+  @if (!isListView() || isMobile()) {
+    <div class="fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+      @for (p of store.filteredPosts(); track p._id) {
+        <div
+          class="rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden"
+        >
+          <!-- IMAGE & STATUS -->
+          <div class="relative h-30 overflow-hidden bg-gray-100">
+            <img
+              [src]="p.cover_picture.url || 'bg_card.png'"
+              [alt]="p.title"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <span
+              [class]="getPostStatusClass(p.status)"
+              class="absolute top-2 right-2 px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wide"
+            >
+              {{ p.status }}
+            </span>
+          </div>
+
+          <!-- CONTENT -->
+          <div class="flex-1 flex flex-col gap-1 px-3.5 pt-3 pb-0">
+            <h3 class="text-[13px] font-semibold text-primary truncate leading-snug">
+              {{ p.title || 'Chưa có tiêu đề' }}
+            </h3>
+
+            <p class="flex items-center gap-1 text-xs text-gray-400 truncate">
+              <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-300"></svg>
+              {{ p.location || 'Chưa có địa chỉ' }}
+            </p>
+
+            <div class="grid grid-cols-2 gap-y-1 mt-1">
+              <span class="text-xs text-gray-400">Chủ đầu tư</span>
+              <span class="text-xs font-medium text-primary text-right truncate">
+                {{ p.developer || '—' }}
+              </span>
+              <span class="text-xs text-gray-400">Khu vực</span>
+              <span class="text-xs font-medium text-primary text-right truncate">
+                {{ p.region || '—' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- FOOTER/ACTIONS -->
+          <div
+            class="flex items-center justify-between px-3.5 py-2.5 mt-2.5 border-t border-gray-100"
+          >
+            <span class="flex items-center gap-1 text-xs text-gray-400">
+              <svg lucideIcon="calendar" size="14" class="text-gray-400"></svg>
+              {{ p.createdAt }}
+            </span>
+
+            <div class="flex items-center gap-1.5">
+              <app-button variant="action" size="icon" (btnClick)="onView(p)">
+                <svg lucideIcon="eye" size="13"></svg>
+              </app-button>
+              <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
+                <svg lucideIcon="pencil" size="13"></svg>
+              </app-button>
+              <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
+                <svg lucideIcon="trash" size="13"></svg>
+              </app-button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- LIST VIEW -->
+  @if (isListView() && !isMobile()) {
+    <div class="overflow-hidden border border-gray-200 bg-white shadow-sm fade-in rounded-md">
+      <table class="w-full border-collapse text-xs">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              Tin đăng
+            </th>
+            <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              Chủ đầu tư
+            </th>
+            <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              Vị trí
+            </th>
+            <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              Khu vực
+            </th>
+            <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              Trạng thái
+            </th>
+            <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              Ngày tạo
+            </th>
+            <th class="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase">
+              Thao tác
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (p of store.filteredPosts(); track p._id) {
+            <tr class="group border-b border-gray-100 hover:bg-gray-50/70 transition-colors">
+              <!-- TITLE -->
+              <td class="px-3 py-2">
+                <img
+                  [src]="p.cover_picture.url || 'bg_card.png'"
+                  alt="Cover"
+                  class="w-15 h-10 object-cover rounded mr-2 float-left"
+                />
+                <h3 class="text-xs font-medium text-primary truncate max-w-45">
+                  {{ p.title || 'Chưa có tiêu đề' }}
+                </h3>
+              </td>
+
+              <!-- DEVELOPER -->
+              <td class="px-3 py-2">
+                <p class="text-xs text-primary truncate max-w-30">
+                  {{ p.developer || 'Không xác định' }}
+                </p>
+              </td>
+
+              <!-- REGION -->
+              <td class="px-3 py-2">
+                <p class="text-xs text-primary truncate max-w-25">
+                  {{ p.region || 'Chưa cập nhật' }}
+                </p>
+              </td>
+
+              <!-- LOCATION -->
+              <td class="px-3 py-2">
+                <p class="text-xs text-gray-500 truncate max-w-35">
+                  {{ p.location || 'Chưa có địa chỉ' }}
+                </p>
+              </td>
+
+              <!-- STATUS -->
+              <td class="px-3 py-2">
+                <span
+                  [class]="getPostStatusClass(p.status)"
+                  class="inline-flex px-2 py-0.5 rounded text-xs font-semibold"
+                >
+                  {{ p.status }}
+                </span>
+              </td>
+
+              <!-- CREATED -->
+              <td class="px-3 py-2">
+                <span class="text-xs text-primary whitespace-nowrap">
+                  {{ p.createdAt | date: 'dd/MM/yyyy' }}
+                </span>
+              </td>
+
+              <!-- ACTION -->
+              <td class="px-3 py-2">
+                <div
+                  class="flex items-center justify-end gap-1 opacity-0 translate-x-1 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-150"
+                >
+                  <app-button variant="action" size="icon">
+                    <svg lucideIcon="eye" size="14"></svg>
+                  </app-button>
+
+                  <app-button variant="action" size="icon">
+                    <svg lucideIcon="pencil" size="14"></svg>
+                  </app-button>
+
+                  <app-button variant="destructive" size="icon">
+                    <svg lucideIcon="trash" size="14"></svg>
+                  </app-button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- PAGINATION -->
+  <div class="flex justify-center pt-6">
+    <app-pagination
+      [currentPage]="store.currentPage()"
+      [totalPages]="store.totalPages()"
+      [maxVisible]="5"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PropertyPreview } from './property-preview';
+import { CustomTextarea } from './custom-textarea';
 
-describe('PropertyPreview', () => {
-  let component: PropertyPreview;
-  let fixture: ComponentFixture<PropertyPreview>;
+describe('CustomTextarea', () => {
+  let component: CustomTextarea;
+  let fixture: ComponentFixture<CustomTextarea>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PropertyPreview],
+      imports: [CustomTextarea],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PropertyPreview);
+    fixture = TestBed.createComponent(CustomTextarea);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

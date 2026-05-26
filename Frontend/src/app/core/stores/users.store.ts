@@ -2,18 +2,19 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { UserRequest, UserService } from '../services/user/user.service';
 import { IUserAccount } from '../models/model';
 import { ToastService } from '../services/toast/toast.service';
-import { finalize } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserStore {
     private userService = inject(UserService);
     private toastService = inject(ToastService);
-
+    
     // State
     private _users = signal<IUserAccount[]>([]);
 
     readonly loading = signal<boolean>(false);
     readonly resendLoading = signal<boolean>(false);
+    readonly submitLoading = signal<boolean>(false); // add / edit
 
     readonly searchQuery = signal('');
     readonly selectedSort = signal('default');
@@ -90,21 +91,15 @@ export class UserStore {
     }
 
     addUser(payload: UserRequest) {
-        this.loading.set(true);
-        this.userService.register(payload)
-            .pipe(finalize(() => this.loading.set(false)))
-            .subscribe({
-                next: (res: any) => {
-                    const newUser: IUserAccount = {
-                        ...res.data,
-                        role: payload.role,
-                        status: 'Chờ xác thực',
-                    };
-                    this._users.update(list => [...list, newUser]);
-                    this.toastService.success('Thêm thành công');
-                },
-                error: err => this.toastService.error(err?.message || 'Lỗi thêm người dùng')
-            });
+        this.submitLoading.set(true);
+        // Trả về Observable để Component có thể subscribe
+        return this.userService.register(payload).pipe(
+            tap(res => {
+                this._users.update(list => [...list, res.data]);
+                this.toastService.success(res?.message || 'Thêm người dùng thành công! Một email xác thực đã được gửi đến người dùng.');
+            }),
+            finalize(() => this.submitLoading.set(false))
+        );
     }
 
     updateUser(updated: IUserAccount) {
