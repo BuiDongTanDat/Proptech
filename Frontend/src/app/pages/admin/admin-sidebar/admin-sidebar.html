@@ -1,200 +1,312 @@
 <aside
-  class="h-screen bg-white shadow-md border-r border-gray-100 flex flex-col justify-between transition-all duration-300 ease-in-out fixed md:relative top-0 left-0 z-40"
-  [ngClass]="[
-    isLeftSidebarCollapsed() ? '-translate-x-full md:translate-x-0' : 'translate-x-0',
-
-    isLeftSidebarCollapsed() ? 'md:w-18 w-64' : 'w-64',
-  ]"
+  class="fixed top-0 left-0 z-40 flex h-screen flex-col justify-between border-r border-gray-100 bg-white shadow-md transition-all duration-300 ease-in-out md:relative"
+  [class.-translate-x-full]="isLeftSidebarCollapsed()"
+  [class.translate-x-0]="!isLeftSidebarCollapsed()"
+  [class.md:translate-x-0]="true"
+  [class.w-64]="!isLeftSidebarCollapsed()"
+  [class.w-20]="isLeftSidebarCollapsed()"
 >
-  <!-- Dùng div bọc nội dung cố định chiều rộng để không bị vỡ chữ khi đang transition -->
-  <div class="flex-1 overflow-y-auto">
-    <!-- Logo Section -->
+  <div class="flex-1 overflow-y-auto overflow-x-hidden">
+    <!-- LOGO -->
     <div
-      class="px-4 py-4 flex items-center"
-      [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
+      class="flex items-center px-4 py-4"
+      [class.justify-center]="isLeftSidebarCollapsed()"
+      [class.gap-3]="!isLeftSidebarCollapsed()"
     >
-      <!-- Hình chữ nhật bên trái -->
-      <div class="w-1.5 h-10 bg-primary"></div>
+      <div class="h-10 w-1.5 shrink-0 rounded-full bg-primary"></div>
 
-      <!-- Full title -->
       @if (!isLeftSidebarCollapsed()) {
-        <div class="flex flex-col slide-in-left transition duration-250">
-          <span class="text-xl font-bold tracking-tight text-primary"> AH.RPM </span>
-
-          <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">
-            Management
-          </span>
+        <div class="flex flex-col animate-in slide-in-from-left-2 duration-200 overflow-hidden">
+          <span class="text-xl font-bold tracking-tight text-primary truncate">AH.RPM</span>
+          <span class="text-xs font-medium uppercase tracking-wider text-gray-400 truncate"
+            >Management</span
+          >
         </div>
       }
     </div>
 
-    <!-- Navigation -->
-    <nav class="flex flex-col gap-1 mt-4">
-      @for (item of navItems; track item.route) {
-        <a
-          [routerLink]="item.route"
-          #rla="routerLinkActive"
-          routerLinkActive="bg-primary text-white font-semibold shadow-sm hover:bg-primary"
-          class="relative group flex items-center px-4 py-2.5 text-sm whitespace-nowrap transition-all hover:bg-gray-100"
-        >
-          <div
-            class="flex items-center w-full group-hover:translate-x-1.5 transition duration-250"
-            [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
-          >
-            <!-- Icon -->
-            <svg
-              [lucideIcon]="item.icon"
-              class="size-5 shrink-0"
-              [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
-            ></svg>
-
-            <!-- Expanded -->
-            @if (!isLeftSidebarCollapsed()) {
-              <span
-                class="slide-in-left"
-                [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
+    <!-- MAIN NAV -->
+    <nav class="mt-4 flex flex-col gap-1 px-2" aria-label="Main Navigation">
+      @for (item of navItems; track item.label) {
+        @if (item.children?.length) {
+          <div class="flex flex-col">
+            <!-- PARENT BUTTON -->
+            <button
+              type="button"
+              (click)="toggleSubMenu(item.label)"
+              class="cursor-pointer group relative flex w-full items-center rounded-md px-3 py-2.5 text-sm hover:translate-x-1 transition-all duration-200 hover:bg-gray-100"
+              [class.bg-gray-100]="isParentActive(item)"
+              [attr.aria-expanded]="isSubMenuOpen(item.label)"
+              [attr.aria-label]="item.label"
+            >
+              <div
+                class="flex w-full items-center min-w-0"
+                [class.justify-center]="isLeftSidebarCollapsed()"
+                [class.justify-between]="!isLeftSidebarCollapsed()"
               >
-                {{ item.label }}
-              </span>
+                <div class="flex items-center min-w-0" [class.gap-3]="!isLeftSidebarCollapsed()">
+                  <svg
+                    [lucideIcon]="item.icon"
+                    class="size-5 shrink-0 transition-colors duration-200"
+                    [class.text-primary]="isParentActive(item)"
+                    [class.text-gray-400]="!isParentActive(item)"
+                    [class.group-hover:text-primary]="!isParentActive(item)"
+                    aria-hidden="true"
+                  ></svg>
+
+                  @if (!isLeftSidebarCollapsed()) {
+                    <span
+                      class="truncate transition-colors duration-200"
+                      [class.text-primary]="isParentActive(item)"
+                      [class.text-gray-400]="!isParentActive(item)"
+                      [class.group-hover:text-primary]="!isParentActive(item)"
+                    >
+                      {{ item.label }}
+                    </span>
+                  }
+                </div>
+
+                @if (!isLeftSidebarCollapsed()) {
+                  <svg
+                    lucideIcon="chevron-down"
+                    class="size-4 shrink-0 transition-transform duration-300"
+                    [class.rotate-180]="isSubMenuOpen(item.label)"
+                    [class.text-primary]="isParentActive(item)"
+                    [class.text-gray-400]="!isParentActive(item)"
+                    aria-hidden="true"
+                  ></svg>
+                }
+              </div>
+
+              <!-- TOOLTIP (collapsed) -->
+              @if (isLeftSidebarCollapsed()) {
+                <div
+                  class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 invisible opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100"
+                  role="tooltip"
+                >
+                  <div
+                    class="rounded-md bg-gray-900 px-3 py-2 text-xs text-white shadow-lg whitespace-nowrap"
+                  >
+                    {{ item.label }}
+                  </div>
+                </div>
+              }
+            </button>
+
+            <!-- SUBMENU (grid animation) -->
+            @if (!isLeftSidebarCollapsed()) {
+              <div
+                class="grid overflow-hidden transition-all duration-300 ease-in-out"
+                [class.grid-rows-[1fr]]="isSubMenuOpen(item.label)"
+                [class.grid-rows-[0fr]]="!isSubMenuOpen(item.label)"
+              >
+                <div class="overflow-hidden">
+                  <div class="ml-4 mt-1 flex flex-col gap-1 border-l border-gray-200 pl-3 pb-1">
+                    @for (child of item.children; track child.route) {
+                      <a
+                        [routerLink]="child.route"
+                        #childRla="routerLinkActive"
+                        [routerLinkActiveOptions]="{ exact: true }"
+                        routerLinkActive="bg-primary shadow-sm"
+                        class="group group-hover:translate-x-1 relative flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-gray-100"
+                        [class.hover:bg-primary]="childRla.isActive"
+                      >
+                        <svg
+                          [lucideIcon]="child.icon"
+                          class="size-4 shrink-0 transition-colors duration-200"
+                          [class.text-white]="childRla.isActive"
+                          [class.text-gray-400]="!childRla.isActive"
+                          [class.group-hover:text-primary]="!childRla.isActive"
+                          aria-hidden="true"
+                        ></svg>
+                        <span
+                          class="truncate transition-colors duration-200"
+                          [class.text-white]="childRla.isActive"
+                          [class.text-gray-500]="!childRla.isActive"
+                          [class.group-hover:text-primary]="!childRla.isActive"
+                        >
+                          {{ child.label }}
+                        </span>
+                      </a>
+                    }
+                  </div>
+                </div>
+              </div>
             }
           </div>
-          <!-- Thanh xanh bên phải -->
-          <span
-            class="absolute right-0 top-0 h-full w-1 bg-primary opacity-0 transition-all group-hover:opacity-100"
-          ></span>
-
-          <!-- Tooltip -->
-          @if (isLeftSidebarCollapsed()) {
+        } @else {
+          <!-- ITEM THƯỜNG -->
+          <a
+            [routerLink]="item.route"
+            #rla="routerLinkActive"
+            routerLinkActive="bg-primary shadow-sm"
+            class="group relative flex items-center rounded-md px-3 py-2.5 text-sm transition-all duration-200 hover:bg-gray-100"
+            [class.hover:bg-primary]="rla.isActive"
+          >
             <div
-              class="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none"
+              class="flex w-full min-w-0 items-center transition-transform duration-200 group-hover:translate-x-1"
+              [class.justify-center]="isLeftSidebarCollapsed()"
+              [class.gap-3]="!isLeftSidebarCollapsed()"
             >
-              <div class="px-3 py-2 rounded-sm bg-gray-100 text-primary text-xs shadow-lg">
-                {{ item.label }}
-              </div>
+              <svg
+                [lucideIcon]="item.icon"
+                class="size-5 shrink-0 transition-colors duration-200"
+                [class.text-white]="rla.isActive"
+                [class.text-gray-400]="!rla.isActive"
+                [class.group-hover:text-primary]="!rla.isActive"
+                aria-hidden="true"
+              ></svg>
+
+              @if (!isLeftSidebarCollapsed()) {
+                <span
+                  class="truncate transition-colors duration-200"
+                  [class.text-white]="rla.isActive"
+                  [class.text-gray-500]="!rla.isActive"
+                  [class.group-hover:text-primary]="!rla.isActive"
+                >
+                  {{ item.label }}
+                </span>
+              }
             </div>
-          }
-        </a>
+
+            <!-- TOOLTIP (collapsed) -->
+            @if (isLeftSidebarCollapsed()) {
+              <div
+                class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 invisible opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100"
+                role="tooltip"
+              >
+                <div
+                  class="rounded-md bg-gray-900 px-3 py-2 text-xs text-white shadow-lg whitespace-nowrap"
+                >
+                  {{ item.label }}
+                </div>
+              </div>
+            }
+          </a>
+        }
       }
     </nav>
   </div>
-<hr class="my-1 border-gray-200 mx-3" />
+
+  <hr class="mx-3 my-1 border-gray-200" />
+
+  <!-- BOTTOM NAV — đồng bộ style với main nav -->
   <div>
-    <nav class="flex flex-col gap-1">
+    <nav class="flex flex-col gap-1 px-2" aria-label="Secondary Navigation">
       @for (item of bottomNavItems; track item.route) {
         <a
           [routerLink]="item.route"
           #rla="routerLinkActive"
-          routerLinkActive="bg-primary text-white font-semibold shadow-sm hover:bg-primary"
-          class="relative group flex items-center px-4 py-2.5 text-sm whitespace-nowrap transition-all hover:bg-gray-100"
+          routerLinkActive="bg-primary shadow-sm"
+          class="group relative flex items-center rounded-md px-3 py-2.5 text-sm transition-all duration-200 hover:bg-gray-100"
+          [class.hover:bg-primary]="rla.isActive"
         >
           <div
-            class="flex items-center w-full group-hover:translate-x-1.5 transition duration-250"
-            [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
+            class="flex w-full min-w-0 items-center transition-transform duration-200 group-hover:translate-x-1"
+            [class.justify-center]="isLeftSidebarCollapsed()"
+            [class.gap-3]="!isLeftSidebarCollapsed()"
           >
-            <!-- Icon -->
             <svg
               [lucideIcon]="item.icon"
-              class="size-5 shrink-0"
-              [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
+              class="size-5 shrink-0 transition-colors duration-200"
+              [class.text-white]="rla.isActive"
+              [class.text-gray-400]="!rla.isActive"
+              [class.group-hover:text-primary]="!rla.isActive"
+              aria-hidden="true"
             ></svg>
 
-            <!-- Expanded -->
             @if (!isLeftSidebarCollapsed()) {
               <span
-                class="slide-in-left"
-                [ngClass]="rla.isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'"
+                class="truncate transition-colors duration-200"
+                [class.text-white]="rla.isActive"
+                [class.text-gray-500]="!rla.isActive"
+                [class.group-hover:text-primary]="!rla.isActive"
               >
                 {{ item.label }}
               </span>
             }
           </div>
 
-          <!-- Tooltip -->
+          <!-- TOOLTIP (collapsed) -->
           @if (isLeftSidebarCollapsed()) {
             <div
-              class="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none"
+              class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 invisible opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100"
+              role="tooltip"
             >
-              <div class="px-3 py-2 rounded-sm bg-gray-100 text-primary text-xs shadow-lg">
+              <div
+                class="rounded-md bg-gray-900 px-3 py-2 text-xs text-white shadow-lg whitespace-nowrap"
+              >
                 {{ item.label }}
               </div>
             </div>
           }
-
-          <!-- Thanh xanh bên phải -->
-          <span
-            class="absolute right-0 top-0 h-full w-1 bg-primary opacity-0 transition-all group-hover:opacity-100"
-          ></span>
         </a>
       }
     </nav>
-    <hr class="my-1 border-gray-200 mx-3" />
 
-    <!-- Sign Out -->
-    <div class="pb-6">
+    <hr class="mx-3 my-1 border-gray-200" />
+
+    <!-- SIGN OUT -->
+    <div class="px-2 pb-6">
       <button
+        type="button"
         (click)="onSignOut()"
-        class="cursor-pointer relative group flex items-center px-4 py-2.5 text-sm whitespace-nowrap transition-all hover:bg-red-50 w-full"
+        class="group relative flex w-full items-center rounded-md px-3 py-2.5 text-sm transition-all duration-200 hover:bg-red-50"
       >
         <div
-          class="flex items-center w-full group-hover:translate-x-1.5 transition duration-250"
-          [ngClass]="isLeftSidebarCollapsed() ? 'justify-center' : 'gap-3'"
+          class="flex w-full min-w-0 items-center transition-transform duration-200 group-hover:translate-x-1"
+          [class.justify-center]="isLeftSidebarCollapsed()"
+          [class.gap-3]="!isLeftSidebarCollapsed()"
         >
-          <!-- Icon -->
           <svg
             lucideIcon="log-out"
-            class="size-5 shrink-0 text-red-400 group-hover:text-red-600"
+            class="size-5 shrink-0 text-red-400 transition-colors duration-200 group-hover:text-red-600"
+            aria-hidden="true"
           ></svg>
 
-          <!-- Expanded -->
           @if (!isLeftSidebarCollapsed()) {
             <span
-              class="text-red-400 group-hover:text-red-600 slide-in-left transition duration-250"
+              class="cursor-pointer truncate text-red-400 transition-colors duration-200 group-hover:text-red-600"
             >
               Đăng xuất
             </span>
           }
         </div>
 
-        <!-- Tooltip -->
+        <!-- TOOLTIP (collapsed) -->
         @if (isLeftSidebarCollapsed()) {
           <div
-            class="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none"
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 invisible opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100"
+            role="tooltip"
           >
-            <div class="px-3 py-2 rounded-sm bg-gray-100 text-primary text-xs shadow-lg">
+            <div
+              class="rounded-md bg-gray-900 px-3 py-2 text-xs text-white shadow-lg whitespace-nowrap"
+            >
               Đăng xuất
             </div>
           </div>
         }
-        <!-- Thanh xanh bên phải -->
-        <span
-          class="absolute right-0 top-0 h-full w-1 bg-red-500 opacity-0 transition-all group-hover:opacity-100"
-        ></span>
       </button>
     </div>
   </div>
 </aside>
-<!-- Sign Out Dialog -->
-  <app-confirm-dialog
-    [show]="showSignOutDialog"
-    title="Xác nhận đăng xuất"
-    icon="triangle-alert"
-    (closed)="cancelSignOut()"
-    [closeOnBackdrop]="false"
-  >
-    <div class="flex flex-col gap-4 ">
-      <p class="text-sm text-gray-500">
-        Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?
-      </p>
-      <div class="flex justify-end gap-2">
-        <app-button variant="outline" (btnClick)="cancelSignOut()">
-          Hủy
-        </app-button>
-        <app-button variant="destructive" (btnClick)="confirmSignOut()">
-          <svg lucideIcon="log-out" class="size-4 mr-1"></svg>
-          Đăng xuất
-        </app-button>
-      </div>
-    </div>
-  </app-confirm-dialog>
-  
 
+<!-- Sign Out Dialog -->
+<app-confirm-dialog
+  [show]="showSignOutDialog"
+  title="Xác nhận đăng xuất"
+  icon="triangle-alert"
+  (closed)="cancelSignOut()"
+  [closeOnBackdrop]="false"
+>
+  <div class="flex flex-col gap-4">
+    <p class="text-sm text-gray-500">Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?</p>
+    <div class="flex justify-end gap-2">
+      <app-button variant="outline" (btnClick)="cancelSignOut()">Hủy</app-button>
+      <app-button variant="destructive" (btnClick)="confirmSignOut()">
+        <svg lucideIcon="log-out" class="size-4 mr-1" aria-hidden="true"></svg>
+        Đăng xuất
+      </app-button>
+    </div>
+  </div>
+</app-confirm-dialog>

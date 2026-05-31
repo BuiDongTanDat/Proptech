@@ -1,6 +1,6 @@
 
-import { ContactStatus, PropertyStatus } from "../../core/enum/enums";
-import { IContactForm, IPost, IUserAccount } from "../../core/models/model";
+import { PropertyStatus } from "../../core/enum/enums";
+import { IContact, IPost, IUserAccount } from "../../core/models/model";
 
 
 // ===== PROPERTIES DATA =====
@@ -655,80 +655,80 @@ export const usersList: IUserAccount[] = [
 ];
 
 // ===== CONTACT DATA =====
-export const contactFormsList: IContactForm[] = [
-  {
-    id: 1,
-    fullName: 'Nguyễn Văn An',
-    email: 'an.nguyen@gmail.com',
-    phone: '0901234567',
-    message: 'Tôi muốn tìm hiểu thêm về dự án căn hộ tại Quận 2.',
-    createdAt: '2026-05-01 09:15',
-    status: ContactStatus.NEW,
-  },
-  {
-    id: 2,
-    fullName: 'Trần Thị Mai',
-    email: 'mai.tran@gmail.com',
-    phone: '0912345678',
-    message: 'Cho tôi xin bảng giá và chính sách thanh toán mới nhất.',
-    createdAt: '2026-05-01 14:20',
-    status: ContactStatus.CONTACTED,
-  },
-  {
-    id: 3,
-    fullName: 'Lê Quốc Huy',
-    email: 'huy.le@gmail.com',
-    phone: '0987654321',
-    message: 'Tôi muốn đặt lịch tham quan nhà mẫu vào cuối tuần.',
-    createdAt: '2026-05-02 10:45',
-    status: ContactStatus.NEW,
-  },
-  {
-    id: 4,
-    fullName: 'Phạm Minh Đức',
-    email: 'duc.pham@gmail.com',
-    phone: '0934567890',
-    message: 'Dự án có hỗ trợ vay ngân hàng không?',
-    createdAt: '2026-05-02 16:05',
-    status: ContactStatus.PROCESSED,
-  },
-  {
-    id: 5,
-    fullName: 'Đặng Thu Hà',
-    email: 'ha.dang@gmail.com',
-    phone: '0978123456',
-    message: 'Tôi cần tư vấn căn hộ 2 phòng ngủ giá dưới 3 tỷ.',
-    createdAt: '2026-05-03 08:30',
-    status: ContactStatus.CONTACTED,
-  },
-  {
-    id: 6,
-    fullName: 'Võ Thành Nam',
-    email: 'nam.vo@gmail.com',
-    phone: '0945678123',
-    message: 'Xin gửi thêm thông tin về tiến độ xây dựng dự án.',
-    createdAt: '2026-05-03 13:10',
-    status: ContactStatus.NEW,
-  },
-  {
-    id: 7,
-    fullName: 'Bùi Ngọc Linh',
-    email: 'linh.bui@gmail.com',
-    phone: '0923456789',
-    message: 'Tôi muốn đăng ký nhận thông tin mở bán sớm.',
-    createdAt: '2026-05-04 11:25',
-    status: ContactStatus.CANCELED,
-  },
-  {
-    id: 8,
-    fullName: 'Ngô Gia Bảo',
-    email: 'bao.ngo@gmail.com',
-    phone: '0961237894',
-    message: 'Cho tôi hỏi phí quản lý hàng tháng là bao nhiêu?',
-    createdAt: '2026-05-04 17:40',
-    status: ContactStatus.PROCESSED,
-  },
-];
+// export const contactFormsList: IContactForm[] = [
+//   {
+//     id: 1,
+//     fullName: 'Nguyễn Văn An',
+//     email: 'an.nguyen@gmail.com',
+//     phone: '0901234567',
+//     message: 'Tôi muốn tìm hiểu thêm về dự án căn hộ tại Quận 2.',
+//     createdAt: '2026-05-01 09:15',
+//     status: ContactStatus.NEW,
+//   },
+//   {
+//     id: 2,
+//     fullName: 'Trần Thị Mai',
+//     email: 'mai.tran@gmail.com',
+//     phone: '0912345678',
+//     message: 'Cho tôi xin bảng giá và chính sách thanh toán mới nhất.',
+//     createdAt: '2026-05-01 14:20',
+//     status: ContactStatus.CONTACTED,
+//   },
+//   {
+//     id: 3,
+//     fullName: 'Lê Quốc Huy',
+//     email: 'huy.le@gmail.com',
+//     phone: '0987654321',
+//     message: 'Tôi muốn đặt lịch tham quan nhà mẫu vào cuối tuần.',
+//     createdAt: '2026-05-02 10:45',
+//     status: ContactStatus.NEW,
+//   },
+//   {
+//     id: 4,
+//     fullName: 'Phạm Minh Đức',
+//     email: 'duc.pham@gmail.com',
+//     phone: '0934567890',
+//     message: 'Dự án có hỗ trợ vay ngân hàng không?',
+//     createdAt: '2026-05-02 16:05',
+//     status: ContactStatus.PROCESSED,
+//   },
+//   {
+//     id: 5,
+//     fullName: 'Đặng Thu Hà',
+//     email: 'ha.dang@gmail.com',
+//     phone: '0978123456',
+//     message: 'Tôi cần tư vấn căn hộ 2 phòng ngủ giá dưới 3 tỷ.',
+//     createdAt: '2026-05-03 08:30',
+//     status: ContactStatus.CONTACTED,
+//   },
+//   {
+//     id: 6,
+//     fullName: 'Võ Thành Nam',
+//     email: 'nam.vo@gmail.com',
+//     phone: '0945678123',
+//     message: 'Xin gửi thêm thông tin về tiến độ xây dựng dự án.',
+//     createdAt: '2026-05-03 13:10',
+//     status: ContactStatus.NEW,
+//   },
+//   {
+//     id: 7,
+//     fullName: 'Bùi Ngọc Linh',
+//     email: 'linh.bui@gmail.com',
+//     phone: '0923456789',
+//     message: 'Tôi muốn đăng ký nhận thông tin mở bán sớm.',
+//     createdAt: '2026-05-04 11:25',
+//     status: ContactStatus.CANCELED,
+//   },
+//   {
+//     id: 8,
+//     fullName: 'Ngô Gia Bảo',
+//     email: 'bao.ngo@gmail.com',
+//     phone: '0961237894',
+//     message: 'Cho tôi hỏi phí quản lý hàng tháng là bao nhiêu?',
+//     createdAt: '2026-05-04 17:40',
+//     status: ContactStatus.PROCESSED,
+//   },
+// ];
 
 
 

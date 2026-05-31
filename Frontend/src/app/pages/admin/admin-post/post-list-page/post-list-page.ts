@@ -1,6 +1,5 @@
-
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit, HostListener, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { Button } from '../../../../shared/components/ui/button/button';
@@ -13,11 +12,12 @@ import { getPostStatusClass } from '../../../../shared/utils/helper';
 import { PropertyStatus } from '../../../../core/enum/enums';
 import { IPost } from '../../../../core/models/model';
 import { PostStore } from '../../../../core/stores/post.store';
-
+import { CategoryStore } from '../../../../core/stores/category.store';
+import { Loading } from '../../../../shared/components/loading/loading';
+import { PROPERTY_STATUS_SORT_OPTIONS } from '../../../../core/constants/post.constant';
 
 @Component({
   selector: 'app-post-list-page',
-  standalone: true,
   imports: [
     CommonModule,
     LucideDynamicIcon,
@@ -27,7 +27,8 @@ import { PostStore } from '../../../../core/stores/post.store';
     CustomInput,
     Dropdown,
     Dialog,
-    DatePipe
+    DatePipe,
+    Loading
   ],
   templateUrl: './post-list-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,11 +37,10 @@ import { PostStore } from '../../../../core/stores/post.store';
   }
 })
 export class PostListPage implements OnInit {
-
   protected readonly store = inject(PostStore);
+  protected readonly categoryStore = inject(CategoryStore);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-
 
   isListView = signal(false);
   isMobile = signal(false);
@@ -54,11 +54,36 @@ export class PostListPage implements OnInit {
     { label: 'Mới nhất', value: 'newest' },
     { label: 'Cũ nhất', value: 'oldest' },
   ];
-  selectedSort = 'newest';
 
+  statusSortOptions = PROPERTY_STATUS_SORT_OPTIONS;
+  selectedCategory = signal<string>('');
+
+  constructor() {
+    effect(() => {
+      const categories = this.categoryStore.categories(); // Lấy giá trị mới nhất của categories từ cái
+
+      if (
+        categories.length > 0 &&
+        !this.selectedCategory()
+      ) {
+        const firstCategoryId = categories[0]._id ?? '';
+
+        this.selectedCategory.set(firstCategoryId);
+        this.store.setCategory(firstCategoryId);
+        this.store.loadPosts();
+      }
+    });
+  }
 
   ngOnInit() {
     this.onResize();
+    this.categoryStore.loadCategories();
+    this.store.loadPosts();
+  }
+
+  onCategoryChange(val: string) {
+    this.selectedCategory.set(val);
+    this.store.setCategory(val);
     this.store.loadPosts();
   }
 
@@ -68,83 +93,72 @@ export class PostListPage implements OnInit {
 
   onSearch(val: string) {
     this.store.setSearch(val);
+    this.store.loadPosts();
   }
 
   onSortChange(val: string) {
     this.store.setSort(val);
+    this.store.loadPosts();
+  }
+
+  onStatusChange(val: string) {
+    this.store.setStatus(val);
+    this.store.loadPosts();
   }
 
   onPageChange(page: number) {
     this.store.setPage(page);
+    this.store.loadPosts();
   }
 
   onExport() {
-    // TODO: Export logic
     alert('Export file!');
   }
 
   setListView(isList: boolean) {
     this.isListView.set(isList);
-
   }
 
-
-  // CRUD UI Handlers
   onAdd() {
-    // Chuyển sang trang thêm bài viết mới
     this.router.navigate(['../post/add'], {
       relativeTo: this.route
     });
   }
 
   onEdit(post: IPost) {
-    // Chuyển sang trang chỉnh sửa với ID của bài viết
     this.router.navigate([
       'admin/post/editor',
       post._id
     ]);
-
   }
 
   onView(post: IPost) {
-    // Chuyển sang trang xem chi tiết với ID của bài viết
     this.router.navigate([
       'admin/post/view',
       post._id
     ]);
-
   }
 
   onDelete(post: IPost) {
-    // Called from form: keep form open, just show confirm dialog
     this.selectedPost.set(post);
     this.showDeleteConfirm.set(true);
   }
 
   confirmDelete() {
-    const post = this.selectedPost();
-    // if (post?._id) {
-    //   this.store.deletePost(post._id);
-    // }
     this.showDeleteConfirm.set(false);
-    this.showFormDialog.set(false); // Close the form after confirm
+    this.showFormDialog.set(false);
   }
 
-  // Đóng form dialog
   closeFormDialog() {
     this.showFormDialog.set(false);
     this.selectedPost.set(null);
   }
 
-  // Hủy delete dialog
   cancelDelete() {
     this.showDeleteConfirm.set(false);
-    // Do not close the form, just hide confirm dialog
   }
 
   getPostStatusClass(status: PropertyStatus) {
     return getPostStatusClass(status);
   }
-
-
 }

@@ -161,19 +161,14 @@
           Mô tả doanh nghiệp
         </label>
 
-        <textarea
-          [ngModel]="tempCompany().description"
-          (ngModelChange)="updateTempCompany('description', $event)"
-          [disabled]="!isEditing()"
-          rows="5"
-          class="
-            w-full border border-gray-200 px-3 py-2 outline-none
-            focus:border-primary resize-none
-            disabled:bg-gray-50 disabled:text-gray-500
-            disabled:cursor-not-allowed disabled:focus:border-gray-200
-          "
+        <app-custom-textarea
+          
+          placeholder="Nội dung liên hệ"
+          variant="outline"
+          [rows] = 4
+      
           placeholder="Mô tả doanh nghiệp"
-        ></textarea>
+        ></app-custom-textarea>
       </div>
     </div>
   </div>

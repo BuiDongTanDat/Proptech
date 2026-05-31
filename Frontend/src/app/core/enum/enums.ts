@@ -12,17 +12,18 @@ export enum AccountStatus {
 
 export enum ContactStatus {
   NEW = 'Mới',
-  CONTACTED = 'Đã liên hệ',
-  PROCESSED = 'Đã xử lý',
-  CANCELED = 'Đã hủy',
+  IN_PROGRESS = 'Đang xử lý',
+  RESOLVED = 'Đã xử lý',
+  SPAM = 'Tin rác',
 }
 
 //Post status
 export enum PropertyStatus {
   DRAFT = 'Bản nháp',
-  PENDING = 'Chờ duyệt',
+  PENDING_APPROVAL = 'Chờ duyệt',
+  REJECTED = 'Từ chối',
+  PUBLISHED = 'Xuất bản',
   PRIVATE = 'Riêng tư',
-  PUBLIC = 'Công khai',
 }
 
 export enum PropertyPermission {

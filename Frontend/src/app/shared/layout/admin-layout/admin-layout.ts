@@ -13,6 +13,10 @@ import { RouterOutlet } from '@angular/router';
   ],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.css',
+  host: {    
+    '(window:resize)': 'onResize()',
+    '(window:load)': 'onLoad()'
+  }
 })
 export class AdminLayout {
   isLeftSidebarCollapsed = signal<boolean>(false);
@@ -22,21 +26,21 @@ export class AdminLayout {
     this.isLeftSidebarCollapsed.update(collapsed => !collapsed);
   }
 
-  @HostListener('window:resize')
   onResize() {
     this.screenWidth.set(window.innerWidth);
     if (this.screenWidth() < 768) {
       this.isLeftSidebarCollapsed.set(true);
+    } else {
+      this.isLeftSidebarCollapsed.set(false);
     }
-      else {
-        this.isLeftSidebarCollapsed.set(false);
-      }
   }
 
-  @HostListener('window:load')
   onLoad() {
+    this.screenWidth.set(window.innerWidth);
     if (this.screenWidth() < 768) {
       this.isLeftSidebarCollapsed.set(true);
+    } else {
+      this.isLeftSidebarCollapsed.set(false);
     }
   }
 

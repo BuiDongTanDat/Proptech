@@ -2,21 +2,27 @@
   <!-- Background sọc -->
   <div
     class="absolute inset-0 z-0 pointer-events-none opacity-90"
-    style="background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, #f3f4f6 2px, #f3f4f6 4px);"
+    style="
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        #f3f4f6 2px,
+        #f3f4f6 4px
+      );
+    "
   ></div>
 
   <!-- Backdrop mobile -->
   @if (!isLeftSidebarCollapsed() && screenWidth() < 768) {
-    <div
-      class="fixed inset-0 bg-black/30 z-30 md:hidden"
-      (click)="onToggleSidebar()"
-    ></div>
+    <div class="fixed inset-0 bg-black/30 z-30 md:hidden" (click)="onToggleSidebar()"></div>
   }
 
   <!-- Sidebar -->
   <app-admin-sidebar
     [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
     [screenWidth]="screenWidth()"
+    (expandSidebar)="isLeftSidebarCollapsed.set(false)"
     class="z-40"
   ></app-admin-sidebar>
 

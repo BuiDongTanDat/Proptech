@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { LucideDynamicIcon } from '@lucide/angular';
-import { ToastService, ToastType } from '../../../core/services/toast/toast.service';
+import { ToastService, ToastType } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-toast',

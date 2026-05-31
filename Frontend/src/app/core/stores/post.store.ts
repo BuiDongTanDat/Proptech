@@ -1,27 +1,38 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { IPost } from '../models/model';
-import { ToastService } from '../services/toast/toast.service';
-import { finalize } from 'rxjs';
-import { PostService } from '../services/post/post.service';
-import { Router } from '@angular/router';
+import { IPost, ICategory } from '../models/model';
+import { ToastService } from '../services/toast.service';
+import { finalize, tap } from 'rxjs';
+import { PostService } from '../services/post.service';
+import { CategoryService } from '../services/category.service';
+import { PropertyStatus } from '../enum/enums';
 
+export const REAL_ESTATE_POST_ID = '6a169b6722a073de8d0ca587'; // ID dùng tạm để phân biệt bài đăng bất động sản trong dropdown liên hệ
 
 @Injectable({ providedIn: 'root' })
 export class PostStore {
     private postService = inject(PostService);
     private toastService = inject(ToastService);
-    private router = inject(Router);
+    private categoryService = inject(CategoryService);
 
     // State
     private _posts = signal<IPost[]>([]);
+
+    private _allRealEstatePosts = signal<IPost[]>([]); // Lưu toàn bộ bài đăng bất động sản (không phân trang, không filter)
+    allRealEstatePosts = this._allRealEstatePosts.asReadonly();
+
     private _selectedPost = signal<IPost | null>(null); // Lưu bài viết đang được chọn
     selectedPost = this._selectedPost.asReadonly();
+
+    // Category state
+    readonly categories = signal<ICategory[]>([]);
+    readonly selectedCategory = signal<string | 'all'>('all');
 
     //Loading
     readonly loading = signal<boolean>(false);
 
     readonly searchQuery = signal('');
     readonly selectedSort = signal('default');
+    readonly selectedStatus = signal<string | 'all'>('all');
 
     readonly pageSize = signal(12); // Cố định 12 post mỗi trang
     readonly currentPage = signal(1);
@@ -30,15 +41,25 @@ export class PostStore {
     // Computed State (Tự động chạy lại khi các tín hiệu trên thay đổi)
     readonly filteredPosts = computed(() => {
         let result = [...this._posts()]; //Clone nó trước
+
+        // Lọc theo tìm kiếm
         const query = this.searchQuery().toLowerCase().trim();
         if (query) {
             result = result.filter(p =>
                 p.title.toLowerCase().includes(query) ||
                 p.location.toLowerCase().includes(query) ||
-                p.developer.toLowerCase().includes(query) ||
-                p.region.toLowerCase().includes(query)
+                p.developer.toLowerCase().includes(query)
+                //p.region.toLowerCase().includes(query)
             );
         }
+
+        // Lọc theo trạng thái bài đăng
+        const status = this.selectedStatus();
+        if (status !== 'all') {
+            result = result.filter(p => p.status === status);
+        }
+
+        // Lọc theo sắp xếp ngày tạo
         switch (this.selectedSort()) {
             case 'newest':
                 result.sort((a, b) => {
@@ -62,26 +83,70 @@ export class PostStore {
     }
     );
 
+    
+    loadAllRealEstatePosts() {
+        this.loading.set(true);
+        this.postService.getAllPosts(1, REAL_ESTATE_POST_ID).pipe(
+            finalize(() => this.loading.set(false))
+        ).subscribe({
+            next: res => {
+                this._allRealEstatePosts.set(res.data ?? []);
+            }
+        });
+    }
 
     loadPosts() {
         this.loading.set(true);
-        const params = {
-            page: this.currentPage(),
-            limit: this.pageSize(),
-            search: this.searchQuery(),
-            sort: this.selectedSort()
-        };
-        this.postService.getAllPosts(params)
+        const page = this.currentPage();
+        const categoryId = this.selectedCategory();
+        this.postService.getAllPosts(page, categoryId !== 'all' ? categoryId : undefined)
             .pipe(finalize(() => this.loading.set(false)))
             .subscribe({
                 next: res => {
                     console.log('API RESPONSE:', res);
-                    this._posts.set(res.data);
+                    this._posts.set(res.data ?? []);
                     this.totalPages.set(res?.pagination?.totalPages || 1);
                     this.currentPage.set(res?.pagination?.page || 1);
                 },
-                error: err => this.toastService.error(err?.message || 'Lỗi tải danh sách')
+                error: err => {
+                    this.toastService.error(err?.error?.message || 'Lỗi tải danh sách')
+                    this._posts.set([]);
+                    this.totalPages.set(1);
+                    this.currentPage.set(1);
+                }
             });
+    }
+
+    // Dùng tạm khi chưa có API public
+    loadPublicPosts() {
+        this.loading.set(true);
+        this.postService.getAllPosts().pipe(
+            finalize(() => this.loading.set(false))
+        );
+    }
+
+    // Dùng tạm khi chưa có API public
+    loadPublicPostsById(id: string) {
+        this.loading.set(true);
+        this.postService.getPostById(id).pipe(
+            finalize(() => this.loading.set(false))
+        );
+    }
+
+    loadCategories() {
+        this.categoryService.getCategories().subscribe({
+            next: res => {
+                this.categories.set(res.data);
+            },
+            error: err => {
+                this.toastService.error(err?.error?.message || 'Lỗi tải danh mục');
+            }
+        });
+    }
+    setCategory(categoryId: string) {
+        this.selectedCategory.set(categoryId);
+        this.currentPage.set(1);
+        this.loadPosts();
     }
 
     loadPostById(id: string): void {
@@ -98,7 +163,7 @@ export class PostStore {
                 },
 
                 error: err => {
-                    this.toastService.error(err?.message || 'Lỗi tải bài viết')
+                    this.toastService.error(err?.error?.message || 'Lỗi tải bài viết')
 
                 }
             });
@@ -109,38 +174,50 @@ export class PostStore {
         this._selectedPost.set(null);
     }
 
-    addPost(postData: FormData): void {
-        this.loading.set(true);
-        this.postService.createPost(postData)
-            .pipe(finalize(() => this.loading.set(false)))
-            .subscribe({
-                next: res => {
-                    this._posts.update(posts => [res.data, ...posts]);
-                    this.toastService.success('Thêm bài viết thành công');
-                    this.router.navigate(['admin/post/']);
-                },
-                error: err =>
-                    this.toastService.error(err?.message || 'Lỗi thêm bài viết')
-            });
-    }
+    // Hàm call API dựa theo trạng thái form (thêm mới hoặc cập nhật)
+    savePost(
+        postId: string | null,
+        postData: FormData,
+        options: {
+            mode: 'draft' | 'update' | 'publish' | 'create';
+        }
+    ) {
+        console.log('Saving post with ID:', postId, 'and options:', options);
 
-    updatePost(id: string, postData: FormData): void {
+        switch (options.mode) {
+            case 'draft':
+            case 'create':
+                postData.set('status', PropertyStatus.DRAFT);
+                break;
+
+            case 'publish':
+                postData.set('status', PropertyStatus.PUBLISHED);
+                break;
+
+            case 'update':
+                break;
+        }
+
+        const request$ = postId
+            ? this.postService.updatePost(postId, postData)
+            : this.postService.createPost(postData);
+
         this.loading.set(true);
-        this.postService.updatePost(id, postData)
-            .pipe(finalize(() => this.loading.set(false)))
-            .subscribe({
-                next: res => {
+
+        return request$.pipe(
+            tap(res => {
+                if (postId) {
                     this._posts.update(posts =>
                         posts.map(p => p._id === res.data._id ? res.data : p)
                     );
-                    this.toastService.success(res?.message || 'Cập nhật bài viết thành công');
-                    this.router.navigate(['admin/post/editor', res.data._id]);
-                },
-                error: err =>
-                    this.toastService.error(err?.message || 'Lỗi cập nhật bài viết')
-            });
+                } else {
+                    this._posts.update(posts => [res.data, ...posts]);
+                }
 
-
+                this._selectedPost.set(res.data);
+            }),
+            finalize(() => this.loading.set(false))
+        );
     }
 
     setPage(page: number) {
@@ -159,6 +236,12 @@ export class PostStore {
 
     setSort(sort: string): void {
         this.selectedSort.set(sort);
+        this.currentPage.set(1);
+        this.loadPosts();
+    }
+
+    setStatus(status: string): void {
+        this.selectedStatus.set(status);
         this.currentPage.set(1);
         this.loadPosts();
     }

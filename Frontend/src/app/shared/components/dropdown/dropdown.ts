@@ -1,122 +1,151 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  HostListener,
-  forwardRef,
+  ContentChild,
+  ElementRef,
+  TemplateRef,
+  ViewChild,
+  AfterViewChecked,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  FormsModule,
-} from '@angular/forms';
-
-import { LucideDynamicIcon } from '@lucide/angular';
+import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { PortalModule } from '@angular/cdk/portal';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { LucideDynamicIcon } from '@lucide/angular';
+import { NgTemplateOutlet } from '@angular/common';
 
+export interface DropdownOption<T = unknown> {
+  label: string;
+  value: T;
+  [key: string]: unknown;
+}
+
+const MAX_VISIBLE = 8;     
 
 @Component({
   selector: 'app-dropdown',
-  standalone: true,
-  imports: [
-    CommonModule,
-    LucideDynamicIcon,
-    FormsModule,
-    OverlayModule,
-    PortalModule
-  ],
+  imports: [FormsModule, OverlayModule, ScrollingModule, LucideDynamicIcon, NgTemplateOutlet],
   templateUrl: './dropdown.html',
   styleUrl: './dropdown.css',
-
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => Dropdown),
-      multi: true,
-    },
+    { provide: NG_VALUE_ACCESSOR, useExisting: Dropdown, multi: true },
   ],
+  host: {
+    '(document:keydown.escape)': 'close()',
+    '(document:click)': 'onDocumentClick($event)',
+  },
 })
-export class Dropdown implements ControlValueAccessor {
+export class Dropdown implements ControlValueAccessor, AfterViewChecked {
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
-  /** Danh sách option */
-  @Input() options: Array<{ label: string; value: any }> = [];
+  // Inputs   
+  readonly options = input<DropdownOption[]>([]);
+  readonly placeholder = input('Chọn');
+  readonly searchable = input(false);
+  readonly disabled = input(false);
+  readonly className = input('');
+  readonly itemSize = input<number>(36); // Tùy chính độ cao mỗi option
+  readonly maxVisible = input<number>(MAX_VISIBLE); // Tùy chỉnh số lượng option hiển thị trước khi scroll xuất hiện
 
-  /** Placeholder */
-  @Input() placeholder: string = 'Chọn';
+  /** Template tuỳ chỉnh cho mỗi option */
+  @ContentChild(TemplateRef)
+  optionTemplate?: TemplateRef<{ $implicit: DropdownOption; selected: boolean }>;
 
-  /** Disabled */
-  @Input() disabled: boolean = false;
+  // Refs
+  private readonly elRef = inject(ElementRef<HTMLElement>);
 
-  /** Custom class */
-  @Input() className: string = '';
+  // State
+  readonly isOpen = signal(false);
+  readonly search = signal('');
+  readonly triggerWidth = signal(0);
+  
+  // Quản lý giá trị bằng Signal để đảm bảo OnPush hoạt động chuẩn xác
+  readonly selectedValue = signal<unknown>(null);
+  readonly disabledState = signal(false);
 
-  value: any = null;
+  // Kết hợp trạng thái disable từ input và form control
+  readonly isDisabled = computed(() => this.disabled() || this.disabledState());
 
-  isOpen = false;
+  readonly filteredOptions = computed(() => {
+    const kw = this.search().trim().toLowerCase();
+    return kw
+      ? this.options().filter(o => o.label.toLowerCase().includes(kw))
+      : this.options();
+  });
 
-  // ===== CONTROL VALUE ACCESSOR =====
+  readonly selectedLabel = computed(
+    () => this.options().find(o => o.value === this.selectedValue())?.label ?? ''
+  );
 
-  private onChange: any = () => { };
-  private onTouched: any = () => { };
+  readonly viewportHeight = computed(() => {
+    const size = this.itemSize();
+    const count = this.filteredOptions().length;
+    return Math.min(count, this.maxVisible()) * size;
+  });
 
-  writeValue(value: any): void {
-    this.value = value;
+  constructor() {
+    effect(() => {
+      if (!this.isOpen()) {
+        this.search.set('');
+      }
+    });
   }
 
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-  // ===== GETTER =====
-
-  get selectedLabel(): string {
-    return this.options.find(o => o.value === this.value)?.label ?? '';
-  }
-
-  // ===== ACTIONS =====
-
-  toggle() {
-    if (!this.disabled) {
-      this.isOpen = !this.isOpen;
+  ngAfterViewChecked(): void {
+    if (this.isOpen() && this.searchable() && this.searchInput?.nativeElement) {
+      setTimeout(() => {
+        this.searchInput?.nativeElement.focus();
+      }, 0);
     }
   }
 
-  onSelect(val: any) {
+  // ControlValueAccessor methods
+  private onChange = (_: unknown) => { };
+  private onTouched = () => { };
 
-    if (this.disabled) return;
-
-    // update internal state
-    this.value = val;
-
-    // notify Angular forms/ngModel
-    this.onChange(val);
-
-    this.onTouched();
-
-    // close dropdown
-    this.isOpen = false;
+  writeValue(value: unknown): void { 
+    this.selectedValue.set(value); 
+  }
+  
+  registerOnChange(fn: (v: unknown) => void) { this.onChange = fn; }
+  registerOnTouched(fn: () => void) { this.onTouched = fn; }
+  
+  // Đồng bộ trạng thái disable từ Reactive Forms
+  setDisabledState(isDisabled: boolean): void {
+    this.disabledState.set(isDisabled);
   }
 
-  // ===== CLICK OUTSIDE =====
+  toggle(): void {
+    if (this.isDisabled()) return;
+    const btn = this.elRef.nativeElement.querySelector('button') as HTMLElement;
+    const width = btn?.getBoundingClientRect().width ?? btn?.offsetWidth ?? 0;
+    this.triggerWidth.set(width);
+    this.isOpen.update(v => !v);
+  }
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    const el = event.target as HTMLElement;
+  close(): void { this.isOpen.set(false); }
 
-    if (!el.closest('app-dropdown')) {
-      this.isOpen = false;
+  select(value: unknown): void {
+    this.selectedValue.set(value);
+    this.onChange(value);
+    this.onTouched();
+    this.close();
+  }
+
+  trackByValue(_: number, item: DropdownOption): unknown { return item.value; }
+
+  onDocumentClick(event: MouseEvent): void {
+    if (this.isOpen() && this.searchable() && this.searchInput?.nativeElement) {
+      if (this.searchInput.nativeElement.contains(event.target as Node)) return;
+    }
+    if (!this.elRef.nativeElement.contains(event.target as Node)) {
+      this.close();
     }
   }
 }

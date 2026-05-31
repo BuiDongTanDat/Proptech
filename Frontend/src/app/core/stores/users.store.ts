@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { UserRequest, UserService } from '../services/user/user.service';
+import { UserRequest, UserService } from '../services/user.service';
 import { IUserAccount } from '../models/model';
-import { ToastService } from '../services/toast/toast.service';
+import { ToastService } from '../services/toast.service';
 import { finalize, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -86,7 +86,7 @@ export class UserStore {
             .pipe(finalize(() => this.loading.set(false)))
             .subscribe({
                 next: res => this._users.set(res.data),
-                error: err => this.toastService.error(err?.message || 'Lỗi tải danh sách')
+                error: err => this.toastService.error(err?.error?.message || 'Lỗi tải danh sách')
             });
     }
 
@@ -136,7 +136,7 @@ export class UserStore {
                     this.toastService.success(res?.message || 'Email xác thực đã được gửi lại thành công!');
                 },
                 error: err => {
-                    this.toastService.error(err?.message || 'Có lỗi xảy ra khi gửi lại email');
+                    this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi gửi lại email');
                 }
             });
     }

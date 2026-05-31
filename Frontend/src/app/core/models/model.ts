@@ -1,18 +1,10 @@
-import { 
-  AccountStatus, 
-  ContactStatus, 
-  PropertyStatus, 
-  UserRole } from "../enum/enums";
+import {
+  AccountStatus,
+  ContactStatus,
+  PropertyStatus,
+  UserRole,
+} from "../enum/enums";
 
-export interface IContactForm {
-  id?: number;
-  fullName: string;
-  email: string;
-  phone: string;
-  message: string;
-  createdAt: string;
-  status: ContactStatus;
-}
 
 export interface IUserAccount {
   _id?: string;
@@ -20,6 +12,14 @@ export interface IUserAccount {
   email: string;
   role: UserRole;
   status: AccountStatus;
+}
+
+// Danh mục bài đăng
+export interface ICategory {
+  _id?: string;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Ảnh tn đăng
@@ -43,9 +43,35 @@ export interface IPost {
 
   htmlSource: string;
   jsonSource: string;
-  
+  category?: {
+    _id: string,
+    name: string
+  },
   createdAt?: string;
   updatedAt?: string;
 
   __v?: number;
+}
+
+export interface IPropertyGeneralDetails {
+  _id?: string;
+  title: string;
+  cover_picture: IPostImage;
+}
+export interface IContact {
+  _id?: string;
+  name: string;
+  phone: string;
+  message: string;
+  status: ContactStatus;
+  createdAt?: string;
+  updatedAt?: string;
+  post?: IPropertyGeneralDetails
+  resolvedBy?: {
+    _id: string;
+    name: string;
+  }
+
+
+
 }

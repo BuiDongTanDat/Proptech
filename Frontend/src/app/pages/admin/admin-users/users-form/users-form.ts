@@ -114,12 +114,23 @@ export class UsersForm {
     this.userForm.markAllAsTouched();
 
     if (this.userForm.invalid) {
-      console.log('Form invalid:', this.userForm.errors);
+      return;
+    }
+
+    const formValue = this.userForm.getRawValue();
+    // Ko gửi status khi thêm mới
+    if (this.currentMode() === 'add') {
+      this.save.emit({
+        name: formValue.name,
+        email: formValue.email,
+        role: formValue.role,
+      });
 
       return;
     }
 
-    this.save.emit(this.userForm.value);
+    // edit
+    this.save.emit(formValue);
   }
 
   onDelete() {

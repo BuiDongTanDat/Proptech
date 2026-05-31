@@ -5,8 +5,8 @@ import { CustomInput } from '../../../shared/components/ui/custom-input/custom-i
 import { Button } from '../../../shared/components/ui/button/button';
 import { Toast } from '../../../shared/components/toast/toast';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth/auth.service';
-import { ToastService } from '../../../core/services/toast/toast.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-reset-password',

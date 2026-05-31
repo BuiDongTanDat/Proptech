@@ -1,5 +1,7 @@
 import { Component, input, output, signal, effect, inject } from '@angular/core';
 import { ContactsStore } from '../../../../core/stores/contacts.store';
+import { UserStore } from '../../../../core/stores/users.store';
+import { PostStore } from '../../../../core/stores/post.store';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
@@ -20,15 +22,20 @@ import { CustomTextarea } from "../../../../shared/components/ui/custom-textarea
     LucideDynamicIcon,
     Dropdown,
     CustomTextarea
-],
+  ],
   templateUrl: './contact-form.html',
   styleUrl: './contact-form.css',
 })
 export class ContactForm {
   store = inject(ContactsStore);
+  userStore = inject(UserStore);
+  postStore = inject(PostStore);
 
-  // Add statusOptions for dropdown
-  readonly statusOptions = CONTACT_STATUS_OPTIONS
+  readonly statusOptions = CONTACT_STATUS_OPTIONS;
+
+  // Dropdown options for users and posts
+  //userOptions = signal<{ label: string; value: string }[]>([]);
+  postOptions = signal<{ label: string; value: string }[]>([]);
 
   contactModal = input<any>();
   mode = input<'view' | 'edit' | 'add'>('view');
@@ -40,11 +47,12 @@ export class ContactForm {
   submitted: boolean = false;
 
   contactForm = new FormGroup({
-    fullName: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
+    name: new FormControl('', Validators.required),
     phone: new FormControl('', Validators.required),
     message: new FormControl('', Validators.required),
     status: new FormControl('Mới', Validators.required),
+    resolvedBy: new FormControl(''),
+    postId: new FormControl(''),
   });
 
   get f() {
@@ -52,16 +60,41 @@ export class ContactForm {
   }
 
   constructor() {
+    // Tải danh sách nhân viên và bài đăng để hiển thị trong dropdown
+    this.userStore.loadUsers();
+    this.postStore.loadAllRealEstatePosts();
+
+    effect(() => {
+      // Hiển thị toàn bộ danh sách dự án (posts) trong dropdown
+      const posts = this.postStore.allRealEstatePosts(); // lấy toàn bộ danh sách, không filter
+      this.postOptions.set(
+        posts.map(p => ({
+          label: p.title,
+          value: p._id || '',
+          location: p.location,
+          image: p.cover_picture.url || 'bg_card.png',
+          developer: p.developer
+        }))
+      );
+
+    });
+
     effect(() => {
       const mode = this.mode();
       const contactModal = this.contactModal();
-
-      this.currentMode.set(mode); 
-      
+      this.currentMode.set(mode);
       this.submitted = false;
 
       if (contactModal) {
-        this.contactForm.patchValue(contactModal);
+        // Patch value for edit/view
+        this.contactForm.patchValue({
+          name: contactModal.name || '',
+          phone: contactModal.phone || '',
+          message: contactModal.message || '',
+          status: contactModal.status || 'Mới',
+          resolvedBy: contactModal.resolvedBy?._id || '',
+          postId: contactModal.post?._id || '',
+        });
       } else {
         this.contactForm.reset({ status: 'Mới' });
       }
@@ -97,7 +130,17 @@ export class ContactForm {
       console.log('Form invalid:', this.contactForm.errors);
       return;
     }
-    this.save.emit(this.contactForm.value);
+    // Chuẩn hóa dữ liệu gửi đi
+    const formValue = this.contactForm.value;
+    const data = {
+      name: formValue.name,
+      phone: formValue.phone,
+      message: formValue.message,
+      status: formValue.status,
+      resolvedBy: formValue.resolvedBy ? { _id: formValue.resolvedBy } : undefined,
+      postId: formValue.postId ? { _id: formValue.postId } : undefined,
+    };
+    this.save.emit(data);
   }
 
   onDelete() {

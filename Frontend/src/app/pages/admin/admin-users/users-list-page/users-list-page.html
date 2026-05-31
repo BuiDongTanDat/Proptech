@@ -59,6 +59,11 @@
 
   @if (store.loading()) {
     <app-loading></app-loading>
+  } @else if (store.filteredUsers().length === 0) {
+    <div class="flex flex-col items-center gap-2 py-16">
+      <svg lucideIcon="inbox" size="48" class="text-gray-300"></svg>
+      <p class="text-sm text-gray-500">Không tìm thấy tài khoản nào</p>
+    </div>
   } @else {
     <!-- CARD VIEW -->
     @if (!isListView() || isMobile()) {

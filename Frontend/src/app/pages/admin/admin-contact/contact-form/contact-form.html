@@ -22,30 +22,16 @@
   <!-- FORM -->
   <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 min-h-0">
     <div class="flex-1 px-5 py-4 space-y-4 overflow-y-auto">
-      <!-- FULL NAME -->
+      <!-- NAME -->
       <div>
         <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"> Họ tên </label>
         <app-custom-input
-          formControlName="fullName"
+          formControlName="name"
           placeholder="Nhập họ tên"
           variant="outline"
         ></app-custom-input>
-        @if (submitted && f.fullName.errors && currentMode() !== 'view') {
+        @if (submitted && f.name.errors && currentMode() !== 'view') {
           <p class="text-[11px] text-red-500 mt-1">* Họ tên là bắt buộc</p>
-        }
-      </div>
-
-      <!-- EMAIL -->
-      <div>
-        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"> Email </label>
-        <app-custom-input
-          formControlName="email"
-          placeholder="Email"
-          variant="outline"
-          type="email"
-        ></app-custom-input>
-        @if (submitted && f.email.errors && currentMode() !== 'view') {
-          <p class="text-[11px] text-red-500 mt-1">* Email không hợp lệ</p>
         }
       </div>
 
@@ -63,6 +49,66 @@
           <p class="text-[11px] text-red-500 mt-1">* Số điện thoại không hợp lệ</p>
         }
       </div>
+
+      <!-- PROPERTY -->
+  
+      <div>
+        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
+          Bất động sản
+        </label>
+
+        <app-dropdown
+          formControlName="post"
+          [options]="postOptions()"
+          [searchable]="true"
+          placeholder="Chọn bất động sản quan tâm"
+          [itemSize]="50" 
+          [maxVisible]="3"
+        >
+          <ng-template let-option let-selected="selected">
+            <div
+              class="cursor-pointer flex items-center gap-1 px-3 py-0 w-full h-full hover:bg-gray-100 transition-colors"
+              [class.bg-primary]="selected"
+              [class.hover:bg-gray-100]="!selected".
+              [class.text-white]="selected"
+            >
+              <!-- Ảnh -->
+              <img
+                [src]="option.image || 'assets/images/default-property.jpg'"
+                [alt]="option.label"
+                class="w-10 h-8 object-cover shrink-0 rounded-md bg-gray-100"
+              />
+
+              <!-- Thông tin -->
+              <div class="flex-1 min-w-0">
+                <div class="font-medium truncate text-sm">
+                  {{ option.label }} - {{ option.developer || 'N/A' }}
+                </div>
+
+                <div class="flex items-center gap-1 text-xs opacity-80 mt-0.5">
+                  <svg lucideIcon="map-pin" class="size-3 shrink-0"></svg>
+                  <span class="truncate">
+                    {{ option.location || 'Chưa cập nhật địa chỉ' }}
+                  </span>
+                </div>
+              </div>
+
+              
+            </div>
+          </ng-template>
+        </app-dropdown>
+      </div>
+      <!-- EMPLOYEE (Nhân viên tư vấn) -->
+      <!-- <div>
+        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase"> Nhân viên tư vấn </label>
+        <app-dropdown
+          formControlName="resolvedBy"
+          [options]="userOptions()"
+          placeholder="Chọn nhân viên tư vấn"
+          className="w-full"
+          [disabled]="currentMode() === 'view'"
+        ></app-dropdown>
+      </div> -->
 
       <!-- STATUS -->
       <div>
@@ -86,7 +132,7 @@
           formControlName="message"
           placeholder="Nội dung liên hệ"
           variant="outline"
-          [rows] = 4
+          [rows]="4"
         ></app-custom-textarea>
         @if (submitted && f.message.errors && currentMode() !== 'view') {
           <p class="text-[11px] text-red-500 mt-1">* Nội dung là bắt buộc</p>
@@ -98,10 +144,7 @@
     <div class="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4 shrink-0">
       <div class="flex justify-end gap-2">
         @if (currentMode() === 'view') {
-          <app-button 
-          type="button" 
-          variant="destructive" 
-          (btnClick)="onDelete()">
+          <app-button type="button" variant="destructive" (btnClick)="onDelete()">
             <svg lucideIcon="trash-2" class="size-4"></svg>
             Xóa
           </app-button>

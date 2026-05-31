@@ -1,0 +1,84 @@
+<div class="flex flex-col max-h-[80vh] w-full text-sm">
+  <!-- HEADER -->
+  <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shrink-0">
+    <div class="relative flex items-center justify-center p-4">
+      <h2 class="text-base font-bold text-gray-900 text-center">
+        {{
+          currentMode() === 'add'
+            ? 'Thêm danh mục'
+            : currentMode() === 'edit'
+              ? 'Chỉnh sửa danh mục'
+              : 'Chi tiết danh mục'
+        }}
+      </h2>
+      <div class="absolute right-3 top-1/2 -translate-y-1/2">
+        <app-button type="button" variant="ghost" size="icon" (btnClick)="onClose()">
+          <svg lucideIcon="x" class="size-4"></svg>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 min-h-0">
+    <div class="flex-1 px-5 py-4 space-y-4 overflow-y-auto">
+      <!-- NAME -->
+      <div>
+        <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
+          Tên danh mục
+        </label>
+        <app-custom-input
+          formControlName="name"
+          placeholder="Nhập tên danh mục"
+          variant="outline"
+        ></app-custom-input>
+        @if (submitted && f.name.errors && currentMode() !== 'view') {
+          <p class="text-[11px] text-red-500 mt-1">* Tên danh mục là bắt buộc</p>
+        }
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4 shrink-0">
+      <div class="flex justify-end gap-2">
+        @if (currentMode() === 'view') {
+          <app-button type="button" variant="destructive" (btnClick)="onDelete()">
+            <svg lucideIcon="trash-2" class="size-4"></svg>
+            Xóa
+          </app-button>
+          <app-button
+            type="button"
+            className="bg-primary text-white"
+            (btnClick)="onEdit()"
+            [disabled]="store.submitLoading()"
+          >
+            <svg lucideIcon="pencil" class="size-4"></svg>
+            Chỉnh sửa
+          </app-button>
+        } @else {
+          <app-button
+            type="button"
+            variant="outline"
+            (btnClick)="onCancel()"
+            [disabled]="store.submitLoading()"
+          >
+            {{ currentMode() === 'edit' && categoryModal() ? 'Quay lại' : 'Hủy' }}
+          </app-button>
+          <app-button
+            type="submit"
+            className="bg-primary text-white"
+            [loading]="store.submitLoading()"
+            [disabled]="store.submitLoading()"
+          >
+            @if (store.submitLoading()) {
+              <svg lucideIcon="loader-circle" class="animate-spin" size="16"></svg>
+            } @else {
+              <svg lucideIcon="save" class="size-4"></svg>
+            }
+            Lưu
+          </app-button>
+        }
+      </div>
+    </div>
+  </form>
+</div>

@@ -5,6 +5,7 @@ import { LucideDynamicIcon } from '@lucide/angular';
 
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
 import { Button } from '../../../shared/components/ui/button/button';
+import { CustomTextarea } from '../../../shared/components/ui/custom-textarea/custom-textarea';
 
 @Component({
   selector: 'app-admin-company-info',
@@ -15,6 +16,7 @@ import { Button } from '../../../shared/components/ui/button/button';
     LucideDynamicIcon,
     Button,
     CustomInput,
+    CustomTextarea
   ],
   templateUrl: './admin-company-info.html',
   styleUrl: './admin-company-info.css',

@@ -10,7 +10,7 @@ import { ContactForm } from '../contact-form/contact-form';
 import { Dialog } from '../../../../shared/components/dialog/dialog';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
-import { IContactForm } from '../../../../core/models/model';
+import { IContact } from '../../../../core/models/model';
 import { ContactsStore } from '../../../../core/stores/contacts.store';
 import { Loading } from '../../../../shared/components/loading/loading';
 import { getContactStatusClass } from '../../../../shared/utils/helper';
@@ -37,7 +37,7 @@ export class ContactListPage implements OnInit {
   showFormDialog = signal(false);
   showDeleteConfirm = signal(false);
   formMode = signal<'view' | 'edit' | 'add'>('view');
-  selectedContact = signal<IContactForm | null>(null);
+  selectedContact = signal<IContact | null>(null);
 
   sortOptions = [
     { label: 'Sắp xếp', value: 'default' },
@@ -76,21 +76,21 @@ export class ContactListPage implements OnInit {
     this.showFormDialog.set(true);
   }
 
-  onEdit(contact: IContactForm) {
+  onEdit(contact: IContact) {
     this.formMode.set('edit');
     this.selectedContact.set(contact);
     this.showFormDialog.set(true);
   }
 
-  onDelete(contact: IContactForm | null) {
+  onDelete(contact: IContact | null) {
     this.selectedContact.set(contact);
     this.showDeleteConfirm.set(true);
   }
 
   confirmDelete() {
     const contact = this.selectedContact();
-    if (contact?.id) {
-      this.store.removeContact(contact.id);
+    if (contact?._id) {
+      this.store.removeContact(contact._id);
     }
     this.showDeleteConfirm.set(false);
     this.showFormDialog.set(false);
@@ -105,7 +105,7 @@ export class ContactListPage implements OnInit {
     this.showFormDialog.set(false);
   }
 
-  onView(contact: IContactForm) {
+  onView(contact: IContact) {
     this.formMode.set('view');
     this.selectedContact.set(contact);
     this.showFormDialog.set(true);

@@ -4,9 +4,9 @@ import { Router, RouterLink } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
 import { Button } from '../../../shared/components/ui/button/button';
-import { AuthService } from '../../../core/services/auth/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Toast } from '../../../shared/components/toast/toast';
-import { ToastService } from '../../../core/services/toast/toast.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { AuthStore } from '../../../core/stores/auth.store';
 import { delay, finalize } from 'rxjs/operators';
 

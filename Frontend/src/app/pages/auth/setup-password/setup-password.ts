@@ -10,8 +10,8 @@ import {
 import { LucideDynamicIcon } from '@lucide/angular';
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
 import { Button } from '../../../shared/components/ui/button/button';
-import { AuthService } from '../../../core/services/auth/auth.service';
-import { ToastService } from '../../../core/services/toast/toast.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-setup-password',

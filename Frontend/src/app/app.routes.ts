@@ -106,6 +106,11 @@ export const routes: Routes = [
                 title: 'Quản lý tin bất động sản',
             },
             {
+                path: 'category',
+                loadComponent: () => import('./pages/admin/admin-category/category-list-page/category-list-page').then(m => m.CategoryListPage),
+                title: 'Quản lý danh mục',
+            },
+            {
                 path: 'contact',
                 loadComponent: () => import('./pages/admin/admin-contact/contact-list-page/contact-list-page').then(m => m.ContactListPage),
                 title: 'Quản lý liên hệ',

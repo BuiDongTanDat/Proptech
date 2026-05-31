@@ -18,7 +18,7 @@ import { LucideDynamicIcon } from '@lucide/angular';
 export class Header {
   navItems = [
     { label: 'Trang chủ', path: '/' },
-    { label: 'Bất động sản', path: '/properties' },
+    { label: 'Tin bất động sản', path: '/properties' },
     { label: 'Về chúng tôi', path: '/about' },
   ]
 

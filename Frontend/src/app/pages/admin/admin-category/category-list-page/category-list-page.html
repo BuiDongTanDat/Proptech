@@ -1,0 +1,218 @@
+<div class="relative h-full flex flex-col">
+  <!-- TOP BAR -->
+  <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">
+        Danh mục bài đăng
+      </h1>
+      <p class="text-xs text-gray-400 mt-0.5 slide-in-left">Quản lý danh mục bài đăng</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <app-button (btnClick)="onAdd()" text="Thêm danh mục" startIcon="plus" variant="primary">
+        Thêm danh mục
+      </app-button>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="flex items-center justify-between gap-2 mb-4 flex-wrap">
+    <app-custom-input
+      [ngModel]="store.searchQuery()"
+      (ngModelChange)="onSearch($event)"
+      placeholder="Tìm kiếm..."
+      icon="search"
+      variant="outline"
+      className="w-48 text-xs"
+    ></app-custom-input>
+
+    <div class="flex items-center gap-2 flex-wrap">
+      <div class="hidden md:flex">
+        <app-button
+          (btnClick)="setListView(false)"
+          [variant]="!isListView() ? 'primary' : 'outline'"
+          size="icon"
+        >
+          <svg lucideIcon="layout-grid" size="16"></svg>
+        </app-button>
+        <app-button
+          (btnClick)="setListView(true)"
+          [variant]="isListView() ? 'primary' : 'outline'"
+          size="icon"
+        >
+          <svg lucideIcon="list" size="16"></svg>
+        </app-button>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <app-dropdown
+          [ngModel]="store.selectedSort()"
+          (ngModelChange)="onSortChange($event)"
+          [options]="sortOptions"
+          placeholder="Sắp xếp"
+          className="min-w-36 text-xs"
+        ></app-dropdown>
+      </div>
+    </div>
+  </div>
+
+  @if (store.loading()) {
+    <app-loading></app-loading>
+  } @else if (store.filteredCategories().length === 0) {
+    <div class="flex flex-col items-center gap-2 py-16">
+      <svg lucideIcon="inbox" size="48" class="text-gray-300"></svg>
+      <p class="text-sm text-gray-500">Không tìm thấy danh mục nào</p>
+    </div>
+  } @else {
+    @if (!isListView() || isMobile()) {
+      <!-- CARD VIEW (danh mục) -->
+      <div class="fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+        @for (c of store.paginatedCategories(); track c._id) {
+          <div
+            class="rounded-md shadow-md group border border-gray-200 p-4 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white text-primary"
+          >
+            <!-- HEADER -->
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2 min-w-0">
+                <div
+                  class="size-8 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-xs uppercase"
+                >
+                  {{ c.name.charAt(0) }}
+                </div>
+                <div class="min-w-0">
+                  <h3 class="text-xs font-semibold truncate">{{ c.name }}</h3>
+                </div>
+              </div>
+            </div>
+            <!-- ACTIONS -->
+            <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-gray-100">
+              <app-button (btnClick)="onView(c)" variant="action" size="icon">
+                <svg lucideIcon="eye" size="14"></svg>
+              </app-button>
+              <app-button (btnClick)="onEdit(c)" variant="action" size="icon">
+                <svg lucideIcon="pencil" size="14"></svg>
+              </app-button>
+              <app-button (btnClick)="onDelete(c)" variant="destructive" size="icon">
+                <svg lucideIcon="trash" size="14"></svg>
+              </app-button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (isListView() && !isMobile()) {
+      <!-- TABLE VIEW (danh mục) -->
+      <div class="fade-in overflow-x-auto border border-gray-200 bg-white shadow-sm rounded-md">
+        <table class="w-full border-collapse text-xs">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th
+                class="px-3 py-2 text-center text-xs uppercase tracking-wider text-gray-400 font-semibold w-56"
+              >
+                Tên danh mục
+              </th>
+              <th
+                class="px-3 py-2 text-center text-xs uppercase tracking-wider text-gray-400 font-semibold w-56"
+              >
+                Ngày tạo
+              </th>
+              <th
+                class="px-3 py-2 text-center text-xs uppercase tracking-wider text-gray-400 font-semibold w-28"
+              >
+                Thao tác
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-100">
+            @for (c of store.paginatedCategories(); track c._id) {
+              <tr class="group hover:bg-gray-50/70 transition-colors duration-150">
+                <!-- NAME -->
+                <td class="px-3 py-2">
+                  <div class="flex items-center gap-3">
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold text-primary truncate">{{ c.name }}</p>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="px-3 py-2">
+                  <div class="flex items-center justify-center gap-3">
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold text-primary truncate">
+                        {{ c.createdAt ? (c.createdAt | date: 'dd/MM/yyyy') : 'N/A' }}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- ACTIONS -->
+                <td class="px-3 py-2">
+                  <div
+                    class="flex items-center justify-center gap-1.5 transition-all duration-200 opacity-0 translate-x-2 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto"
+                  >
+                    <app-button variant="action" size="icon" (btnClick)="onView(c)">
+                      <svg lucideIcon="eye" size="14"></svg>
+                    </app-button>
+                    <app-button variant="action" size="icon" (btnClick)="onEdit(c)">
+                      <svg lucideIcon="pencil" size="14"></svg>
+                    </app-button>
+                    <app-button variant="destructive" size="icon" (btnClick)="onDelete(c)">
+                      <svg lucideIcon="trash" size="14"></svg>
+                    </app-button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- PAGINATION -->
+    <div class="flex justify-center pt-5">
+      <app-pagination
+        [currentPage]="store.currentPage()"
+        [totalPages]="store.totalPages()"
+        [maxVisible]="5"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    </div>
+  }
+</div>
+
+<!-- FORM DIALOG -->
+@if (showFormDialog()) {
+  <app-dialog [show]="showFormDialog()" (closed)="closeFormDialog()">
+    <app-category-form
+      [mode]="formMode()"
+      [categoryModal]="selectedCategory()"
+      (close)="closeFormDialog()"
+      (save)="onSaveCategory($event)"
+      (delete)="onDelete(selectedCategory()!)"
+    ></app-category-form>
+  </app-dialog>
+}
+<!-- CONFIRM DELETE -->
+<app-confirm-dialog
+  [show]="showDeleteConfirm()"
+  title="Xác nhận xóa danh mục"
+  icon="triangle-alert"
+  (closed)="cancelDelete()"
+  [closeOnBackdrop]="false"
+>
+  <div class="flex flex-col gap-3">
+    <p class="text-xs text-gray-500">
+      Bạn có chắc chắn muốn xóa danh mục
+      <span class="font-semibold text-destructive">{{ selectedCategory()?.name }}</span>
+      khỏi hệ thống không? Hành động này không thể hoàn tác.
+    </p>
+    <div class="flex justify-end gap-2">
+      <app-button variant="outline" (btnClick)="cancelDelete()">Hủy</app-button>
+      <app-button variant="destructive" (btnClick)="confirmDelete()">
+        <svg lucideIcon="trash-2" class="size-3.5 mr-1"></svg>
+        Xóa
+      </app-button>
+    </div>
+  </div>
+</app-confirm-dialog>

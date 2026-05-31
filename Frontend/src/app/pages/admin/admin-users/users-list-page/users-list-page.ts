@@ -14,7 +14,7 @@ import { UserStore } from '../../../../core/stores/users.store';
 import { Loading } from '../../../../shared/components/loading/loading';
 import { getAccountStatusBgClass, getAccountStatusClass, getRoleClass } from '../../../../shared/utils/helper';
 import { AccountStatus, UserRole } from '../../../../core/enum/enums';
-import { ToastService } from '../../../../core/services/toast/toast.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { AuthStore } from '../../../../core/stores/auth.store';
 @Component({
   selector: 'app-users-list-page',
@@ -125,8 +125,8 @@ export class UsersListPage implements OnInit {
         },
         error: (err) => {
           // Không đóng form để user thấy lỗi hoặc sửa lại dữ liệu
-          console.error('Save failed', err.message);
-          this.toastService.error(err.message || 'Lưu thất bại'); // Hiển thị toast lỗi
+          console.error('Save failed', err.error.message);
+          this.toastService.error(err.error.message || 'Lưu thất bại'); // Hiển thị toast lỗi
         }
       });
     }

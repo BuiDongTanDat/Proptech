@@ -1,35 +1,35 @@
 <div class="h-screen flex bg-gray-100 overflow-hidden relative">
   <!-- OPEN BUTTON -->
-  @if (!leftOpen()) {
+  @if (!leftPanelOpen()) {
     <app-button
       size="icon"
       variant="outline"
       class="fixed top-4 left-4 z-50"
-      (btnClick)="toggleLeft()"
+      (btnClick)="toggleLeftPanel()"
     >
       <svg lucideIcon="chevron-right" size="18"></svg>
     </app-button>
   }
 
   <!-- MOBILE BACKDROP -->
-  @if (leftOpen()) {
-    <div class="fixed inset-0 bg-black/30 z-30 md:hidden" (click)="toggleLeft()"></div>
+  @if (leftPanelOpen()) {
+    <div class="fixed inset-0 bg-black/30 z-30 md:hidden" (click)="toggleLeftPanel()"></div>
   }
 
   <!-- SIDEBAR -->
   <aside
     class="fixed md:relative inset-y-0 left-0 z-40 bg-white border-r border-gray-200 shadow-sm transition-all duration-300 flex flex-col shrink-0"
-    [class]="leftOpen() ? 'w-80 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'"
+    [class]="leftPanelOpen() ? 'w-80 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'"
   >
     <!-- Close -->
     <app-button
       size="icon"
       variant="outline"
       class="absolute top-4 right-4 z-20 rounded-full bg-white"
-      [class.opacity-100]="leftOpen()"
-      [class.opacity-0]="!leftOpen()"
-      [class.pointer-events-none]="!leftOpen()"
-      (btnClick)="toggleLeft()"
+      [class.opacity-100]="leftPanelOpen()"
+      [class.opacity-0]="!leftPanelOpen()"
+      [class.pointer-events-none]="!leftPanelOpen()"
+      (btnClick)="toggleLeftPanel()"
     >
       <svg lucideIcon="x" size="16"></svg>
     </app-button>
@@ -37,9 +37,9 @@
     <!-- Sidebar content -->
     <div
       class="flex flex-col h-full transition-opacity duration-200"
-      [class.opacity-100]="leftOpen()"
-      [class.opacity-0]="!leftOpen()"
-      [class.pointer-events-none]="!leftOpen()"
+      [class.opacity-100]="leftPanelOpen()"
+      [class.opacity-0]="!leftPanelOpen()"
+      [class.pointer-events-none]="!leftPanelOpen()"
     >
       <!-- Header -->
       <div class="flex items-center gap-2 px-4 py-4 border-b border-gray-100 shrink-0">
@@ -59,8 +59,28 @@
       </div>
 
       <!-- FORM -->
-      <form [formGroup]="postForm" class="flex flex-col flex-1 min-h-0">
+      <form
+        [formGroup]="postForm"
+        class="fade-in transtion duration-200 flex flex-col flex-1 min-h-0"
+      >
         <div class="flex-1 px-5 py-4 space-y-4 overflow-y-auto">
+          <!-- CATEGORY (NỔI BẬT) -->
+          <div class="bg-primary rounded-lg p-2 border border-primary">
+            <label class="block text-xs font-bold mb-2 text-white uppercase tracking-wide"
+              >Danh mục</label
+            >
+            <app-dropdown
+              formControlName="category"
+              [options]="categories().map((c) => ({ label: c.name, value: c._id! }))"
+              className="w-full text-lg font-semibold border-2 border-primary"
+              [disabled]="isEditMode() && store.loading()"
+              placeholder="Chọn danh mục bài đăng"
+            ></app-dropdown>
+            @if (submitted() && f['category'].errors?.['required']) {
+              <p class="text-xs text-red-500 mt-1 font-semibold">* Danh mục là bắt buộc</p>
+            }
+          </div>
+
           <!-- TITLE -->
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-400 uppercase">Tiêu đề</label>
@@ -136,11 +156,11 @@
               class="border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary transition overflow-hidden p-2"
               (click)="coverInput.click()"
               (dragover)="$event.preventDefault()"
-              (drop)="onCoverDrop($event)"
+              (drop)="onCoverFileDrop($event)"
             >
-              @if (coverPreview()) {
+              @if (coverPreviewUrl()) {
                 <img
-                  [src]="coverPreview()!"
+                  [src]="coverPreviewUrl()!"
                   width="400"
                   height="300"
                   class="w-full h-48 object-cover rounded-lg"
@@ -157,7 +177,8 @@
               type="file"
               accept="image/*"
               class="hidden"
-              (change)="onCoverSelected($event)"
+              (change)="onCoverFileSelected($event)"
+              [disabled]="!editorReady() || store.loading()"
             />
           </div>
         </div>
@@ -177,7 +198,13 @@
                 <svg lucideIcon="upload" class="size-4"></svg>
                 <span>Nhập JSON</span>
 
-                <input type="file" accept=".json" class="hidden" (change)="loadDesign($event)" />
+                <input
+                  type="file"
+                  accept=".json"
+                  class="hidden"
+                  (change)="importDesignFromFile($event)"
+                  [disabled]="!editorReady() || store.loading()"
+                />
               </label>
             </div>
           }
@@ -187,8 +214,8 @@
               variant="outline"
               className="w-full"
               startIcon="download"
-              [disabled]="!editorReady()"
-              (btnClick)="exportJson()"
+              [disabled]="!editorReady() || store.loading()"
+              (btnClick)="exportDesignAsJson()"
             >
               Xuất JSON
             </app-button>
@@ -196,20 +223,84 @@
         </div>
 
         <div class="flex gap-2 w-full">
-          <div class="flex-1">
-            <app-button
-              variant="primary"
-              className="w-full"
-              [disabled]="store.loading()"
-              (btnClick)="saveDesign()"
-            >
-              @if (store.loading()) {
-                <svg lucideIcon="loader-2" class="animate-spin size-4"></svg>
-              }
-              <svg lucideIcon="save" class="size-4"></svg>
-              {{ store.loading() ? 'Đang lưu...' : 'Lưu thiết kế' }}
-            </app-button>
-          </div>
+          <!-- CREATE MODE -->
+          @if (!isEditMode()) {
+            <!-- Lưu nháp -->
+            <!-- <div class="flex-1">
+              <app-button
+                variant="outline"
+                className="w-full"
+                [disabled]="store.loading()"
+                (btnClick)="saveDesign('draft')"
+              >
+                @if (submittingMode() === 'draft') {
+                  <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
+                } @else {
+                  <svg lucideIcon="save" class="size-4"></svg>
+                }
+
+                {{ store.loading() ? 'Đang lưu...' : 'Lưu nháp' }}
+              </app-button>
+            </div> -->
+
+            <!-- Lưu bài đăng -->
+            <div class="flex-1">
+              <app-button
+                variant="primary"
+                className="w-full"
+                [disabled]="store.loading()"
+                (btnClick)="saveDesign('create')"
+              >
+                @if (submittingMode() === 'create') {
+                  <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
+                } @else {
+                  <svg lucideIcon="save" class="size-4"></svg>
+                }
+
+                {{ submittingMode() === 'create' ? 'Đang lưu...' : 'Lưu bài đăng' }}
+              </app-button>
+            </div>
+          }
+
+          <!-- EDIT MODE -->
+          @if (isEditMode()) {
+            <!-- Lưu nháp -->
+            <div class="flex-1">
+              <app-button
+                variant="outline"
+                className="w-full"
+                [disabled]="store.loading()"
+                (btnClick)="saveDesign('draft')"
+              >
+                @if (submittingMode() === 'draft') {
+                  <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
+                } @else {
+                  <svg lucideIcon="save" class="size-4"></svg>
+                }
+
+                {{ submittingMode() === 'draft' ? 'Đang lưu...' : 'Lưu nháp' }}
+              </app-button>
+            </div>
+
+            <!-- Lưu thay đổi -->
+            <div class="flex-1">
+              <app-button
+                variant="primary"
+                className="w-full"
+                [disabled]="store.loading()"
+                (btnClick)="saveDesign('update')"
+              >
+                <div class="flex items-center gap-2">
+                  @if (submittingMode() === 'update') {
+                    <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
+                  } @else {
+                    <svg lucideIcon="save" class="size-4"></svg>
+                  }
+                  {{ submittingMode() === 'update' ? 'Đang lưu...' : 'Lưu thay đổi' }}
+                </div>
+              </app-button>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -223,7 +314,7 @@
         <email-editor
           class="block h-full"
           [options]="editorOptions"
-          (loaded)="editorLoaded()"
+          (loaded)="onEditorLoaded()"
         ></email-editor>
       </div>
     </div>

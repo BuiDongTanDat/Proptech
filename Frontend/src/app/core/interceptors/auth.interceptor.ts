@@ -17,7 +17,8 @@ import {
   retry,
 } from 'rxjs/operators';
 
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 const PUBLIC_URLS = [
   '/login',
@@ -36,18 +37,29 @@ export const authInterceptor: HttpInterceptorFn = (
 ): Observable<HttpEvent<unknown>> => {
   const authService = inject(AuthService);
 
+  // Tự động thêm Base URL nếu là đường dẫn tương đối (ví dụ: 'auth/me')
+  let url = req.url;
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    const cleanBase = environment.apiUrl.replace(/\/$/, '');
+    const cleanEndpoint = url.replace(/^\//, '');
+    url = cleanEndpoint ? `${cleanBase}/${cleanEndpoint}` : cleanBase;
+  }
+
+  // Clone request với URL mới và cấu hình withCredentials
   // Vì token nằm trong cookie nên chỉ cần gửi credentials
   // HttpRequest là immutable (không sửa trực tiếp được), nên phải clone.
   const authReq = req.clone({
     withCredentials: true,
   });
 
+  // Xác định các request không cần xử lý refresh token
   // Nếu request này là request công khai (không cần token) 
   // thì không cần xử lý refresh token
   const isPublicRequest = PUBLIC_URLS.some((url) =>
     req.url.includes(url)
   );
 
+  
   // API public -> không xử lý refresh logic
   if (isPublicRequest) {
     return next(authReq);

@@ -6,7 +6,7 @@ import { LucideDynamicIcon } from '@lucide/angular';
 import { Button } from '../../../shared/components/ui/button/button';
 import { CustomInput } from '../../../shared/components/ui/custom-input/custom-input';
 import { AuthStore } from '../../../core/stores/auth.store';
-import { ToastService } from '../../../core/services/toast/toast.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { IUserAccount } from '../../../core/models/model';
 import { CustomNamePipe } from '../../../core/pipes/custom-name.pipe';
 

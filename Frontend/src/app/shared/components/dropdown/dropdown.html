@@ -1,51 +1,122 @@
-<div class="relative w-full" [ngClass]="className">
-  <!-- Trigger button -->
+<div class="relative w-full" [class]="className()">
+  <!-- ── Trigger ─────────────────────────────────────────────────────── -->
   <button
     cdkOverlayOrigin
     #trigger="cdkOverlayOrigin"
     type="button"
     (click)="toggle()"
-    [disabled]="disabled"
-    class="rounded-md w-full flex items-center justify-between border px-3 py-2 transition"
-    [ngClass]="
-      disabled
-        ? 'bg-gray-50 text-primary border-gray-200 cursor-not-allowed'
+    [disabled]="isDisabled()"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="listbox"
+    class="rounded-md w-full flex items-center justify-between border hover:border-primary px-3 py-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    [class]="
+      isDisabled()
+        ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
         : 'bg-white cursor-pointer border-gray-300 hover:border-gray-400'
     "
+    style="min-width: 120px"
   >
-    <span class="text-xs" [ngClass]="value ? 'text-primary' : 'text-gray-400'">
-      {{ value ? selectedLabel : placeholder }}
+    <span
+      class="truncate text-xs"
+      [class]="
+        selectedValue() !== null && selectedValue() !== '' ? 'text-primary' : 'text-gray-400'
+      "
+    >
+      {{ selectedValue() !== null && selectedValue() !== '' ? selectedLabel() : placeholder() }}
     </span>
-
     <svg
       lucideIcon="chevron-down"
-      class="size-4 text-primary transition-transform duration-200"
-      [ngClass]="isOpen ? 'rotate-180' : 'rotate-0'"
+      class="size-4 text-primary transition-transform duration-200 shrink-0"
+      [class.rotate-180]="isOpen()"
+      aria-hidden="true"
     ></svg>
   </button>
 
-  <!-- Options list -->
+  <!-- ── Overlay ─────────────────────────────────────────────────────── -->
   <ng-template
     cdkConnectedOverlay
     [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayOpen]="isOpen()"
     [cdkConnectedOverlayHasBackdrop]="false"
-    [cdkConnectedOverlayWidth]="trigger.elementRef.nativeElement.offsetWidth"
+    [cdkConnectedOverlayWidth]="triggerWidth() > 0 ? triggerWidth() : 0"
+    [cdkConnectedOverlayPanelClass]="'dropdown-panel'"
+    (detach)="close()"
   >
-    <ul
-      class="rounded-md bg-white border border-gray-200 shadow-lg max-h-60 overflow-y-auto w-full slide-down transition-all duration-100"
+    <div
+      role="listbox"
+      [attr.aria-label]="placeholder()"
+      class="mt-1 rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden"
+      [style.width.px]="triggerWidth() > 0 ? triggerWidth() : null"
     >
-      @for (opt of options; track opt.value) {
-        <li
-          (click)="onSelect(opt.value)"
-          class="p-2 cursor-pointer text-xs"
-          [ngClass]="
-            opt.value === value ? 'bg-primary text-white' : 'text-primary hover:bg-gray-100'
-          "
-        >
-          {{ opt.label }}
-        </li>
+      <!-- Search -->
+      @if (searchable()) {
+        <div class="p-2 border-b border-gray-100">
+          <div class="relative">
+            <svg
+              lucideIcon="search"
+              class="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none"
+            ></svg>
+
+            <input
+              type="search"
+              [ngModel]="search()"
+              (ngModelChange)="search.set($event)"
+              placeholder="Tìm kiếm..."
+              aria-label="Tìm kiếm option"
+              class="w-full rounded-md border border-gray-200 pl-8 pr-2 py-2 text-xs outline-none focus:border-primary hover:border-primary transition"
+              autocomplete="off"
+              spellcheck="false"
+              (click)="$event.stopPropagation()"
+              (mousedown)="$event.stopPropagation()"
+              #searchInput
+            />
+          </div>
+        </div>
       }
-    </ul>
+
+      <!-- Virtual scroll list -->
+      @if (filteredOptions().length > 0) {
+        <cdk-virtual-scroll-viewport
+          [itemSize]="itemSize()"
+          [style.height.px]="viewportHeight()"
+          class="w-full dropdown-viewport "
+        >
+          <div
+            *cdkVirtualFor="let opt of filteredOptions(); trackBy: trackByValue"
+            role="option"
+            [attr.aria-selected]="opt.value === selectedValue()"
+            (click)="select(opt.value)"
+            class="dropdown-item "
+            [style.height.px]="itemSize()"
+          >
+            <!-- Slot tuỳ chỉnh -->
+            @if (optionTemplate) {
+              
+                <ng-container
+                [ngTemplateOutlet]="optionTemplate"
+                [ngTemplateOutletContext]="{
+                  $implicit: opt,
+                  selected: opt.value === selectedValue(),
+                }"
+              ></ng-container>
+              
+            } @else {
+              <div
+                class="w-full h-full px-3 text-xs cursor-pointer transition-colors flex items-center"
+                [class]="
+                  opt.value === selectedValue()
+                    ? 'bg-primary text-white'
+                    : 'text-primary hover:bg-gray-100'
+                "
+              >
+                {{ opt.label }}
+              </div>
+            }
+          </div>
+        </cdk-virtual-scroll-viewport>
+      } @else {
+        <p class="px-3 py-2 text-xs text-gray-400">Không có kết quả</p>
+      }
+    </div>
   </ng-template>
 </div>
