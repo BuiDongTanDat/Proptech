@@ -1,17 +1,15 @@
 
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
-import { Button } from '../../../../shared/components/ui/button/button';
-import { CheckTag } from '../../../../shared/components/check-tag/check-tag';
 
 @Component({
   selector: 'app-properties-sidebar',
   standalone: true,
   imports: [
+    CommonModule,
     CustomInput,
-    Button,
-    CheckTag
   ],
   templateUrl: './properties-sidebar.html',
   styleUrl: './properties-sidebar.css',

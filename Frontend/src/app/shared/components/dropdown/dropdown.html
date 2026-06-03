@@ -40,12 +40,13 @@
     [cdkConnectedOverlayHasBackdrop]="false"
     [cdkConnectedOverlayWidth]="triggerWidth() > 0 ? triggerWidth() : 0"
     [cdkConnectedOverlayPanelClass]="'dropdown-panel'"
+    [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
     (detach)="close()"
   >
     <div
       role="listbox"
       [attr.aria-label]="placeholder()"
-      class="mt-1 rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden"
+      class="slide-down mt-1 rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden"
       [style.width.px]="triggerWidth() > 0 ? triggerWidth() : null"
     >
       <!-- Search -->
@@ -79,27 +80,25 @@
         <cdk-virtual-scroll-viewport
           [itemSize]="itemSize()"
           [style.height.px]="viewportHeight()"
-          class="w-full dropdown-viewport "
+          class="w-full dropdown-viewport scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
         >
           <div
             *cdkVirtualFor="let opt of filteredOptions(); trackBy: trackByValue"
             role="option"
             [attr.aria-selected]="opt.value === selectedValue()"
             (click)="select(opt.value)"
-            class="dropdown-item "
+            class="dropdown-item"
             [style.height.px]="itemSize()"
           >
             <!-- Slot tuỳ chỉnh -->
             @if (optionTemplate) {
-              
-                <ng-container
+              <ng-container
                 [ngTemplateOutlet]="optionTemplate"
                 [ngTemplateOutletContext]="{
                   $implicit: opt,
                   selected: opt.value === selectedValue(),
                 }"
               ></ng-container>
-              
             } @else {
               <div
                 class="w-full h-full px-3 text-xs cursor-pointer transition-colors flex items-center"

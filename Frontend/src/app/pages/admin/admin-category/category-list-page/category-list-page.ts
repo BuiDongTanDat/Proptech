@@ -14,6 +14,7 @@ import { CategoryStore } from '../../../../core/stores/category.store';
 import { Loading } from '../../../../shared/components/loading/loading';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { ToastService } from '../../../../core/services/toast.service';
+import { DATE_SORT_OPTIONS } from '../../../../core/constants/general.constant';
 
 @Component({
   selector: 'app-category-list-page',
@@ -51,11 +52,7 @@ export class CategoryListPage implements OnInit {
   formMode = signal<'view' | 'edit' | 'add'>('add');
   selectedCategory = signal<ICategory | null>(null);
 
-  sortOptions = [
-    { label: 'Sắp xếp', value: 'default' },
-    { label: 'Mới nhất', value: 'newest' },
-    { label: 'Cũ nhất', value: 'oldest' },
-  ];
+  sortOptions = DATE_SORT_OPTIONS;
 
   ngOnInit(): void {
     this.store.loadCategories();

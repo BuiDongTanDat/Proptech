@@ -1,15 +1,14 @@
 /* Tối ưu hóa render trong overlay panel */
 .dropdown-panel {
-  transform: translateZ(0);
+  /* Loại bỏ hoàn toàn transform và perspective ở lớp này để CDK tự do tính toán tọa độ */
   backface-visibility: hidden;
-  perspective: 1000px;
 }
 
 /* Fix lỗi mờ chữ bên trong Virtual Scroll Viewport */
 .dropdown-viewport {
   overflow-y: auto;
   will-change: transform;
-  transform: translateZ(0);
+  /* Chuyển transform xuống lớp bên trong này nếu thực sự cần thiết, hoặc tạm bỏ để kiểm tra */
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: auto;
   backface-visibility: hidden;
@@ -17,7 +16,6 @@
 
 /* Định dạng từng dòng option tránh hiện tượng subpixel-blur */
 .dropdown-item {
-  transform: translateZ(0);
   backface-visibility: hidden;
   display: flex;
   align-items: center;

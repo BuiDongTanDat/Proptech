@@ -65,10 +65,10 @@
   } @else {
     @if (!isListView() || isMobile()) {
       <!-- CARD VIEW (danh mục) -->
-      <div class="fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         @for (c of store.paginatedCategories(); track c._id) {
           <div
-            class="rounded-md shadow-md group border border-gray-200 p-4 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white text-primary"
+            class="fade-in rounded-md shadow-md group border border-gray-200 p-4 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white text-primary"
           >
             <!-- HEADER -->
             <div class="flex items-center justify-between gap-2 mb-3">

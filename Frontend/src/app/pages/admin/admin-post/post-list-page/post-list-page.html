@@ -2,9 +2,7 @@
   <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
     <div>
-      <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">
-        Tin đăng 
-      </h1>
+      <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">Tin đăng</h1>
       <p class="text-xs text-gray-400 mt-0.5 slide-in-left">Quản lý tin đăng</p>
     </div>
 
@@ -24,10 +22,12 @@
         type="button"
         [aria-pressed]="selectedCategory() === cat._id"
         (click)="onCategoryChange(cat._id || '')"
-        class="cursor-pointer hover:scale-105 "
-        [class]="selectedCategory() === cat._id 
-          ? 'px-4 py-1.5 rounded-full text-xs font-semibold bg-primary text-white border border-primary transition-all duration-200 shadow-lg' 
-          : 'px-4 py-1.5 rounded-full text-xs  bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-primary transition-all duration-200'"
+        class="cursor-pointer hover:scale-105"
+        [class]="
+          selectedCategory() === cat._id
+            ? 'px-4 py-1.5 rounded-full text-xs font-semibold bg-primary text-white border border-primary transition-all duration-200 shadow-lg'
+            : 'px-4 py-1.5 rounded-full text-xs  bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-primary transition-all duration-200'
+        "
       >
         {{ cat.name }}
       </button>
@@ -92,82 +92,90 @@
   } @else {
     <!-- CARD VIEW -->
     @if (!isListView() || isMobile()) {
-      <div class="fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
-          @for (p of store.filteredPosts(); track p._id) {
-            <div
-              class="rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden"
-            >
-              <!-- IMAGE & STATUS -->
-              <div class="relative h-30 overflow-hidden bg-gray-100">
-                <img
-                  [src]="p.cover_picture?.url || 'bg_card.png'"
-                  [alt]="p.title"
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <span
-                  [class]="getPostStatusClass(p.status)"
-                  class="absolute top-2 right-2 px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wide"
-                >
-                  {{ p.status }}
-                </span>
-              </div>
-
-              <!-- CONTENT -->
-              <div class="flex-1 flex flex-col gap-1 px-3.5 pt-3 pb-0">
-                <h3 class="text-[13px] font-semibold text-primary truncate leading-snug">
-                  {{ p.title || 'Chưa có tiêu đề' }}
-                </h3>
-
-                <p class="flex items-center gap-1 text-xs text-gray-400 truncate">
-                  <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-300"></svg>
-                  {{ p.location || 'Chưa có địa chỉ' }}
-                </p>
-
-                <div class="grid grid-cols-2 gap-y-1 mt-1">
-                  <span class="text-xs text-gray-400">Danh mục</span>
-                  <span class="text-xs font-medium text-primary text-right truncate">
-                    {{ p.category?.name || 'N/A' }}
-                  </span>
-                  <span class="text-xs text-gray-400">Chủ đầu tư</span>
-                  <span class="text-xs font-medium text-primary text-right truncate">
-                    {{ p.developer || 'N/A' }}
-                  </span>
-                  <span class="text-xs text-gray-400">Khu vực</span>
-                  <span class="text-xs font-medium text-primary text-right truncate">
-                    {{ p.region || 'N/A' }}
-                  </span>
-                </div>
-              </div>
-
-              <!-- FOOTER/ACTIONS -->
-              <div
-                class="flex items-center justify-between px-3.5 py-2.5 mt-2.5 border-t border-gray-100"
+      <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+        @for (p of store.filteredPosts(); track p._id) {
+          <div
+            class="fade-in rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden"
+          >
+            <!-- IMAGE & STATUS -->
+            <div class="relative h-30 overflow-hidden bg-gray-100">
+              <img
+                [src]="p.cover_picture?.url || 'bg_card.png'"
+                [alt]="p.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <span
+                [class]="getPostStatusClass(p.status)"
+                class="absolute top-2 right-2 px-2 py-0.5 rounded text-xs font-semibold tracking-wide"
               >
-                <div class="flex flex-col items-start gap-1">
-                  <span class="flex items-center gap-1 text-xs text-gray-400">
-                    <svg lucideIcon="calendar" size="14" class="text-gray-400"></svg>
-                    {{ p.createdAt ? (p.createdAt | date: 'dd/MM/yyyy') : 'N/A' }}
-                  </span>
-                  <span class="flex items-center gap-1 text-xs text-gray-400">
-                    <svg lucideIcon="pencil" size="14" class="text-gray-400"></svg>
-                    {{ p.updatedAt | date: 'dd/MM/yyyy hh:mm' }}
-                  </span>
+                {{ p.status }}
+              </span>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="flex-1 flex flex-col gap-1 px-3.5 pt-3 pb-0">
+              <h3 class="text-[13px] font-semibold text-primary truncate leading-snug">
+                {{ p.title || 'Chưa có tiêu đề' }}
+              </h3>
+
+              <p class="flex items-center gap-1 text-xs text-gray-400 truncate">
+                <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-300"></svg>
+                {{ p.location || 'Chưa có địa chỉ' }}
+              </p>
+
+              <div class="mt-2 grid grid-cols-2 gap-2">
+                <div class="rounded-md bg-gray-50 px-2 py-1.5">
+                  <p class="text-[10px] text-gray-400 uppercase">Chủ đầu tư</p>
+                  <p class="text-xs font-medium text-primary truncate">
+                    {{ p.developer || 'N/A' }}
+                  </p>
                 </div>
 
-                <div class="flex items-center gap-1.5">
-                  <app-button variant="action" size="icon" (btnClick)="onView(p)">
-                    <svg lucideIcon="eye" size="13"></svg>
-                  </app-button>
-                  <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
-                    <svg lucideIcon="pencil" size="13"></svg>
-                  </app-button>
-                  <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
-                    <svg lucideIcon="trash" size="13"></svg>
-                  </app-button>
+                <div class="rounded-md bg-gray-50 px-2 py-1.5">
+                  <p class="text-[10px] text-gray-400 uppercase">Khu vực</p>
+                  <p class="text-xs font-medium text-primary truncate">
+                    {{ p.region || 'N/A' }}
+                  </p>
+                </div>
+
+                <div class="rounded-md bg-gray-50 px-2 py-1.5 col-span-2">
+                  <p class="text-[10px] text-gray-400 uppercase">Tác giả</p>
+                  <p class="text-xs font-medium text-primary truncate">
+                    {{ p.author?.name || 'N/A' }}
+                  </p>
                 </div>
               </div>
             </div>
-          }
+
+            <!-- FOOTER/ACTIONS -->
+            <div
+              class="flex items-center justify-between px-3.5 py-2.5 mt-2.5 border-t border-gray-100"
+            >
+              <div class="flex flex-col items-start gap-1">
+                <span class="flex items-center gap-1 text-xs text-gray-400">
+                  <svg lucideIcon="calendar" size="14" class="text-gray-400"></svg>
+                  {{ p.createdAt ? (p.createdAt | date: 'dd/MM/yyyy') : 'N/A' }}
+                </span>
+                <span class="flex items-center gap-1 text-xs text-gray-400">
+                  <svg lucideIcon="pencil" size="14" class="text-gray-400"></svg>
+                  {{ p.updatedAt | date: 'dd/MM/yyyy hh:mm' }}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <app-button variant="action" size="icon" (btnClick)="onView(p)">
+                  <svg lucideIcon="eye" size="13"></svg>
+                </app-button>
+                <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
+                  <svg lucideIcon="pencil" size="13"></svg>
+                </app-button>
+                <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
+                  <svg lucideIcon="trash" size="13"></svg>
+                </app-button>
+              </div>
+            </div>
+          </div>
+        }
       </div>
     }
 
@@ -278,7 +286,7 @@
         </table>
       </div>
     }
-  
+
     <!-- PAGINATION -->
     <div class="flex justify-center pt-6">
       <app-pagination

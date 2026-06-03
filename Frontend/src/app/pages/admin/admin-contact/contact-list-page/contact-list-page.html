@@ -5,7 +5,7 @@
       <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">
         Biểu mẫu liên hệ
       </h1>
-      <p class="text-xs text-gray-400 mt-0.5 slide-in-left">
+      <p class="text-xs text-gray-500 mt-0.5 slide-in-left">
         Quản lý thông tin khách hàng liên hệ tư vấn
       </p>
     </div>
@@ -50,6 +50,14 @@
       </div>
 
       <app-dropdown
+        [ngModel]="store.selectedStatus()"
+        (ngModelChange)="onStatusChange($event)"
+        [options]="contactStatusOptions"
+        placeholder="Tất cả trạng thái"
+        className="min-w-36 text-xs"
+      ></app-dropdown>
+
+      <app-dropdown
         [ngModel]="store.selectedSort()"
         (ngModelChange)="onSortChange($event)"
         [options]="sortOptions"
@@ -69,10 +77,10 @@
   } @else {
     <!-- CARD VIEW -->
     @if (!isListView() || isMobile()) {
-      <div class="fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         @for (f of store.filteredContacts(); track f._id) {
           <div
-            class="rounded-xl shadow-sm group bg-white border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
+            class=" fade-in  rounded-md shadow-sm group bg-white border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
           >
             <!-- BODY -->
             <div class="relative p-4 flex flex-col flex-1">
@@ -89,7 +97,7 @@
                       {{ f.name }}
                     </h3>
 
-                    <div class="flex items-center gap-1 text-gray-500 mt-1 text-xs">
+                    <div class="flex items-center gap-1 text-primary mt-1 text-xs">
                       <svg lucideIcon="phone" size="13"></svg>
                       <span>{{ f.phone }}</span>
                     </div>
@@ -98,20 +106,46 @@
 
                 <span
                   [class]="getContactStatusClass(f.status)"
-                  class="shrink-0 inline-flex items-center justify-center px-2 py-1 text-[10px] uppercase font-semibold rounded-md"
+                  class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold"
                 >
                   {{ f.status }}
                 </span>
               </div>
 
-
-              <!-- PROPERTY -->
-              <div class="mb-3">
+              <!-- EMPLOYEE -->
+              <div class="mb-3 bg-gray-50 p-1 rounded">
                 <div
-                  class="flex items-center gap-1 text-[11px] uppercase tracking-wide text-gray-400 mb-2"
+                  class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-1"
+                >
+                  <svg lucideIcon="user" size="13"></svg>
+                  <span>Nhân viên phụ trách</span>
+                </div>
+
+                <p class="text-xs text-primary">
+                  {{ f.resolvedBy?.name || 'N/A' }}
+                </p>
+              </div>
+
+              <!-- MESSAGE -->
+              <div class="flex-1 bg-gray-50 p-1 rounded mb-3">
+                <div
+                  class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-1"
+                >
+                  <svg lucideIcon="message-circle" size="13"></svg>
+                  <span>Lời nhắn</span>
+                </div>
+
+                <p class="text-xs text-primary line-clamp-3 leading-relaxed min-h-14">
+                  {{ f.message || 'Không có nội dung' }}
+                </p>
+              </div>
+              <!-- PROPERTY -->
+              <div>
+                <div
+                  class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-2"
                 >
                   <svg lucideIcon="building-2" size="13"></svg>
-                  <span>Bất động sản</span>
+                  <span>BĐS quan tâm</span>
                 </div>
 
                 <div class="flex items-start gap-3">
@@ -119,7 +153,7 @@
                   <img
                     [src]="f.post?.cover_picture?.url || 'bg_card.png'"
                     [alt]="f.post?.title"
-                    class="w-20 h-16 rounded-md object-cover shrink-0 border border-gray-200"
+                    class="w-16 h-9 rounded-sm object-cover shrink-0 border border-gray-200"
                   />
 
                   <!-- Thông tin -->
@@ -131,37 +165,9 @@
                 </div>
               </div>
 
-              <!-- EMPLOYEE -->
-              <div class="mb-3">
-                <div
-                  class="flex items-center gap-1 text-[11px] uppercase tracking-wide text-gray-400 mb-1"
-                >
-                  <svg lucideIcon="user" size="13"></svg>
-                  <span>Nhân viên phụ trách</span>
-                </div>
-
-                <p class="text-xs text-gray-700">
-                  {{ f.resolvedBy?.name || 'N/A' }}
-                </p>
-              </div>
-
-              <!-- MESSAGE -->
-              <div class="flex-1">
-                <div
-                  class="flex items-center gap-1 text-[11px] uppercase tracking-wide text-gray-400 mb-1"
-                >
-                  <svg lucideIcon="message-circle" size="13"></svg>
-                  <span>Lời nhắn</span>
-                </div>
-
-                <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed min-h-[4rem]">
-                  {{ f.message || 'Không có nội dung' }}
-                </p>
-              </div>
-
               <!-- FOOTER -->
               <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-100">
-                <div class="flex items-center gap-1 text-[11px] text-gray-400">
+                <div class="flex items-center gap-1 text-xs text-gray-500">
                   <svg lucideIcon="calendar" class="size-3"></svg>
                   {{ f.createdAt | date: 'dd/MM/yyyy' }}
                 </div>
@@ -192,27 +198,27 @@
           <thead class="bg-gray-50 border-b border-gray-200 text-center">
             <tr>
               <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold w-56"
+                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold w-56"
               >
                 Khách hàng
               </th>
               <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold"
+                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
               >
                 Số điện thoại
               </th>
               <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold"
+                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
               >
                 Lời nhắn
               </th>
               <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-400 font-semibold"
+                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
               >
                 Trạng thái
               </th>
               <th
-                class="px-3 py-2 text-right text-xs uppercase tracking-wider text-gray-400 font-semibold w-28"
+                class="px-3 py-2 text-right text-xs uppercase tracking-wider text-gray-500 font-semibold w-28"
               >
                 Thao tác
               </th>
@@ -236,16 +242,16 @@
                   </div>
                 </td>
 
-                <td class="px-3 py-2 text-xs text-gray-600">
+                <td class="px-3 py-2 text-xs text-primary">
                   <p class="text-xs text-gray-500">{{ f.phone }}</p>
                 </td>
                 <td class="px-3 py-2 max-w-xs">
-                  <p class="text-xs text-gray-600 line-clamp-2">{{ f.message }}</p>
+                  <p class="text-xs text-primary line-clamp-2">{{ f.message }}</p>
                 </td>
                 <td class="px-3 py-2">
                   <span
                     [class]="getContactStatusClass(f.status)"
-                    class="min-w-20 inline-flex items-center justify-center px-2 py-0.5 text-xs uppercase font-semibold rounded-sm"
+                    class="min-w-20 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold"
                   >
                     {{ f.status }}
                   </span>

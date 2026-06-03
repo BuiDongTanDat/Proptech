@@ -1,6 +1,7 @@
 import { PropertyPermission, PropertyStatus } from "../enum/enums";
 
 export const PROPERTY_STATUS_OPTIONS = [
+  { label: 'Tất cả trạng thái', value: 'all' },
   { label: PropertyStatus.DRAFT, value: PropertyStatus.DRAFT },
   { label: PropertyStatus.PENDING_APPROVAL, value: PropertyStatus.PENDING_APPROVAL },
   { label: PropertyStatus.REJECTED, value: PropertyStatus.REJECTED },

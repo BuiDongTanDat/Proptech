@@ -8,8 +8,6 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Toast } from '../../../shared/components/toast/toast';
 import { ToastService } from '../../../core/services/toast.service';
 import { AuthStore } from '../../../core/stores/auth.store';
-import { delay, finalize } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-login-page',
@@ -61,12 +59,10 @@ export class LoginPage {
         },
         error: (error) => {
           this.loading.set(false);
-          this.toastService.error(error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+          this.toastService.error(error?.error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
         },
 
       });
-
-
   }
 
   showPassword = false;

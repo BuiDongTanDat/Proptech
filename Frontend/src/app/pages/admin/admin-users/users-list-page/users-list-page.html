@@ -48,6 +48,14 @@
       </div>
 
       <app-dropdown
+        [ngModel]="store.selectedRole()"
+        (ngModelChange)="onRoleChange($event)"
+        [options]="roleOptions"
+        placeholder="Theo vai trò"
+        className="min-w-36 text-xs"
+      ></app-dropdown>
+
+      <app-dropdown
         [ngModel]="store.selectedSort()"
         (ngModelChange)="onSortChange($event)"
         [options]="sortOptions"
@@ -67,10 +75,10 @@
   } @else {
     <!-- CARD VIEW -->
     @if (!isListView() || isMobile()) {
-      <div class="fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         @for (u of store.paginatedUsers(); track u._id) {
           <div
-            class="rounded-md shadow-md group border border-gray-200 p-4 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+            class=" fade-in rounded-md shadow-sm group border border-gray-200 p-4 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
             [class]="isCurrentUser(u) ? 'bg-primary text-white' : 'bg-white text-primary'"
           >
             <!-- HEADER -->

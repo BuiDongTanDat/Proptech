@@ -2,8 +2,9 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { ContactService, ContactRequest } from '../services/contact.service';
 import { IContact } from '../models/model';
 import { ToastService } from '../services/toast.service';
-import { finalize } from 'rxjs';
-import { ContactStatus } from '../enum/enums';
+import { catchError, finalize, of, tap, throwError } from 'rxjs';
+import { ContactStatus, DateSort } from '../enum/enums';
+import { CONTACT_STATUS_OPTIONS } from '../constants/contact.constant';
 
 
 @Injectable({ providedIn: 'root' })
@@ -17,9 +18,11 @@ export class ContactsStore {
 
 
 	readonly loading = signal<boolean>(false);
+	readonly submitLoading = signal<boolean>(false);
 
 	readonly searchQuery = signal('');
-	readonly selectedSort = signal('default');
+	readonly selectedSort = signal(DateSort.DEFAULT);
+	readonly selectedStatus = signal(CONTACT_STATUS_OPTIONS[0].value); // Mặc định là 'all'
 
 	readonly pageSize = signal(12); // Cố định 12 post mỗi trang
 	readonly currentPage = signal(1);
@@ -37,24 +40,30 @@ export class ContactsStore {
 		}
 		//Sort by status or createdAt if needed
 		switch (this.selectedSort()) {
-			case 'newest':
+			case DateSort.NEWEST:
 				result.sort((a, b) => {
 					const dateA = new Date(a._id ? parseInt(a._id.substring(0, 8), 16) * 1000 : 0);
 					const dateB = new Date(b._id ? parseInt(b._id.substring(0, 8), 16) * 1000 : 0);
 					return dateB.getTime() - dateA.getTime();
 				});
 				break;
-			case 'oldest':
+			case DateSort.OLDEST:
 				result.sort((a, b) => {
 					const dateA = new Date(a._id ? parseInt(a._id.substring(0, 8), 16) * 1000 : 0);
 					const dateB = new Date(b._id ? parseInt(b._id.substring(0, 8), 16) * 1000 : 0);
 					return dateA.getTime() - dateB.getTime();
 				});
 				break;
-			case 'default':
+			case DateSort.DEFAULT:
 			default:
 				break;
 		}
+
+		// Lọc theo trạng thái		
+		if (this.selectedStatus() !== CONTACT_STATUS_OPTIONS[0].value) { // Nếu không phải 'all'
+			result = result.filter(c => c.status === this.selectedStatus());
+		}
+
 		return result;
 	});
 
@@ -86,34 +95,40 @@ export class ContactsStore {
 	}
 
 	addContact(payload: ContactRequest) {
-		this.loading.set(true);
-		// Chuẩn hóa dữ liệu gửi lên API
-		const request: ContactRequest = {
+		this.submitLoading.set(true);
+
+		const apiPayload: ContactRequest = {
 			name: payload.name,
 			phone: payload.phone,
 			message: payload.message,
-			postId: payload.postId || undefined,
+			post: payload.post || undefined,
 		};
-		this.contactService.addContact(request)
-			.pipe(finalize(() => this.loading.set(false)))
-			.subscribe({
-				next: (res: any) => {
-					const newContact: IContact = {
-						...payload,
-						status: ContactStatus.NEW,
-					};
-					this._contacts.update(list => [...list, newContact]);
-					this.toastService.success('Thêm liên hệ thành công');
-				},
-				error: err => this.toastService.error(err?.message || 'Lỗi thêm liên hệ')
-			});
+
+		return this.contactService.addContact(apiPayload).pipe(
+			tap((res: any) => {
+				const newContact: IContact = res.data;
+				this._contacts.update(list => [...list, newContact]);
+				this.toastService.success(res.message || 'Thêm liên hệ thành công');
+			}),
+			catchError((err) => {
+				this.toastService.error(err?.error?.message || 'Lỗi thêm liên hệ');
+				return throwError(() => err);
+			}),
+			finalize(() => this.submitLoading.set(false))
+		);
 	}
 
 
 	updateContact(updated: IContact) {
-		// Giả sử có API update, ở đây update local state
-		this._contacts.update(list => list.map(c => c._id === updated._id ? updated : c));
-		this.toastService.success('Cập nhật liên hệ thành công');
+		this.submitLoading.set(true);
+		return of(updated).pipe(
+			tap((res) => {
+				// Giả sử có API update, ở đây update local state
+				this._contacts.update(list => list.map(c => c._id === updated._id ? updated : c));
+				this.toastService.success(res.message || 'Cập nhật liên hệ thành công');
+			}),
+			finalize(() => this.submitLoading.set(false))
+		);
 	}
 
 	removeContact(_id: string) {
@@ -125,13 +140,19 @@ export class ContactsStore {
 		this.currentPage.set(page);
 	}
 
+	// Các setter cho filter/sort/search
 	setSearch(query: string) {
 		this.searchQuery.set(query);
 		this.currentPage.set(1);
 	}
 
 	setSort(sort: string) {
-		this.selectedSort.set(sort);
+		this.selectedSort.set(sort as DateSort);
+		this.currentPage.set(1);
+	}
+
+	setStatus(status: string) {
+		this.selectedStatus.set(status as ContactStatus);
 		this.currentPage.set(1);
 	}
 }

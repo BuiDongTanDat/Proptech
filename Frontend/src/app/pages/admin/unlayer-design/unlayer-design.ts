@@ -79,7 +79,7 @@ export class UnlayerDesign implements OnInit, OnDestroy {
 
   // Unlayer Editor Config 
   readonly editorOptions = {
-    projectId: 123456,
+    projectId: 286892,
     displayMode: 'web' as const,
     version: 'latest',
   };

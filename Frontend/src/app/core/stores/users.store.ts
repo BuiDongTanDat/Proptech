@@ -3,6 +3,8 @@ import { UserRequest, UserService } from '../services/user.service';
 import { IUserAccount } from '../models/model';
 import { ToastService } from '../services/toast.service';
 import { finalize, tap } from 'rxjs';
+import { USER_ROLE_OPTIONS } from '../constants/user.constant';
+import { DateSort, UserRole } from '../enum/enums';
 
 @Injectable({ providedIn: 'root' })
 export class UserStore {
@@ -17,7 +19,8 @@ export class UserStore {
     readonly submitLoading = signal<boolean>(false); // add / edit
 
     readonly searchQuery = signal('');
-    readonly selectedSort = signal('default');
+    readonly selectedSort = signal(DateSort.DEFAULT); // Mặc định là 'default'
+    readonly selectedRole = signal(USER_ROLE_OPTIONS[0].value); // Mặc định là 'all'
     readonly currentPage = signal(1);
     readonly pageSize = signal(8); // Cố định 8 user mỗi trang
 
@@ -33,36 +36,29 @@ export class UserStore {
             );
         }
 
+        // Apply role filter if set
+        const roleFilter = this.selectedRole();
+        if (roleFilter && roleFilter !== USER_ROLE_OPTIONS[0].value) { // Nếu không phải 'all'
+            result = result.filter(u => u.role === roleFilter);
+        }
+
+        // Apply sort options
         switch (this.selectedSort()) {
-            case 'admin':
-                result.sort((a, b) => {
-                    if (a.role === b.role) return 0;
-                    return a.role === 'Quản lý' ? -1 : 1;
-                });
-                break;
-
-            case 'staff':
-                result.sort((a, b) => {
-                    if (a.role === b.role) return 0;
-                    return a.role === 'Nhân viên' ? -1 : 1;
-                });
-                break;
-
-            case 'newest':
+            case DateSort.NEWEST:
                 result.sort((a, b) => {
                     const dateA = new Date(a._id ? parseInt(a._id.substring(0, 8), 16) * 1000 : 0);
                     const dateB = new Date(b._id ? parseInt(b._id.substring(0, 8), 16) * 1000 : 0);
                     return dateB.getTime() - dateA.getTime();
                 });
                 break;
-            case 'oldest':
+            case DateSort.OLDEST:
                 result.sort((a, b) => {
                     const dateA = new Date(a._id ? parseInt(a._id.substring(0, 8), 16) * 1000 : 0);
                     const dateB = new Date(b._id ? parseInt(b._id.substring(0, 8), 16) * 1000 : 0);
                     return dateA.getTime() - dateB.getTime();
                 });
                 break;
-            case 'default':
+            case DateSort.DEFAULT:
             default:
                 break;
         }
@@ -123,8 +119,13 @@ export class UserStore {
     }
 
     setSort(sort: string) {
-        this.selectedSort.set(sort);
+        this.selectedSort.set(sort as DateSort);
         this.currentPage.set(1); // Reset page khi sort
+    }
+
+    setRole(role: string) {
+        this.selectedRole.set(role as UserRole);
+        this.currentPage.set(1); // Reset trang khi lọc theo vai trò
     }
 
     resendVerification(id: string) {

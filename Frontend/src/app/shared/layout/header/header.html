@@ -1,66 +1,57 @@
-<nav 
-[class.shadow-md]="isScrolled" 
-[class.bg-white]="isScrolled" 
-class=" text-primary transition w-full">
-    <div class=" mx-auto px-6">
-        <div class="flex items-center justify-between h-20">
+<nav
+  [class.shadow-md]="isScrolled"
 
-            <!-- LOGO -->
-            <div class="text-xl tracking-wide font-medium">
-                AH.RPM
-            </div>
+  [class.-translate-y-full]="hideNavbar"
+  class="bg-white fixed top-0 left-0 right-0 z-50 text-primary transition-all duration-300 w-full px-4"
+>
+  <div class="mx-auto px-6">
+    <div class="flex items-center justify-between h-14">
+      <!-- LOGO -->
+      <div class="text-xl tracking-wide font-medium">AH.RPM</div>
 
-            <!-- MENU -->
-            <div class="flex items-center gap-8 text-sm">
-  @for (item of navItems; track $index) {
+      <!-- MENU -->
+      <div class="flex items-center gap-8 text-sm">
+        @for (item of navItems; track $index) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive
+            #rla="routerLinkActive"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="relative group py-2 transition"
+            [ngClass]="
+              rla.isActive
+                ? 'text-primary font-bold'
+                : 'text-gray-700 hover:text-primary font-medium'
+            "
+          >
+            {{ item.label }}
 
-  <a
-    [routerLink]="item.path"
-    routerLinkActive
-    #rla="routerLinkActive"
-    [routerLinkActiveOptions]="{ exact: true }"
-    class="relative group py-2 transition"
-    [ngClass]="
-      rla.isActive
-        ? 'text-primary font-bold'
-        : 'text-gray-700 hover:text-primary font-medium'
-    "
-  >
-    {{ item.label }}
+            <!-- HOVER LINE -->
+            <span
+              class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 w-0 group-hover:w-full"
+            ></span>
 
-    <!-- HOVER LINE -->
-    <span
-      class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 w-0 group-hover:w-full"
-    ></span>
+            <!-- ACTIVE LINE -->
+            <span
+              class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
+              [ngClass]="rla.isActive ? 'w-full' : 'w-0'"
+            ></span>
+          </a>
+        }
+      </div>
 
-    <!-- ACTIVE LINE -->
-    <span
-      class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
-      [ngClass]="rla.isActive ? 'w-full' : 'w-0'"
-    ></span>
-  </a>
+      <!-- RIGHT ACTION -->
+      <div class="flex items-center gap-6">
+        <!-- SEARCH ICON -->
+        <i
+          class="fa-solid fa-magnifying-glass text-lg cursor-pointer hover:text-black transition"
+        ></i>
 
-  }
-</div>
-
-            <!-- RIGHT ACTION -->
-            <div class="flex items-center gap-6">
-
-                <!-- SEARCH ICON -->
-                <i class="fa-solid fa-magnifying-glass text-lg cursor-pointer hover:text-black transition"></i>
-
-                <!-- BUTTON -->
-                <app-button 
-                startIcon="phone"
-                variant="primary" 
-                size="md" 
-                className="italic">
-                    
-                  Liên hệ
-                </app-button>
-
-            </div>
-
-        </div>
+        <!-- BUTTON -->
+        <app-button startIcon="phone" variant="primary" size="md" className="italic">
+          Liên hệ
+        </app-button>
+      </div>
     </div>
+  </div>
 </nav>

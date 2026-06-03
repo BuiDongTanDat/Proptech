@@ -51,7 +51,7 @@
       </div>
 
       <!-- PROPERTY -->
-  
+
       <div>
         <label class="block text-[11px] font-semibold mb-1 text-gray-400 uppercase">
           Bất động sản
@@ -62,14 +62,14 @@
           [options]="postOptions()"
           [searchable]="true"
           placeholder="Chọn bất động sản quan tâm"
-          [itemSize]="50" 
+          [itemSize]="50"
           [maxVisible]="3"
         >
           <ng-template let-option let-selected="selected">
             <div
               class="cursor-pointer flex items-center gap-1 px-3 py-0 w-full h-full hover:bg-gray-100 transition-colors"
               [class.bg-primary]="selected"
-              [class.hover:bg-gray-100]="!selected".
+              [class.hover:bg-gray-100]="!selected"
               [class.text-white]="selected"
             >
               <!-- Ảnh -->
@@ -92,8 +92,6 @@
                   </span>
                 </div>
               </div>
-
-              
             </div>
           </ng-template>
         </app-dropdown>
@@ -119,7 +117,6 @@
           formControlName="status"
           [options]="statusOptions"
           className="w-full"
-          [disabled]="currentMode() === 'view'"
         ></app-dropdown>
       </div>
 
@@ -144,7 +141,12 @@
     <div class="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4 shrink-0">
       <div class="flex justify-end gap-2">
         @if (currentMode() === 'view') {
-          <app-button type="button" variant="destructive" (btnClick)="onDelete()">
+          <app-button
+            type="button"
+            variant="destructive"
+            (btnClick)="onDelete()"
+            [disabled]="store.submitLoading()"
+          >
             <svg lucideIcon="trash-2" class="size-4"></svg>
             Xóa
           </app-button>
@@ -152,7 +154,7 @@
             type="button"
             className="bg-primary text-white"
             (btnClick)="onEdit()"
-            [disabled]="store.loading()"
+            [disabled]="store.submitLoading()"
           >
             <svg lucideIcon="pencil" class="size-4"></svg>
             Chỉnh sửa
@@ -162,17 +164,17 @@
             type="button"
             variant="outline"
             (btnClick)="onCancel()"
-            [disabled]="store.loading()"
+            [disabled]="store.submitLoading()"
           >
             {{ currentMode() === 'edit' && contactModal() ? 'Quay lại' : 'Hủy' }}
           </app-button>
           <app-button
             type="submit"
             className="bg-primary text-white"
-            [loading]="store.loading()"
-            [disabled]="store.loading()"
+            [loading]="store.submitLoading()"
+            [disabled]="store.submitLoading()"
           >
-            @if (store.loading()) {
+            @if (store.submitLoading()) {
               <svg lucideIcon="loader-circle" class="animate-spin" [size]="16"></svg>
             } @else {
               <svg lucideIcon="save" class="size-4"></svg>

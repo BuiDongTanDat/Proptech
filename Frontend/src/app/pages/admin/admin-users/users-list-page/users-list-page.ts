@@ -16,6 +16,8 @@ import { getAccountStatusBgClass, getAccountStatusClass, getRoleClass } from '..
 import { AccountStatus, UserRole } from '../../../../core/enum/enums';
 import { ToastService } from '../../../../core/services/toast.service';
 import { AuthStore } from '../../../../core/stores/auth.store';
+import { DATE_SORT_OPTIONS } from '../../../../core/constants/general.constant';
+import { USER_ROLE_OPTIONS } from '../../../../core/constants/user.constant';
 @Component({
   selector: 'app-users-list-page',
   imports: [
@@ -42,13 +44,8 @@ export class UsersListPage implements OnInit {
   formMode = signal<'view' | 'edit' | 'add'>('view');
   selectedUser = signal<IUserAccount | null>(null);
 
-  sortOptions = [
-    { label: 'Sắp xếp', value: 'default' },
-    { label: 'Mới nhất', value: 'newest' },
-    { label: 'Cũ nhất', value: 'oldest' },
-    { label: 'Quản lý', value: 'admin' },
-    { label: 'Nhân viên', value: 'staff' },
-  ];
+  sortOptions = DATE_SORT_OPTIONS;
+  roleOptions = USER_ROLE_OPTIONS;
 
   isCurrentUser(user: IUserAccount): boolean {
     return user._id === this.authStore.user()?._id;
@@ -70,6 +67,10 @@ export class UsersListPage implements OnInit {
 
   onSortChange(val: string) {
     this.store.setSort(val);
+  }
+
+  onRoleChange(val: string) {
+    this.store.setRole(val);
   }
 
   onPageChange(page: number) {

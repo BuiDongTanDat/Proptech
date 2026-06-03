@@ -15,6 +15,8 @@ import { ContactsStore } from '../../../../core/stores/contacts.store';
 import { Loading } from '../../../../shared/components/loading/loading';
 import { getContactStatusClass } from '../../../../shared/utils/helper';
 import { ContactStatus } from '../../../../core/enum/enums';
+import { DATE_SORT_OPTIONS } from '../../../../core/constants/general.constant';
+import { CONTACT_STATUS_OPTIONS } from '../../../../core/constants/contact.constant';
 
 @Component({
   selector: 'app-contact-list-page',
@@ -39,11 +41,8 @@ export class ContactListPage implements OnInit {
   formMode = signal<'view' | 'edit' | 'add'>('view');
   selectedContact = signal<IContact | null>(null);
 
-  sortOptions = [
-    { label: 'Sắp xếp', value: 'default' },
-    { label: 'Mới nhất', value: 'newest' },
-    { label: 'Cũ nhất', value: 'oldest' },
-  ];
+  sortOptions = DATE_SORT_OPTIONS;
+  contactStatusOptions = CONTACT_STATUS_OPTIONS;
 
   ngOnInit(): void {
     this.onResize();
@@ -60,6 +59,10 @@ export class ContactListPage implements OnInit {
 
   onSortChange(val: string) {
     this.store.setSort(val);
+  }
+
+  onStatusChange(val: string) {
+    this.store.setStatus(val);
   }
 
   onPageChange(page: number) {
@@ -97,12 +100,19 @@ export class ContactListPage implements OnInit {
   }
 
   onSaveContact(contactData: any) {
-    if (this.formMode() === 'add') {
-      this.store.addContact(contactData);
-    } else {
-      this.store.updateContact({ ...this.selectedContact()!, ...contactData });
-    }
-    this.showFormDialog.set(false);
+    const action$ = this.formMode() === 'add'
+      ? this.store.addContact(contactData)
+      : this.store.updateContact({ ...this.selectedContact()!, ...contactData });
+
+    action$?.subscribe({
+      next: () => {
+        this.showFormDialog.set(false);
+        this.selectedContact.set(null);
+      },
+      error: () => {
+        // Error toast is handled inside the store.
+      },
+    });
   }
 
   onView(contact: IContact) {

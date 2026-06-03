@@ -4,9 +4,15 @@ export enum UserRole {
   INTERN = 'Thực tập sinh',
 }
 
+export enum DateSort {
+  DEFAULT = 'default',
+  NEWEST = 'newest',
+  OLDEST = 'oldest',
+}
+
 export enum AccountStatus {
   ACTIVE = 'Kích hoạt',
-  INACTIVE = 'Ngưng hoạt động',
+  INACTIVE = 'Ngừng hoạt động',
   PENDING = 'Chờ xác thực',
 }
 

@@ -52,7 +52,7 @@ export class ContactForm {
     message: new FormControl('', Validators.required),
     status: new FormControl('Mới', Validators.required),
     resolvedBy: new FormControl(''),
-    postId: new FormControl(''),
+    post: new FormControl('', Validators.required),
   });
 
   get f() {
@@ -73,7 +73,8 @@ export class ContactForm {
           value: p._id || '',
           location: p.location,
           image: p.cover_picture.url || 'bg_card.png',
-          developer: p.developer
+          developer: p.developer,
+          post: p._id || ''
         }))
       );
 
@@ -93,7 +94,7 @@ export class ContactForm {
           message: contactModal.message || '',
           status: contactModal.status || 'Mới',
           resolvedBy: contactModal.resolvedBy?._id || '',
-          postId: contactModal.post?._id || '',
+          post: contactModal.post?._id || '',
         });
       } else {
         this.contactForm.reset({ status: 'Mới' });
@@ -137,9 +138,9 @@ export class ContactForm {
       phone: formValue.phone,
       message: formValue.message,
       status: formValue.status,
-      resolvedBy: formValue.resolvedBy ? { _id: formValue.resolvedBy } : undefined,
-      postId: formValue.postId ? { _id: formValue.postId } : undefined,
+      post: formValue.post ? formValue.post : '', 
     };
+    console.log('Submitting contact data:', data);
     this.save.emit(data);
   }
 

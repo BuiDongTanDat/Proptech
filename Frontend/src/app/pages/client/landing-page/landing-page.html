@@ -1,206 +1,372 @@
 <!-- ===== SECTION 1: HERO ===== -->
-<section class="relative h-[85vh] w-full flex flex-col justify-center items-center scroll-reveal">
-    <!-- Ảnh nền -->
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80"
-            class="w-full h-full object-cover" alt="Hero background">
-        <div class="absolute inset-0 bg-black/10"></div>
-    </div>
+<section
+  class="relative h-[85vh] w-full flex flex-col justify-center items-center overflow-hidden scroll-reveal"
+>
+  <!-- Slides -->
+  <div class="absolute inset-0 z-0">
+    @for (image of heroImages; track $index) {
+      <img
+        [src]="image"
+        [alt]="'Hero ' + ($index + 1)"
+        class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms]"
+        [class.opacity-100]="currentSlide === $index"
+        [class.opacity-0]="currentSlide !== $index"
+      />
+    }
 
-    <!-- Nội dung -->
-    <div class="relative z-10 text-center text-white mb-12">
-        <h1 class="text-4xl md:text-5xl font-light tracking-wide  mb-2 ">
-            Tinh hoa kiến trúc.<br>Chuẩn mực sống tinh tuyển.
-        </h1>
-    </div>
+    <div class="absolute inset-0 bg-black/30"></div>
+  </div>
 
-    <!-- Search -->
-    <div class="relative z-10 w-full max-w-4xl px-4">
-        <div class="backdrop-blur-md bg-white/20 p-3 grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
-            <div class="flex items-center text-white px-3 border-r border-white/30">
-                <i class="fa-solid fa-location-dot mr-2"></i>
-                <input type="text" placeholder="Điểm đến toàn cầu"
-                    class="bg-transparent placeholder-white text-white outline-none text-sm w-full">
-            </div>
-            <div class="flex items-center text-white px-3">
-                <i class="fa-solid fa-house mr-2"></i>
-                <input type="text" placeholder="Bất động sản cao cấp"
-                    class="bg-transparent placeholder-white text-white outline-none text-sm w-full">
-            </div>
-            <app-button variant="white" size="md" className="w-full">
-                <svg lucideIcon="search" [size]="16" class="mr-2"></svg>
-                Tìm kiếm
-            </app-button>
-        </div>
+  <!-- Nội dung -->
+  <div class="relative z-10 text-center text-white mb-12 px-4">
+    <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-2">
+      Tinh hoa kiến trúc.<br />
+      Chuẩn mực sống tinh tuyển.
+    </h1>
+  </div>
+
+  <!-- Search -->
+  <div class="relative z-10 w-full max-w-4xl px-4">
+    <div
+      class="backdrop-blur-md bg-white/20 p-3 grid grid-cols-1 md:grid-cols-3 gap-2 items-center"
+    >
+      <div class="flex items-center text-white px-3 border-r border-white/30">
+        <i class="fa-solid fa-location-dot mr-2"></i>
+        <input
+          type="text"
+          placeholder="Điểm đến toàn cầu"
+          class="bg-transparent placeholder-white text-white outline-none text-sm w-full"
+        />
+      </div>
+
+      <div class="flex items-center text-white px-3">
+        <i class="fa-solid fa-house mr-2"></i>
+        <input
+          type="text"
+          placeholder="Bất động sản cao cấp"
+          class="bg-transparent placeholder-white text-white outline-none text-sm w-full"
+        />
+      </div>
+
+      <app-button variant="white" size="md" className="w-full">
+        <svg lucideIcon="search" [size]="16" class="mr-2"></svg>
+        Tìm kiếm
+      </app-button>
     </div>
+  </div>
+
+  <!-- Indicator -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+    @for (image of heroImages; track $index) {
+      <button
+        class="h-2 w-2 rounded-full transition-all"
+        [class.bg-white]="currentSlide === $index"
+        [class.bg-white/40]="currentSlide !== $index"
+        (click)="currentSlide = $index"
+      ></button>
+    }
+  </div>
 </section>
-
 
 <!-- ===== SECTION 2 ===== -->
 <section class="max-w-7xl mx-auto px-6 py-20 scroll-reveal">
-    <div class="flex justify-between items-end mb-8">
-        <div>
-            <span class="text-xs uppercase text-gray-400 tracking-widest font-medium">Lựa chọn phong cách sống</span>
-            <h2 class="text-3xl  font-light text-gray-800 mt-1">
-                Điểm đến nổi bật<br>dành cho giới tinh hoa.
-            </h2>
-        </div>
-        <a href="#" class="text-xs uppercase font-semibold border-b border-black pb-1 hover:text-gray-500 transition">
-            Khám phá tất cả thị trường &rarr;
-        </a>
+  <div class="flex justify-between items-end mb-8">
+    <div>
+      <span class="text-xs uppercase text-gray-400 tracking-widest font-medium"
+        >Lựa chọn phong cách sống</span
+      >
+      <h2 class="text-3xl font-light text-gray-800 mt-1">
+        Điểm đến nổi bật<br />dành cho giới tinh hoa.
+      </h2>
+    </div>
+    <a
+      href="#"
+      class="text-xs uppercase font-semibold border-b border-black pb-1 hover:text-gray-500 transition"
+    >
+      Khám phá tất cả thị trường &rarr;
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="md:col-span-2 relative group overflow-hidden h-[500px]">
+      <img
+        src="landing_image/haivanbay.jpg"
+        alt="HaiVanBay"
+        class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+      />
+      <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
+      <div class="absolute bottom-6 left-6 text-white">
+        <h3 class="text-2xl">VINHOME HẢI VÂN BAY</h3>
+        <p class="text-xs tracking-widest text-white/70">
+          Siêu dự án “thành phố nghỉ dưỡng” quy mô 512 hecta với tổng vốn đầu tư 44.000 tỷ đồng
+        </p>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="md:col-span-2 relative group overflow-hidden h-[500px]">
-            <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=80"
-                class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-            <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
-            <div class="absolute bottom-6 left-6 text-white">
-                <h3 class="text-2xl    ">Amalfi Enclave</h3>
-                <p class="text-xs uppercase tracking-widest text-white/70">Biệt thự riêng tư</p>
-            </div>
+    <div class="flex flex-col gap-5 h-125">
+      <div class="relative group overflow-hidden flex-1">
+        <img
+          src="landing_image/maia.jpg"
+          class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+        />
+        <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
+        <div class="absolute bottom-4 left-4 pr-4 text-white">
+          <h3 class="text-lg">Maia Resort Hồ Tràm</h3>
+          <p class="text-xs text-white/70">Hệ Thống Tiện Ích Đẳng Cấp</p>
         </div>
+      </div>
 
-        <div class="flex flex-col gap-5 h-125">
-            <div class="relative group overflow-hidden flex-1">
-                <img src="https://images.unsplash.com/photo-1544198365-f5d60b6d8190?auto=format&fit=crop&w=600&q=80"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
-                <div class="absolute bottom-4 left-4 text-white">
-                    <h3 class="text-lg    ">St. Moritz</h3>
-                    <p class="text-xs text-white/70">Phong cách sống vùng núi</p>
-                </div>
-            </div>
-
-            <div class="relative group overflow-hidden flex-1">
-                <img src="https://images.unsplash.com/photo-1544198365-f5d60b6d8190?auto=format&fit=crop&w=600&q=80"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
-                <div class="absolute bottom-4 left-4 text-white">
-                    <h3 class="text-lg    ">Joshua Tree</h3>
-                    <p class="text-xs text-white/70">Nghỉ dưỡng sa mạc</p>
-                </div>
-            </div>
+      <div class="relative group overflow-hidden flex-1">
+        <img
+          src="landing_image/vinhome.jpg"
+          alt="Vinhome"
+          class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+        />
+        <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
+        <div class="absolute bottom-4 left-4 pr-4 text-white">
+          <h3 class="text-lg">Vinhomes Grand Park</h3>
+          <p class="text-xs text-white/70">
+            Dự án Khu đô thị thông minh kiểu mẫu bật nhất tại Việt Nam với quy mô 271 hecta.
+          </p>
         </div>
+      </div>
     </div>
+  </div>
 </section>
-
 
 <!-- ===== SECTION 3: DỰ ÁN MỚI  ===== -->
-<section class="max-w-7xl mx-auto px-6 py-12 md:py-16 ">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h2 class="text-2xl font-light text-gray-800">Dự án mới</h2>
-        <div class="flex gap-2">
-            <button class="w-10 h-10 border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition">
-                &larr;
-            </button>
-            <button class="w-10 h-10 border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition">
-                &rarr;
-            </button>
-        </div>
+<section class="max-w-7xl mx-auto px-6 py-12 md:py-16">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <h2 class="text-2xl font-light text-gray-800">Dự án mới</h2>
+    <div class="flex gap-2">
+      <button
+        class="w-10 h-10 border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition"
+      >
+        &larr;
+      </button>
+      <button
+        class="w-10 h-10 border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition"
+      >
+        &rarr;
+      </button>
     </div>
+  </div>
 
-    <!-- Sửa grid: 1 cột trên mobile, 2 cột trên md -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        @for (hotel of hotels.slice(0,2); track hotel.id){
-        <div class="group cursor-pointer">
-            <!-- Sửa height image: linh hoạt hơn trên mobile -->
-            <div class="relative overflow-hidden h-[250px] md:h-[380px]">
-                <img [src]="hotel.imageUrl"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                <span class="absolute top-4 left-4 bg-white/90 text-[10px] uppercase tracking-widest px-3 py-1 font-semibold">
-                    Mới
-                </span>
-            </div>
-
-            <div class="mt-4 flex flex-col sm:flex-row justify-between items-start">
-                <div>
-                    <h3 class="text-lg text-gray-800 group-hover:text-gray-500 transition">
-                        {{hotel.name}}
-                    </h3>
-                    <p class="text-xs text-gray-400 uppercase tracking-wider mt-1">
-                        {{hotel.location}}
-                    </p>
-                </div>
-                <div class="mt-2 sm:mt-0 sm:text-right">
-                    <p class="text-lg text-gray-800">${{hotel.price}}</p>
-                    <p class="text-xs text-gray-400">/ đêm</p>
-                </div>
-            </div>
-
-            <div class="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-500">
-                <span><i class="fa-solid fa-bed mr-1"></i> 3 Phòng ngủ</span>
-                <span><i class="fa-solid fa-bath mr-1"></i> 4 Phòng tắm</span>
-                <span><i class="fa-solid fa-maximize mr-1"></i> 3,200 sqft</span>
-            </div>
-        </div>
-        }
-    </div>
+  <!-- Sửa grid: 1 cột trên mobile, 2 cột trên md -->
 </section>
 
+<section
+  class="relative h-[85vh] w-full flex flex-col justify-center items-center overflow-hidden scroll-reveal"
+>
+  <!-- Slides -->
+  <div class="absolute inset-0 z-0">
+    @for (image of heroImages; track $index) {
+      <img
+        [src]="image"
+        [alt]="'Hero ' + ($index + 1)"
+        class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms]"
+        [class.opacity-100]="currentSlide === $index"
+        [class.opacity-0]="currentSlide !== $index"
+      />
+    }
 
+    <div class="absolute inset-0 bg-black/30"></div>
+  </div>
+
+  <!-- Nội dung -->
+  <div class="relative z-10 text-center text-white mb-12 px-4">
+    <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-2">
+      Tinh hoa kiến trúc.<br />
+      Chuẩn mực sống tinh tuyển.
+    </h1>
+  </div>
+
+  <!-- Search -->
+  <div class="relative z-10 w-full max-w-4xl px-4">
+    <div
+      class="backdrop-blur-md bg-white/20 p-3 grid grid-cols-1 md:grid-cols-3 gap-2 items-center"
+    >
+      <div class="flex items-center text-white px-3 border-r border-white/30">
+        <i class="fa-solid fa-location-dot mr-2"></i>
+        <input
+          type="text"
+          placeholder="Điểm đến toàn cầu"
+          class="bg-transparent placeholder-white text-white outline-none text-sm w-full"
+        />
+      </div>
+
+      <div class="flex items-center text-white px-3">
+        <i class="fa-solid fa-house mr-2"></i>
+        <input
+          type="text"
+          placeholder="Bất động sản cao cấp"
+          class="bg-transparent placeholder-white text-white outline-none text-sm w-full"
+        />
+      </div>
+
+      <app-button variant="white" size="md" className="w-full">
+        <svg lucideIcon="search" [size]="16" class="mr-2"></svg>
+        Tìm kiếm
+      </app-button>
+    </div>
+  </div>
+
+  <!-- Indicator -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+    @for (image of heroImages; track $index) {
+      <button
+        class="h-2 w-2 rounded-full transition-all"
+        [class.bg-white]="currentSlide === $index"
+        [class.bg-white/40]="currentSlide !== $index"
+        (click)="currentSlide = $index"
+      ></button>
+    }
+  </div>
+</section>
+<section class="max-w-7xl mx-auto px-6 py-12 md:py-16 overflow-hidden">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <p class="text-xs uppercase tracking-widest text-gray-400">Dự án nổi bật</p>
+
+      <h2 class="text-3xl font-light text-gray-800 mt-1">Dự án mới</h2>
+    </div>
+
+    <div class="flex gap-2">
+      <button
+        (click)="prevProject()"
+        class="w-10 h-10 border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition"
+      >
+        &larr;
+      </button>
+
+      <button
+        (click)="nextProject()"
+        class="w-10 h-10 border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition"
+      >
+        &rarr;
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-hidden">
+    <div
+      class="flex transition-transform duration-700 ease-out"
+      [style.transform]="'translateX(-' + currentProjectIndex * 33.333 + '%)'"
+    >
+      @for (post of store.allRealEstatePosts(); track post._id) {
+        <div class="w-full md:w-1/3 shrink-0 px-3">
+          <div
+            class="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
+          >
+            <div class="relative overflow-hidden h-[260px] md:h-[360px]">
+              <img
+                [src]="post.cover_picture?.url || 'bg_card.png'"
+                [alt]="post.title"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
+              ></div>
+
+              <span
+                class="absolute top-4 left-4 bg-white text-gray-900 text-[10px] uppercase tracking-widest px-3 py-1 rounded-full font-semibold"
+              >
+                Dự án mới
+              </span>
+            </div>
+
+            <div class="p-5">
+              <h3
+                class="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-primary transition"
+              >
+                {{ post.title || 'Chưa có tiêu đề' }}
+              </h3>
+
+              <p class="mt-2 text-sm text-gray-500 line-clamp-1">
+                {{ post.location || 'Đang cập nhật vị trí' }}
+              </p>
+
+              @if (post.developer) {
+                <p class="mt-3 text-xs uppercase tracking-widest text-gray-400">
+                  {{ post.developer }}
+                </p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
 <!-- ===== SECTION 4: DI SẢN  ===== -->
 <!-- Sửa min-h-screen thành py-16 để tránh tràn nội dung -->
 <section class="min-h-fit bg-[#001529] text-white p-6 md:p-12 lg:py-24 flex items-center">
-    <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center w-full">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center w-full">
+    <div class="lg:col-span-5 space-y-6">
+      <span class="text-[10px] tracking-[0.3em] text-gray-400 uppercase"
+        >Tiêu chuẩn tinh tuyển</span
+      >
+      <h2 class="text-3xl md:text-5xl font-light leading-tight">
+        Chúng tôi không bán bất động sản. Chúng tôi gìn giữ di sản.
+      </h2>
+      <p class="text-gray-400 text-sm max-w-md">
+        Mỗi bất động sản đều được thẩm định kiến trúc nghiêm ngặt, hợp tác cùng các chuyên gia và
+        nhà thiết kế hàng đầu.
+      </p>
 
-        <div class="lg:col-span-5 space-y-6">
-            <span class="text-[10px] tracking-[0.3em] text-gray-400 uppercase">Tiêu chuẩn tinh tuyển</span>
-            <h2 class="text-3xl md:text-5xl font-light leading-tight">
-                Chúng tôi không bán bất động sản. Chúng tôi gìn giữ di sản.
-            </h2>
-            <p class="text-gray-400 text-sm max-w-md">
-                Mỗi bất động sản đều được thẩm định kiến trúc nghiêm ngặt, hợp tác cùng các chuyên gia và nhà thiết kế hàng đầu.
-            </p>
-
-            <div class="space-y-6">
-                <div class="flex gap-4">
-                    <div class="p-2 bg-white/5 border border-white/10 h-fit">
-                        <svg lucideIcon="shield" [size]="20"></svg>
-                    </div>
-                    <div>
-                        <h4 class="italic">Giá trị kiến trúc</h4>
-                        <p class="text-xs text-gray-500">Xác thực nguồn gốc và giá trị thiết kế.</p>
-                    </div>
-                </div>
-
-                <div class="flex gap-4">
-                    <div class="p-2 bg-white/5 border border-white/10 h-fit">
-                        <svg lucideIcon="sparkle" [size]="20"></svg>
-                    </div>
-                    <div>
-                        <h4 class="italic">Trải nghiệm tuyển chọn</h4>
-                        <p class="text-xs text-gray-500">Chiến lược đầu tư dành cho khách hàng tinh hoa.</p>
-                    </div>
-                </div>
-            </div>
+      <div class="space-y-6">
+        <div class="flex gap-4">
+          <div class="p-2 bg-white/5 border border-white/10 h-fit">
+            <svg lucideIcon="shield" [size]="20"></svg>
+          </div>
+          <div>
+            <h4 class="italic">Giá trị kiến trúc</h4>
+            <p class="text-xs text-gray-500">Xác thực nguồn gốc và giá trị thiết kế.</p>
+          </div>
         </div>
 
-        <!-- Right side: Grid ảnh và số liệu -->
-        <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Cột 1 -->
-            <div class="space-y-6 lg:pt-20">
-                <div class="aspect-4/5 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
-                        class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
-                </div>
-                <div class="p-6 bg-white/5 border border-white/10">
-                    <h3 class="text-4xl">98%</h3>
-                    <p class="text-xs text-gray-400">Khách hàng quay lại</p>
-                </div>
-            </div>
-
-            <!-- Cột 2 -->
-            <div class="space-y-6">
-                <div class="p-6 bg-orange-900/80">
-                    <h3 class="text-4xl">$4.2B</h3>
-                    <p class="text-xs opacity-70">Giá trị danh mục</p>
-                </div>
-                <div class="aspect-4/5 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea"
-                        class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
-                </div>
-            </div>
+        <div class="flex gap-4">
+          <div class="p-2 bg-white/5 border border-white/10 h-fit">
+            <svg lucideIcon="sparkle" [size]="20"></svg>
+          </div>
+          <div>
+            <h4 class="italic">Trải nghiệm tuyển chọn</h4>
+            <p class="text-xs text-gray-500">Chiến lược đầu tư dành cho khách hàng tinh hoa.</p>
+          </div>
         </div>
+      </div>
     </div>
+
+    <!-- Right side: Grid ảnh và số liệu -->
+    <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Cột 1 -->
+      <div class="space-y-6 lg:pt-20">
+        <div class="aspect-4/5 overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+            class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"
+          />
+        </div>
+        <div class="p-6 bg-white/5 border border-white/10">
+          <h3 class="text-4xl">98%</h3>
+          <p class="text-xs text-gray-400">Khách hàng quay lại</p>
+        </div>
+      </div>
+
+      <!-- Cột 2 -->
+      <div class="space-y-6">
+        <div class="p-6 bg-orange-900/80">
+          <h3 class="text-4xl">$4.2B</h3>
+          <p class="text-xs opacity-70">Giá trị danh mục</p>
+        </div>
+        <div class="aspect-4/5 overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1600566752355-35792bedcfea"
+            class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

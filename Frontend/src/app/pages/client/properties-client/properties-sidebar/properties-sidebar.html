@@ -22,7 +22,11 @@
 	<!-- Danh mục dự án -->
 	<div class="mb-6">
 		<label class="block text-xs uppercase text-gray-400 mb-2">Danh mục</label>
-		<select class="w-full border rounded px-2 py-1 text-sm" [value]="selectedCategory" (change)="onCategoryChange($any($event.target).value)">
+		<select
+			class="w-full border rounded px-2 py-1 text-sm"
+			[value]="selectedCategory"
+			(change)="onCategoryChange($any($event.target).value)"
+		>
 			<option value="all">Tất cả</option>
 			<option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
 		</select>

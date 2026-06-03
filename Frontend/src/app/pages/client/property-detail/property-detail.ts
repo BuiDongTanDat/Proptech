@@ -1,53 +1,113 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit, effect, inject, signal } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { LucideDynamicIcon } from '@lucide/angular';
+import { Subscription, finalize } from 'rxjs';
+import { IPost } from '../../../core/models/model';
+import { PostStore, REAL_ESTATE_POST_ID } from '../../../core/stores/post.store';
+import { PostService } from '../../../core/services/post.service';
 
 @Component({
   selector: 'app-property-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DatePipe, RouterLink, LucideDynamicIcon],
   templateUrl: './property-detail.html',
   styleUrls: ['./property-detail.css']
 })
-export class PropertyDetail {
-  property = {
-    name: 'The Obsidian Pavilion',
-    price: '$18,450,000',
-    location: 'Malibu, California',
-    breadcrumb: ['Properties', 'California', 'Malibu'],
-    stats: {
-      area: '8,240 sq ft',
-      beds: '5 Beds',
-      baths: '6 Baths',
-    },
-    agentName: 'Brielle Thrace',
-    agentTitle: 'Principal Broker, Pacific Estates',
-    quote: '"Architecture is not about space but about time."',
-    quoteAuthor: '— Juan Miquel, Senior Architect',
-    description: [
-      'Designed as a series of interlocking volumes, The Obsidian Pavilion toys with the materiality of glass to dissolve the otherwise visible. Every single angle has been adjusted to capture the ethereal dignity of the Pacific coast, creating a living gallery that changes its mood from dawn to dusk.',
-      'The structure disappears into the hillside, using subterranean geothermal energy and collected solar electricity to produce a ecological footprint commensurate to land itself. This is not just a residence, but a landmark emblematic of modern architectural strategies.'
-    ],
-    amenities: [
-      { icon: '◈', title: 'Infinite Edge', desc: 'A 75-meter negative edge pool merging with Pacific horizon.' },
-      { icon: '◎', title: 'Climate Order', desc: 'Geothermal radiant heat and cool-air underfloor systems.' },
-      { icon: '◐', title: 'Private Cinema', desc: 'Dedicated 28-seat IMAX-quality underground screening room.' },
-      { icon: '⬡', title: 'Gallery Garage', desc: 'Temperature-controlled gallery space for up to 12 vehicles.' },
-      { icon: '❋', title: 'Wellness Wing', desc: 'Cryotherapy, sauna circuit and salt therapy environment.' },
-      { icon: '◆', title: 'Chef\'s Atelier', desc: 'Dual Molteni ranges, prep kitchen and cold storage.' },
-      { icon: '⊕', title: 'AI', desc: 'AI concierge managing all home systems via neural interface.' },
-      { icon: '◉', title: 'Absolute Privacy', desc: 'Biometric access and encrypted communications throughout.' }
-    ],
-    images: {
-      main: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=900&q=80',
-      top1: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=400&q=80',
-      top2: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400&q=80',
-      bottom: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&q=80'
+export class PropertyDetail implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly postService = inject(PostService);
+  protected readonly store = inject(PostStore);
+
+  readonly previewUrl = signal<SafeResourceUrl | null>(null);
+  readonly suggestedPosts = signal<IPost[]>([]);
+  readonly suggestedLoading = signal(false);
+  
+  private blobUrl: string | null = null;
+  private routeSubscription?: Subscription;
+
+  constructor() {
+    effect((onCleanup) => {
+      const post = this.store.selectedPost();
+      const html = post?.htmlSource;
+
+      if (!html) {
+        this.previewUrl.set(null);
+        return;
+      }
+
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      this.blobUrl = url;
+      this.previewUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+
+      onCleanup(() => {
+        URL.revokeObjectURL(url);
+      });
+    });
+  }
+
+  ngOnInit(): void {
+    this.routeSubscription = this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.store.loadPostById(id);
+        this.loadSuggestedPosts(id);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.blobUrl) {
+      URL.revokeObjectURL(this.blobUrl);
     }
-  };
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+  }
 
-  isWishlisted = false;
+  goBack(): void {
+    this.router.navigate(['/properties']);
+  }
 
-  toggleWishlist() {
-    this.isWishlisted = !this.isWishlisted;
+  protected loadSuggestedPosts(currentId: string): void {
+    this.suggestedLoading.set(true);
+
+    this.postService.getAllPosts(1, REAL_ESTATE_POST_ID)
+      .pipe(finalize(() => this.suggestedLoading.set(false)))
+      .subscribe({
+        next: res => {
+          const items = res.data ?? [];
+          const filtered = items
+            .filter(post => post._id && post._id !== currentId)
+            .slice(0, 4);
+          this.suggestedPosts.set(filtered);
+        },
+        error: () => {
+          this.suggestedPosts.set([]);
+        }
+      });
+  }
+
+  // Tự động thay đổi chiều cao iframe tương ứng với nội dung HTML bên trong
+  protected onIframeLoad(event: Event): void {
+    const iframe = event.target as HTMLIFrameElement;
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.style.height = '0px'; // Reset chiều cao tạm thời để tính toán chuẩn xác
+        const doc = iframe.contentWindow.document;
+        const height = Math.max(
+          doc.body.scrollHeight,
+          doc.documentElement.scrollHeight
+        );
+        iframe.style.height = `${height}px`;
+      } catch (error) {
+        // Phương án dự phòng nếu gặp lỗi phân tích kích thước
+        iframe.style.height = '100vh';
+      }
+    }
   }
 }

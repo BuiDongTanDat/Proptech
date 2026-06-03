@@ -50,6 +50,11 @@ export interface IPost {
   createdAt?: string;
   updatedAt?: string;
 
+  author?: {
+    _id: string;
+    name: string;
+  }
+
   __v?: number;
 }
 
@@ -71,7 +76,5 @@ export interface IContact {
     _id: string;
     name: string;
   }
-
-
 
 }

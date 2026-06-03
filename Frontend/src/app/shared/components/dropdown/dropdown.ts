@@ -6,6 +6,8 @@ import {
   TemplateRef,
   ViewChild,
   AfterViewChecked,
+  AfterViewInit,
+  OnDestroy,
   computed,
   effect,
   inject,
@@ -14,7 +16,7 @@ import {
 } from '@angular/core';
 
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { OverlayModule } from '@angular/cdk/overlay';
+import { OverlayModule, Overlay, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { NgTemplateOutlet } from '@angular/common';
@@ -25,7 +27,7 @@ export interface DropdownOption<T = unknown> {
   [key: string]: unknown;
 }
 
-const MAX_VISIBLE = 8;     
+const MAX_VISIBLE = 8;
 
 @Component({
   selector: 'app-dropdown',
@@ -41,8 +43,9 @@ const MAX_VISIBLE = 8;
     '(document:click)': 'onDocumentClick($event)',
   },
 })
-export class Dropdown implements ControlValueAccessor, AfterViewChecked {
+export class Dropdown implements ControlValueAccessor, AfterViewChecked, AfterViewInit, OnDestroy {
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
+  @ViewChild(CdkConnectedOverlay) connectedOverlay?: CdkConnectedOverlay;
 
   // Inputs   
   readonly options = input<DropdownOption[]>([]);
@@ -59,15 +62,23 @@ export class Dropdown implements ControlValueAccessor, AfterViewChecked {
 
   // Refs
   private readonly elRef = inject(ElementRef<HTMLElement>);
-
+  private readonly overlay = inject(Overlay);
+  readonly scrollStrategy = this.overlay.scrollStrategies.reposition();
+  
   // State
   readonly isOpen = signal(false);
   readonly search = signal('');
   readonly triggerWidth = signal(0);
-  
+
   // Quản lý giá trị bằng Signal để đảm bảo OnPush hoạt động chuẩn xác
   readonly selectedValue = signal<unknown>(null);
   readonly disabledState = signal(false);
+  private readonly triggerButton = signal<HTMLElement | null>(null);
+  private readonly handleViewportChange = () => {
+    if (!this.isOpen()) return;
+    this.updateTriggerWidth();
+    this.connectedOverlay?.overlayRef?.updatePosition();
+  };
 
   // Kết hợp trạng thái disable từ input và form control
   readonly isDisabled = computed(() => this.disabled() || this.disabledState());
@@ -97,6 +108,13 @@ export class Dropdown implements ControlValueAccessor, AfterViewChecked {
     });
   }
 
+  ngAfterViewInit(): void {
+    const btn = this.elRef.nativeElement.querySelector('button') as HTMLElement | null;
+    this.triggerButton.set(btn);
+    document.addEventListener('scroll', this.handleViewportChange, true);
+    window.addEventListener('resize', this.handleViewportChange);
+  }
+
   ngAfterViewChecked(): void {
     if (this.isOpen() && this.searchable() && this.searchInput?.nativeElement) {
       setTimeout(() => {
@@ -105,17 +123,22 @@ export class Dropdown implements ControlValueAccessor, AfterViewChecked {
     }
   }
 
+  ngOnDestroy(): void {
+    document.removeEventListener('scroll', this.handleViewportChange, true);
+    window.removeEventListener('resize', this.handleViewportChange);
+  }
+
   // ControlValueAccessor methods
   private onChange = (_: unknown) => { };
   private onTouched = () => { };
 
-  writeValue(value: unknown): void { 
-    this.selectedValue.set(value); 
+  writeValue(value: unknown): void {
+    this.selectedValue.set(value);
   }
-  
+
   registerOnChange(fn: (v: unknown) => void) { this.onChange = fn; }
   registerOnTouched(fn: () => void) { this.onTouched = fn; }
-  
+
   // Đồng bộ trạng thái disable từ Reactive Forms
   setDisabledState(isDisabled: boolean): void {
     this.disabledState.set(isDisabled);
@@ -123,10 +146,14 @@ export class Dropdown implements ControlValueAccessor, AfterViewChecked {
 
   toggle(): void {
     if (this.isDisabled()) return;
-    const btn = this.elRef.nativeElement.querySelector('button') as HTMLElement;
-    const width = btn?.getBoundingClientRect().width ?? btn?.offsetWidth ?? 0;
-    this.triggerWidth.set(width);
+    this.updateTriggerWidth();
     this.isOpen.update(v => !v);
+
+    // Ensure overlay is synced with the trigger right after opening.
+    if (!this.isOpen()) return;
+    setTimeout(() => {
+      this.handleViewportChange();
+    }, 0);
   }
 
   close(): void { this.isOpen.set(false); }
@@ -147,5 +174,11 @@ export class Dropdown implements ControlValueAccessor, AfterViewChecked {
     if (!this.elRef.nativeElement.contains(event.target as Node)) {
       this.close();
     }
+  }
+
+  private updateTriggerWidth(): void {
+    const btn = this.triggerButton() ?? (this.elRef.nativeElement.querySelector('button') as HTMLElement | null);
+    const width = btn?.getBoundingClientRect().width ?? btn?.offsetWidth ?? 0;
+    this.triggerWidth.set(width);
   }
 }

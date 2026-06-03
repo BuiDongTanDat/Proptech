@@ -8,7 +8,7 @@ export interface ContactRequest {
 	name: string;
 	phone: string;
 	message: string;
-	postId?: string;
+	post?: string;
 }
 
 export interface PaginatedContactResponse {

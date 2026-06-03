@@ -1,25 +1,15 @@
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { PropertiesSidebar } from '../properties-sidebar/properties-sidebar';
+import { Component, computed, inject, signal } from '@angular/core';
 import { PropertiesList } from '../properties-list/properties-list';
-import { CheckTag } from '../../../../shared/components/check-tag/check-tag';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
-import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 import { PostStore } from '../../../../core/stores/post.store';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { REAL_ESTATE_POST_ID } from '../../../../core/stores/post.store';
 
 @Component({
   selector: 'app-properties-page',
   imports: [
-    PropertiesSidebar,
     PropertiesList,
-    Pagination,
-    CheckTag,
-    Dropdown,
-    CommonModule,
-    Dropdown,
-    FormsModule
+    Pagination
   ],
   templateUrl: './properties-page.html',
   styleUrl: './properties-page.css',
@@ -33,9 +23,7 @@ export class PropertiesPage {
     location: '',
     developer: ''
   });
-  // Lấy danh sách categories và selectedCategory từ store
-  categories = this.postStore.categories;
-  selectedCategory = this.postStore.selectedCategory;
+  loading = this.postStore.loading;
 
 
   // Pagination
@@ -47,14 +35,6 @@ export class PropertiesPage {
     { label: 'Mới nhất', value: 'newest' },
     { label: 'Cũ nhất', value: 'oldest' },
   ];
-
-  categoryOptions = computed(() => [
-    { label: 'Tất cả danh mục', value: 'all' },
-    ...this.categories().map(c => ({
-      label: c.name,
-      value: c._id!
-    }))
-  ]);
 
   selectedSort = signal('newest');
 
@@ -124,7 +104,7 @@ export class PropertiesPage {
 
   // Gọi khi khởi tạo để load dữ liệu
   constructor() {
-    this.postStore.loadCategories();
+    this.postStore.selectedCategory.set(REAL_ESTATE_POST_ID);
     this.postStore.loadPosts();
   }
 }

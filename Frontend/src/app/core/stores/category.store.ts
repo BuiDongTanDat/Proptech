@@ -3,6 +3,7 @@ import { ToastService } from '../services/toast.service';
 import { finalize, tap } from 'rxjs';
 import { CategoryService } from '../services/category.service';
 import { ICategory } from '../models/model';
+import { DateSort } from '../enum/enums';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryStore {
@@ -17,7 +18,7 @@ export class CategoryStore {
     readonly submitLoading = signal<boolean>(false); // add / edit
 
     readonly searchQuery = signal('');
-    readonly selectedSort = signal('default')
+    readonly selectedSort = signal(DateSort.DEFAULT)
     readonly currentPage = signal(1);
     readonly pageSize = signal(12);
 
@@ -33,14 +34,14 @@ export class CategoryStore {
         }
 
         switch (this.selectedSort()) {
-            case 'newest':
+            case DateSort.NEWEST:
                 result.sort((a, b) => {
                     const dateA = new Date(a._id ? parseInt(a._id.substring(0, 8), 16) * 1000 : 0);
                     const dateB = new Date(b._id ? parseInt(b._id.substring(0, 8), 16) * 1000 : 0);
                     return dateB.getTime() - dateA.getTime();
                 });
                 break;
-            case 'oldest':
+            case DateSort.OLDEST:
                 result.sort((a, b) => {
                     const dateA = new Date(a._id ? parseInt(a._id.substring(0, 8), 16) * 1000 : 0);
                     const dateB = new Date(b._id ? parseInt(b._id.substring(0, 8), 16) * 1000 : 0);
@@ -109,7 +110,7 @@ export class CategoryStore {
     }
 
     setSort(sort: string) {
-        this.selectedSort.set(sort);
+        this.selectedSort.set(sort as DateSort);
         this.currentPage.set(1); // Reset về trang đầu khi thay đổi sắp xếp
     }
 
