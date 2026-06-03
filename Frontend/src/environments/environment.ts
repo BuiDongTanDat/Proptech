@@ -6,7 +6,7 @@ export const environment = {
   endpoints: {
     auth: '/auth',
     posts: '/posts',
-    category: 'posts/categories',
+    category: '/posts/categories',
     contact: '/contact',
     users: '/users',
   },
