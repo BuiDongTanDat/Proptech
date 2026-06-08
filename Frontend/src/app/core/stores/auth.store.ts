@@ -62,4 +62,26 @@ export class AuthStore {
             })
         );
     }
+
+    //PHÂN QUYỀN
+
+    // Xét điều kiện để render dữ liệu theo role
+    hasRole(...roles: string[]): boolean {
+        const userRole = this.user()?.role;
+        return !!userRole && roles.includes(userRole);
+    }
+
+    readonly isManager = computed(() =>
+        this.hasRole('Quản lý')
+    );
+
+    readonly isAdmin = computed(() =>
+        this.hasRole('Nhân viên')
+    );
+
+    readonly canApprovePost = computed(() =>
+        this.hasRole('Quản lý')
+    );
+
+    
 }

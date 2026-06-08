@@ -45,7 +45,7 @@ export class CategoryListPage implements OnInit {
   private toastService = inject(ToastService);
 
   // UI State
-  isListView = signal(false);
+  isListView = signal(true);
   isMobile = signal(false);
   showFormDialog = signal(false);
   showDeleteConfirm = signal(false);

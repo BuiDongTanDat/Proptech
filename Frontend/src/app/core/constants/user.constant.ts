@@ -7,6 +7,14 @@ export const USER_ROLE_OPTIONS = [
   { label: UserRole.INTERN, value: UserRole.INTERN },
 ];
 
+export const USER_ROLE_SELECTION = [
+  { label: UserRole.MANAGER, value: UserRole.MANAGER },
+  { label: UserRole.STAFF, value: UserRole.STAFF },
+  { label: UserRole.INTERN, value: UserRole.INTERN },
+];
+
+
+
 export const USER_STATUS_OPTIONS = [
   { label: 'Tất cả trạng thái', value: 'all' }, 
   { label: AccountStatus.ACTIVE, value: AccountStatus.ACTIVE },

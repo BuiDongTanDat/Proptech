@@ -17,8 +17,14 @@ export interface PaginatedContactResponse {
 		page: number;
 		limit: number;
 		totalPages: number;
+		totalMessages: number;
 	};
-	data: IContact[];
+	data: {
+		contacts: IContact[];
+		status: {
+			[key: string]: number;
+		};
+	};
 }
 
 export interface ContactDetailResponse {
@@ -49,7 +55,7 @@ export class ContactService {
 	}
 
 	updateContactStatus(id: string, status: ContactStatus) {
-		return this.http.patch(`${this.contactEndpoint}/${id}/status`, status);
+		return this.http.patch(`${this.contactEndpoint}/${id}`, {status: status});
 	}
 
 }

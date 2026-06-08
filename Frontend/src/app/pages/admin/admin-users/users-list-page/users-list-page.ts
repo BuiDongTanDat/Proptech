@@ -37,7 +37,7 @@ export class UsersListPage implements OnInit {
   protected readonly authStore = inject(AuthStore);
 
   // UI State (Chỉ giữ lại state liên quan đến hiển thị)
-  isListView = signal(false);
+  isListView = signal(true);
   isMobile = signal(false);
   showFormDialog = signal(false);
   showDeleteConfirm = signal(false);

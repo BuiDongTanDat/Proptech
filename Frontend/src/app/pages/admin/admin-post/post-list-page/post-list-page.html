@@ -14,23 +14,29 @@
       <app-button variant="primary" startIcon="plus" (btnClick)="onAdd()"> Thêm mới </app-button>
     </div>
   </div>
-
-  <!-- CATEGORY TAG BUTTONS -->
-  <div class="flex flex-wrap gap-2 mb-5" role="group" aria-label="Lọc theo danh mục">
-    @for (cat of categoryStore.filteredCategories(); track cat._id) {
-      <button
-        type="button"
-        [aria-pressed]="selectedCategory() === cat._id"
-        (click)="onCategoryChange(cat._id || '')"
-        class="cursor-pointer hover:scale-105"
-        [class]="
-          selectedCategory() === cat._id
-            ? 'px-4 py-1.5 rounded-full text-xs font-semibold bg-primary text-white border border-primary transition-all duration-200 shadow-lg'
-            : 'px-4 py-1.5 rounded-full text-xs  bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-primary transition-all duration-200'
-        "
+  <div class="flex items-center gap-2 flex-wrap mb-5">
+    @for (status of statusButtonOptions; track status.value) {
+      <app-button
+        size="sm"
+        [variant]="store.selectedStatus() === status.value ? 'primary' : 'outline'"
+        (btnClick)="onStatusChange(status.value)"
+        className="rounded-full!"
       >
-        {{ cat.name }}
-      </button>
+        <div class="flex w-full items-center justify-between gap-2">
+          <span>{{ status.label }}</span>
+
+          <span
+            class="rounded-full px-2 py-0.5 text-xs font-medium transition-colors"
+            [ngClass]="
+              store.selectedStatus() === status.value
+                ? 'bg-white/20 text-white'
+                : 'bg-primary/10 text-primary'
+            "
+          >
+            {{ getStatusCount(status.value) }}
+          </span>
+        </div>
+      </app-button>
     }
   </div>
 
@@ -64,13 +70,15 @@
         </app-button>
       </div>
 
-      <app-dropdown
-        [options]="statusSortOptions"
-        [ngModel]="store.selectedStatus()"
-        (ngModelChange)="onStatusChange($event)"
-        placeholder="Trạng thái"
-        className="min-w-40"
-      ></app-dropdown>
+      @if (showCategoryDropdown()) {
+        <app-dropdown
+          [options]="categoryOptions()"
+          [ngModel]="store.selectedCategory()"
+          (ngModelChange)="onCategoryChange($event)"
+          placeholder="Danh mục"
+          className="min-w-40"
+        ></app-dropdown>
+      }
 
       <app-dropdown
         [options]="sortOptions"
@@ -91,8 +99,9 @@
     </div>
   } @else {
     <!-- CARD VIEW -->
+
     @if (!isListView() || isMobile()) {
-      <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
         @for (p of store.filteredPosts(); track p._id) {
           <div
             class="fade-in rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden"
@@ -131,13 +140,6 @@
                   </p>
                 </div>
 
-                <div class="rounded-md bg-gray-50 px-2 py-1.5">
-                  <p class="text-[10px] text-gray-400 uppercase">Khu vực</p>
-                  <p class="text-xs font-medium text-primary truncate">
-                    {{ p.region || 'N/A' }}
-                  </p>
-                </div>
-
                 <div class="rounded-md bg-gray-50 px-2 py-1.5 col-span-2">
                   <p class="text-[10px] text-gray-400 uppercase">Tác giả</p>
                   <p class="text-xs font-medium text-primary truncate">
@@ -153,8 +155,7 @@
             >
               <div class="flex flex-col items-start gap-1">
                 <span class="flex items-center gap-1 text-xs text-gray-400">
-                  <svg lucideIcon="calendar" size="14" class="text-gray-400"></svg>
-                  {{ p.createdAt ? (p.createdAt | date: 'dd/MM/yyyy') : 'N/A' }}
+                  {{ p.category?.name || 'N/A' }}
                 </span>
                 <span class="flex items-center gap-1 text-xs text-gray-400">
                   <svg lucideIcon="pencil" size="14" class="text-gray-400"></svg>
@@ -192,16 +193,14 @@
                 Chủ đầu tư
               </th>
               <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
-                Vị trí
+                Tác giả
               </th>
-              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
-                Khu vực
-              </th>
-              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+
+              <th class="px-3 py-2 text-center text-[10px] font-semibold text-gray-400 uppercase">
                 Trạng thái
               </th>
-              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
-                Ngày tạo
+              <th class="px-3 py-2 text-center text-[10px] font-semibold text-gray-400 uppercase">
+                Cập nhật lần cuối
               </th>
               <th class="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase">
                 Thao tác
@@ -222,6 +221,9 @@
                   <h3 class="text-xs font-medium text-primary truncate max-w-45">
                     {{ p.title || 'Chưa có tiêu đề' }}
                   </h3>
+                  <p class="text-xs text-gray-500 truncate max-w-100">
+                    {{ p.location || 'Chưa có địa chỉ' }}
+                  </p>
                 </td>
 
                 <!-- DEVELOPER -->
@@ -231,34 +233,27 @@
                   </p>
                 </td>
 
-                <!-- REGION -->
+                <!-- TÁC GIẢ -->
                 <td class="px-3 py-2">
-                  <p class="text-xs text-primary truncate max-w-25">
-                    {{ p.region || 'Chưa cập nhật' }}
-                  </p>
-                </td>
-
-                <!-- LOCATION -->
-                <td class="px-3 py-2">
-                  <p class="text-xs text-gray-500 truncate max-w-35">
-                    {{ p.location || 'Chưa có địa chỉ' }}
+                  <p class="text-xs text-primary truncate max-w-30">
+                    {{ p.author?.name || 'Không xác định' }}
                   </p>
                 </td>
 
                 <!-- STATUS -->
-                <td class="px-3 py-2">
+                <td class="px-3 py-2 text-center">
                   <span
                     [class]="getPostStatusClass(p.status)"
-                    class="inline-flex px-2 py-0.5 rounded text-xs font-semibold"
+                    class="min-w-20 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold"
                   >
                     {{ p.status }}
                   </span>
                 </td>
 
                 <!-- CREATED -->
-                <td class="px-3 py-2">
+                <td class="px-3 py-2 text-center">
                   <span class="text-xs text-primary whitespace-nowrap">
-                    {{ p.createdAt | date: 'dd/MM/yyyy' }}
+                    {{ p.updatedAt | date: 'dd/MM/yyyy hh:MM' }}
                   </span>
                 </td>
 

@@ -1,53 +1,219 @@
-<section class="max-h-screen ">
+<section class="max-h-screen">
   <iframe
     src="https://attract-scented-guillemot.tilda.ws/"
     title="Tilda Landing Page"
     frameborder="0"
-    loading="lazy">
+    loading="lazy"
+  >
   </iframe>
-  <button
-  
-  class="px-4 py-2 bg-green-500 text-white rounded"
->
-  Success Toast
-</button>
+  <button class="px-4 py-2 bg-green-500 text-white rounded">Success Toast</button>
 
-<button
- 
-  class="ml-2 px-4 py-2 bg-red-500 text-white rounded"
->
-  Error Toast
-</button>
+  <button class="ml-2 px-4 py-2 bg-red-500 text-white rounded">Error Toast</button>
 
-<app-toast />
+  <app-toast />
 
-<button
-  (click)="onToggleDialog()"
-  class="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
->
-  Show dialog
-</button>
+  <button (click)="onToggleDialog()" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">
+    Show dialog
+  </button>
 
-<app-dialog
-  [show]="dialogVisible()"
-  title="Dialog Title"
-  description="This is a description for the dialog. <b>Supports HTML content.</b>"
-  icon="user"
-  (closed)="onToggleDialog()"
->
- <app-button
-    variant="outline"
-    (btnClick)="onToggleDialog()"
+  <app-dialog
+    [show]="dialogVisible()"
+    title="Dialog Title"
+    description="This is a description for the dialog. <b>Supports HTML content.</b>"
+    icon="user"
+    (closed)="onToggleDialog()"
   >
-    Cancel
-  </app-button>
-<app-button
-    variant="primary"
-    (btnClick)="onToggleDialog()"
-  >
-    Submit
-  </app-button>
-
-
-</app-dialog>
+    <app-button variant="outline" (btnClick)="onToggleDialog()"> Cancel </app-button>
+    <app-button variant="primary" (btnClick)="onToggleDialog()"> Submit </app-button>
+  </app-dialog>
 </section>
+
+<div
+  style="
+    width: 100%;
+    background: linear-gradient(135deg, #162b52 0%, #1f3c73 100%);
+    padding: 48px 24px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+  "
+>
+  <div
+    style="
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 48px;
+      flex-wrap: wrap;
+    "
+  >
+    <!-- LEFT CONTENT -->
+    <div style="flex: 1; min-width: 280px">
+      <div
+        style="
+          display: inline-block;
+          padding: 6px 12px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #ffffff;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+        "
+      >
+        NHẬN THÔNG TIN DỰ ÁN
+      </div>
+
+      <h2
+        style="
+          margin: 16px 0 10px;
+          color: #ffffff;
+          font-size: 30px;
+          line-height: 1.25;
+          font-weight: 700;
+        "
+      >
+        Đăng ký nhận tư vấn bất động sản
+      </h2>
+
+      <p
+        style="
+          margin: 0;
+          max-width: 520px;
+          color: rgba(255, 255, 255, 0.85);
+          font-size: 13px;
+          line-height: 1.8;
+        "
+      >
+        Cập nhật bảng giá, chính sách ưu đãi và những dự án mới nhất. Đội ngũ chuyên viên của chúng
+        tôi sẽ liên hệ hỗ trợ trong thời gian sớm nhất.
+      </p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div
+      style="
+        width: 420px;
+        max-width: 100%;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        box-sizing: border-box;
+        box-shadow:
+          0 10px 20px rgba(0, 0, 0, 0.05),
+          0 20px 40px rgba(0, 0, 0, 0.08);
+      "
+    >
+      <div style="margin-bottom: 20px">
+        <h3 style="margin: 0; color: #111827; font-size: 18px; font-weight: 700">Đăng ký ngay</h3>
+
+        <p style="margin: 6px 0 0; color: #6b7280; font-size: 12px; line-height: 1.6">
+          Điền thông tin để được tư vấn miễn phí.
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <!-- NAME -->
+        <input
+          type="text"
+          placeholder="Họ và tên"
+          style="
+            width: 100%;
+            height: 44px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 12px;
+            color: #111827;
+            background: #fafafa;
+            box-sizing: border-box;
+            outline: none;
+          "
+        />
+
+        <!-- PHONE -->
+        <input
+          type="tel"
+          placeholder="Số điện thoại"
+          style="
+            width: 100%;
+            height: 44px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 12px;
+            color: #111827;
+            background: #fafafa;
+            box-sizing: border-box;
+            outline: none;
+          "
+        />
+
+        <!-- MESSAGE -->
+        <textarea
+          rows="4"
+          placeholder="Nội dung cần tư vấn..."
+          style="
+            width: 100%;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: #111827;
+            background: #fafafa;
+            resize: none;
+            line-height: 1.6;
+            box-sizing: border-box;
+            outline: none;
+          "
+        ></textarea>
+
+        <!-- BUTTON -->
+        <button
+          type="button"
+          data-action="emit-contact-form"
+          style="
+            width: 100%;
+            height: 46px;
+            border: none;
+            border-radius: 10px;
+            background: #ff6b00;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.25);
+          "
+          onmouseover="
+            this.style.background = '#ea580c';
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 14px 28px rgba(255,107,0,.35)';
+          "
+          onmouseout="
+            this.style.background = '#ff6b00';
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 8px 20px rgba(255,107,0,.25)';
+          "
+        >
+          ĐĂNG KÝ NHẬN THÔNG TIN
+        </button>
+      </div>
+
+      <p
+        style="
+          margin: 14px 0 0;
+          text-align: center;
+          color: #9ca3af;
+          font-size: 11px;
+          line-height: 1.5;
+        "
+      >
+        Chúng tôi cam kết bảo mật thông tin khách hàng.
+      </p>
+    </div>
+  </div>
+</div>

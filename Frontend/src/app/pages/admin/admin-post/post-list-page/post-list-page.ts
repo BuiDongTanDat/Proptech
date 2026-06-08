@@ -6,7 +6,6 @@ import { Button } from '../../../../shared/components/ui/button/button';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 import { LucideDynamicIcon } from '@lucide/angular';
-import { Dialog } from '../../../../shared/components/dialog/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { getPostStatusClass } from '../../../../shared/utils/helper';
 import { PropertyStatus } from '../../../../core/enum/enums';
@@ -15,6 +14,7 @@ import { PostStore } from '../../../../core/stores/post.store';
 import { CategoryStore } from '../../../../core/stores/category.store';
 import { Loading } from '../../../../shared/components/loading/loading';
 import { PROPERTY_STATUS_SORT_OPTIONS } from '../../../../core/constants/post.constant';
+import { DATE_SORT_OPTIONS } from '../../../../core/constants/general.constant';
 
 @Component({
   selector: 'app-post-list-page',
@@ -26,7 +26,6 @@ import { PROPERTY_STATUS_SORT_OPTIONS } from '../../../../core/constants/post.co
     Button,
     CustomInput,
     Dropdown,
-    Dialog,
     DatePipe,
     Loading
   ],
@@ -42,36 +41,35 @@ export class PostListPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  isListView = signal(false);
+  isListView = signal(true);
   isMobile = signal(false);
   showFormDialog = signal(false);
   showDeleteConfirm = signal(false);
   formMode = signal<'view' | 'edit' | 'add'>('view');
   selectedPost = signal<IPost | null>(null);
 
-  sortOptions = [
-    { label: 'Sắp xếp', value: 'default' },
-    { label: 'Mới nhất', value: 'newest' },
-    { label: 'Cũ nhất', value: 'oldest' },
-  ];
+  sortOptions = DATE_SORT_OPTIONS;
 
   statusSortOptions = PROPERTY_STATUS_SORT_OPTIONS;
-  selectedCategory = signal<string>('');
+  statusButtonOptions = this.statusSortOptions.map(option => ({
+    ...option,
+    label: option.value === 'all' ? 'Tất cả' : option.label
+  }));
+  categoryOptions = signal<{ label: string; value: string }[]>([]);
+  showCategoryDropdown = signal(false);
 
   constructor() {
     effect(() => {
-      const categories = this.categoryStore.categories(); // Lấy giá trị mới nhất của categories từ cái
+      const categories = this.categoryStore.categories();
+      this.showCategoryDropdown.set(categories.length > 0);
 
-      if (
-        categories.length > 0 &&
-        !this.selectedCategory()
-      ) {
-        const firstCategoryId = categories[0]._id ?? '';
-
-        this.selectedCategory.set(firstCategoryId);
-        this.store.setCategory(firstCategoryId);
-        this.store.loadPosts();
-      }
+      this.categoryOptions.set([
+        { label: 'Tất cả danh mục', value: 'all' },
+        ...categories.map(c => ({
+          label: c.name,
+          value: c._id ?? ''
+        }))
+      ]);
     });
   }
 
@@ -81,11 +79,6 @@ export class PostListPage implements OnInit {
     this.store.loadPosts();
   }
 
-  onCategoryChange(val: string) {
-    this.selectedCategory.set(val);
-    this.store.setCategory(val);
-    this.store.loadPosts();
-  }
 
   onResize() {
     this.isMobile.set(window.innerWidth < 768);
@@ -93,22 +86,22 @@ export class PostListPage implements OnInit {
 
   onSearch(val: string) {
     this.store.setSearch(val);
-    this.store.loadPosts();
   }
 
   onSortChange(val: string) {
     this.store.setSort(val);
-    this.store.loadPosts();
   }
 
   onStatusChange(val: string) {
     this.store.setStatus(val);
-    this.store.loadPosts();
+  }
+
+  onCategoryChange(val: string) {
+    this.store.setCategory(val);
   }
 
   onPageChange(page: number) {
     this.store.setPage(page);
-    this.store.loadPosts();
   }
 
   onExport() {
@@ -119,6 +112,7 @@ export class PostListPage implements OnInit {
     this.isListView.set(isList);
   }
 
+  //UI
   onAdd() {
     this.router.navigate(['../post/add'], {
       relativeTo: this.route
@@ -158,7 +152,19 @@ export class PostListPage implements OnInit {
     this.showDeleteConfirm.set(false);
   }
 
+
+  //Helper
   getPostStatusClass(status: PropertyStatus) {
     return getPostStatusClass(status);
+  }
+
+  getStatusCount(status: string): number {
+    const statusStatics = this.store.statusStatics();
+
+    if (status === 'all') {
+      return Object.values(statusStatics).reduce((sum, count) => sum + count, 0);
+    }
+
+    return statusStatics[status] ?? 0;
   }
 }

@@ -1,4 +1,4 @@
-<div class="relative h-full flex flex-col">
+<div class="relative  flex flex-col">
   <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
     <div>
@@ -111,11 +111,7 @@
               >
                 Tên danh mục
               </th>
-              <th
-                class="px-3 py-2 text-center text-xs uppercase tracking-wider text-gray-400 font-semibold w-56"
-              >
-                Ngày tạo
-              </th>
+             
               <th
                 class="px-3 py-2 text-center text-xs uppercase tracking-wider text-gray-400 font-semibold w-28"
               >
@@ -136,15 +132,7 @@
                   </div>
                 </td>
 
-                <td class="px-3 py-2">
-                  <div class="flex items-center justify-center gap-3">
-                    <div class="min-w-0">
-                      <p class="text-xs font-semibold text-primary truncate">
-                        {{ c.createdAt ? (c.createdAt | date: 'dd/MM/yyyy') : 'N/A' }}
-                      </p>
-                    </div>
-                  </div>
-                </td>
+               
 
                 <!-- ACTIONS -->
                 <td class="px-3 py-2">

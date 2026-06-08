@@ -16,6 +16,8 @@ export class ContactsStore {
 	private _contacts = signal<IContact[]>([]);
 	readonly contacts = this._contacts.asReadonly();
 
+	private _statusStatics = signal<{ [key: string]: number }>({});
+	statusStatics = this._statusStatics.asReadonly();
 
 	readonly loading = signal<boolean>(false);
 	readonly submitLoading = signal<boolean>(false);
@@ -27,6 +29,7 @@ export class ContactsStore {
 	readonly pageSize = signal(12); // Cố định 12 post mỗi trang
 	readonly currentPage = signal(1);
 	readonly totalPages = signal(1);
+	readonly totalMessages = signal(0);
 
 	// Computed State
 	readonly filteredContacts = computed(() => {
@@ -75,8 +78,12 @@ export class ContactsStore {
 			.pipe(finalize(() => this.loading.set(false)))
 			.subscribe({
 				next: (res) => {
-					this._contacts.set(res.data ?? []);
+					this._contacts.set(res.data.contacts ?? []);
 					this.totalPages.set(res.pagination.totalPages);
+					// Tính thống kê trạng thái
+					this._statusStatics.set(res.data.status || {});
+					// Cập nhật tổng số liên hệ
+					this.totalMessages.set(res.pagination.totalMessages || 0);
 				},
 				error: err => this.toastService.error(err?.error?.message || 'Lỗi tải liên hệ')
 			});
@@ -155,4 +162,5 @@ export class ContactsStore {
 		this.selectedStatus.set(status as ContactStatus);
 		this.currentPage.set(1);
 	}
+
 }

@@ -16,6 +16,7 @@ export class ConfirmDialog {
   description = input<string>('');
   icon = input<string>('');
   show = input<boolean>(false);
+  readonly titleClass = input<string>('text-gray-900');
 
   closed = output<void>();
   closeOnBackdrop = input<boolean>(true);

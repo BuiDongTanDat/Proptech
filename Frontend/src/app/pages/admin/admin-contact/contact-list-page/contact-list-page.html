@@ -1,4 +1,4 @@
-<div class="relative h-full flex flex-col">
+<div class="relative flex flex-col">
   <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
     <div>
@@ -11,9 +11,6 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <app-button text="Xuất file" startIcon="download" variant="outline" (btnClick)="({})">
-        Xuất file
-      </app-button>
       <app-button (btnClick)="onAdd()" text="Thêm liên hệ" startIcon="plus" variant="primary">
         Thêm liên hệ
       </app-button>
@@ -52,9 +49,9 @@
       <app-dropdown
         [ngModel]="store.selectedStatus()"
         (ngModelChange)="onStatusChange($event)"
-        [options]="contactStatusOptions"
+        [options]="contactStatusOptionsWithCount()"
         placeholder="Tất cả trạng thái"
-        className="min-w-36 text-xs"
+        className="min-w-40 text-xs"
       ></app-dropdown>
 
       <app-dropdown
@@ -67,226 +64,246 @@
     </div>
   </div>
 
+  <!-- LOADING -->
   @if (store.loading()) {
-    <app-loading></app-loading>
-  } @else if (store.filteredContacts().length === 0) {
-    <div class="flex flex-col items-center gap-2 py-16">
-      <svg lucideIcon="inbox" size="48" class="text-gray-300"></svg>
-      <p class="text-sm text-gray-500">Không tìm thấy liên hệ nào</p>
+    <div class="py-8">
+      <app-loading></app-loading>
     </div>
-  } @else {
-    <!-- CARD VIEW -->
-    @if (!isListView() || isMobile()) {
-      <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        @for (f of store.filteredContacts(); track f._id) {
-          <div
-            class=" fade-in  rounded-md shadow-sm group bg-white border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
-          >
-            <!-- BODY -->
-            <div class="relative p-4 flex flex-col flex-1">
-              <div class="flex items-start justify-between gap-2 mb-3">
-                <div class="flex items-start gap-3 min-w-0 flex-1">
-                  <div
-                    class="size-10 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-xs uppercase"
-                  >
-                    {{ f.name.split(' ')[0].charAt(0) + f.name.split(' ').slice(-1)[0].charAt(0) }}
-                  </div>
+  }
 
-                  <div class="min-w-0 flex-1">
-                    <h3 class="text-sm font-semibold text-primary truncate">
-                      {{ f.name }}
-                    </h3>
-
-                    <div class="flex items-center gap-1 text-primary mt-1 text-xs">
-                      <svg lucideIcon="phone" size="13"></svg>
-                      <span>{{ f.phone }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <span
-                  [class]="getContactStatusClass(f.status)"
-                  class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold"
-                >
-                  {{ f.status }}
-                </span>
-              </div>
-
-              <!-- EMPLOYEE -->
-              <div class="mb-3 bg-gray-50 p-1 rounded">
-                <div
-                  class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-1"
-                >
-                  <svg lucideIcon="user" size="13"></svg>
-                  <span>Nhân viên phụ trách</span>
-                </div>
-
-                <p class="text-xs text-primary">
-                  {{ f.resolvedBy?.name || 'N/A' }}
-                </p>
-              </div>
-
-              <!-- MESSAGE -->
-              <div class="flex-1 bg-gray-50 p-1 rounded mb-3">
-                <div
-                  class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-1"
-                >
-                  <svg lucideIcon="message-circle" size="13"></svg>
-                  <span>Lời nhắn</span>
-                </div>
-
-                <p class="text-xs text-primary line-clamp-3 leading-relaxed min-h-14">
-                  {{ f.message || 'Không có nội dung' }}
-                </p>
-              </div>
-              <!-- PROPERTY -->
-              <div>
-                <div
-                  class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-2"
-                >
-                  <svg lucideIcon="building-2" size="13"></svg>
-                  <span>BĐS quan tâm</span>
-                </div>
-
-                <div class="flex items-start gap-3">
-                  <!-- Ảnh -->
-                  <img
-                    [src]="f.post?.cover_picture?.url || 'bg_card.png'"
-                    [alt]="f.post?.title"
-                    class="w-16 h-9 rounded-sm object-cover shrink-0 border border-gray-200"
-                  />
-
-                  <!-- Thông tin -->
-                  <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold text-gray-800 line-clamp-2">
-                      {{ f.post?.title || 'N/A' }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- FOOTER -->
-              <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-100">
-                <div class="flex items-center gap-1 text-xs text-gray-500">
-                  <svg lucideIcon="calendar" class="size-3"></svg>
-                  {{ f.createdAt | date: 'dd/MM/yyyy' }}
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <app-button (btnClick)="onView(f)" variant="action" size="icon">
-                    <svg lucideIcon="eye" size="14"></svg>
-                  </app-button>
-
-                  <app-button (btnClick)="onEdit(f)" variant="action" size="icon">
-                    <svg lucideIcon="pencil" size="14"></svg>
-                  </app-button>
-
-                  <app-button (btnClick)="onDelete(f)" variant="destructive" size="icon">
-                    <svg lucideIcon="trash" size="14"></svg>
-                  </app-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
+  @if (!store.loading()) {
+    @if (store.filteredContacts().length === 0) {
+      <div class="flex flex-col items-center gap-2 py-16">
+        <svg lucideIcon="inbox" size="48" class="text-gray-300"></svg>
+        <p class="text-sm text-gray-500">Không tìm thấy liên hệ nào</p>
       </div>
-    }
-    <!-- TABLE VIEW -->
-    @if (isListView() && !isMobile()) {
-      <div class="fade-in overflow-x-auto border border-gray-200 bg-white shadow-sm rounded-md">
-        <table class="w-full border-collapse text-xs">
-          <thead class="bg-gray-50 border-b border-gray-200 text-center">
-            <tr>
-              <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold w-56"
-              >
-                Khách hàng
-              </th>
-              <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
-              >
-                Số điện thoại
-              </th>
-              <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
-              >
-                Lời nhắn
-              </th>
-              <th
-                class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
-              >
-                Trạng thái
-              </th>
-              <th
-                class="px-3 py-2 text-right text-xs uppercase tracking-wider text-gray-500 font-semibold w-28"
-              >
-                Thao tác
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            @for (f of store.filteredContacts(); track f._id) {
-              <tr class="group hover:bg-gray-50/70 transition-colors duration-150">
-                <td class="px-3 py-2">
-                  <div class="flex items-center gap-3">
+    } @else {
+      <!-- CARD VIEW -->
+      @if (!isListView() || isMobile()) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          @for (f of store.filteredContacts(); track f._id) {
+            <div
+              class="fade-in rounded-md shadow-sm group bg-white border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
+            >
+              <!-- BODY -->
+              <div class="relative p-4 flex flex-col flex-1">
+                <div class="flex items-start justify-between gap-2 mb-3">
+                  <div class="flex items-start gap-3 min-w-0 flex-1">
                     <div
-                      class="size-8 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-xs uppercase"
+                      class="size-10 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-xs uppercase"
                     >
                       {{
                         f.name.split(' ')[0].charAt(0) + f.name.split(' ').slice(-1)[0].charAt(0)
                       }}
                     </div>
-                    <div class="min-w-0">
-                      <p class="text-xs font-semibold text-primary truncate">{{ f.name }}</p>
+
+                    <div class="min-w-0 flex-1">
+                      <h3 class="text-sm font-semibold text-primary truncate">
+                        {{ f.name }}
+                      </h3>
+
+                      <div class="flex items-center gap-1 text-primary mt-1 text-xs">
+                        <svg lucideIcon="phone" size="13"></svg>
+                        <span>{{ f.phone }}</span>
+                      </div>
                     </div>
                   </div>
-                </td>
 
-                <td class="px-3 py-2 text-xs text-primary">
-                  <p class="text-xs text-gray-500">{{ f.phone }}</p>
-                </td>
-                <td class="px-3 py-2 max-w-xs">
-                  <p class="text-xs text-primary line-clamp-2">{{ f.message }}</p>
-                </td>
-                <td class="px-3 py-2">
                   <span
                     [class]="getContactStatusClass(f.status)"
-                    class="min-w-20 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold"
+                    class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold"
                   >
                     {{ f.status }}
                   </span>
-                </td>
-                <td class="px-3 py-2">
+                </div>
+
+                <!-- EMPLOYEE -->
+                <div class="mb-3 bg-gray-50 p-1 rounded">
                   <div
-                    class="flex items-center justify-end gap-1.5 opacity-0 translate-x-2 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-200"
+                    class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-1"
                   >
-                    <app-button variant="action" size="icon" (btnClick)="onView(f)">
+                    <svg lucideIcon="user" size="13"></svg>
+                    <span>Nhân viên phụ trách</span>
+                  </div>
+
+                  <p class="text-xs text-primary">
+                    {{ f.resolvedBy?.name || 'N/A' }}
+                  </p>
+                </div>
+
+                <!-- MESSAGE -->
+                <div class="flex-1 bg-gray-50 p-1 rounded mb-3">
+                  <div
+                    class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-1"
+                  >
+                    <svg lucideIcon="message-circle" size="13"></svg>
+                    <span>Lời nhắn</span>
+                  </div>
+
+                  <p class="text-xs text-primary line-clamp-3 leading-relaxed min-h-14">
+                    {{ f.message || 'Không có nội dung' }}
+                  </p>
+                </div>
+                <!-- PROPERTY -->
+                <div>
+                  <div
+                    class="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 mb-2"
+                  >
+                    <svg lucideIcon="building-2" size="13"></svg>
+                    <span>BĐS quan tâm</span>
+                  </div>
+
+                  <div class="flex items-start gap-3">
+                    <!-- Ảnh -->
+                    <img
+                      [src]="f.post?.cover_picture?.url || 'bg_card.png'"
+                      [alt]="f.post?.title"
+                      class="w-16 h-9 rounded-sm object-cover shrink-0 border border-gray-200"
+                    />
+
+                    <!-- Thông tin -->
+                    <div class="flex-1 min-w-0">
+                      <p class="text-xs font-semibold text-gray-800 line-clamp-2">
+                        {{ f.post?.title || 'N/A' }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-100">
+                  <div class="flex items-center gap-1 text-xs text-gray-500">
+                    <svg lucideIcon="calendar" class="size-3"></svg>
+                    {{ f.createdAt | date: 'dd/MM/yyyy' }}
+                  </div>
+
+                  <div class="flex items-center gap-1.5">
+                    <app-button (btnClick)="onView(f)" variant="action" size="icon">
                       <svg lucideIcon="eye" size="14"></svg>
                     </app-button>
-                    <app-button variant="action" size="icon" (btnClick)="onEdit(f)">
+
+                    <app-button (btnClick)="onEdit(f)" variant="action" size="icon">
                       <svg lucideIcon="pencil" size="14"></svg>
                     </app-button>
-                    <app-button variant="destructive" size="icon" (btnClick)="onDelete(f)">
+
+                    <app-button (btnClick)="onDelete(f)" variant="destructive" size="icon">
                       <svg lucideIcon="trash" size="14"></svg>
                     </app-button>
                   </div>
-                </td>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+      <!-- TABLE VIEW -->
+      @if (isListView() && !isMobile()) {
+        <div class="fade-in overflow-x-auto border border-gray-200 bg-white shadow-sm rounded-md">
+          <table class="w-full border-collapse text-xs">
+            <thead class="bg-gray-50 border-b border-gray-200 text-center">
+              <tr>
+                <th
+                  class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold w-56"
+                >
+                  Khách hàng
+                </th>
+                <th
+                  class="px-3 py-2 text-center text-xs uppercase tracking-wider text-gray-500 font-semibold"
+                >
+                  Số điện thoại
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
+                >
+                  Lời nhắn
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
+                >
+                  Trạng thái
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500 font-semibold"
+                >
+                  Xử lý bởi
+                </th>
+                <th
+                  class="px-3 py-2 text-right text-xs uppercase tracking-wider text-gray-500 font-semibold w-28"
+                >
+                  Thao tác
+                </th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              @for (f of store.filteredContacts(); track f._id) {
+                <tr class="group hover:bg-gray-50/70 transition-colors duration-150">
+                  <td class="px-3 py-2">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="size-8 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-xs uppercase"
+                      >
+                        {{
+                          f.name.split(' ')[0].charAt(0) + f.name.split(' ').slice(-1)[0].charAt(0)
+                        }}
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-xs font-semibold text-primary truncate">{{ f.name }}</p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="px-3 py-2 text-xs text-primary text-center">
+                    <p class="text-xs text-gray-500">{{ f.phone }}</p>
+                  </td>
+                  <td class="px-3 py-2 max-w-xs">
+                    <p class="text-xs text-primary line-clamp-2">{{ f.message }}</p>
+                  </td>
+                  <td class="px-3 py-2">
+                    <span
+                      [class]="getContactStatusClass(f.status)"
+                      class="min-w-20 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold"
+                    >
+                      {{ f.status }}
+                    </span>
+                  </td>
+                  <td class="px-3 py-2">
+                    <span
+                    >
+                      {{ f.resolvedBy?.name || '' }}
+                    </span>
+                  </td>
+                  <td class="px-3 py-2">
+                    <div
+                      class="flex items-center justify-end gap-1.5 opacity-0 translate-x-2 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto transition-all duration-200"
+                    >
+                      <app-button variant="action" size="icon" (btnClick)="onView(f)">
+                        <svg lucideIcon="eye" size="14"></svg>
+                      </app-button>
+                      <app-button variant="action" size="icon" (btnClick)="onEdit(f)">
+                        <svg lucideIcon="pencil" size="14"></svg>
+                      </app-button>
+                      <app-button variant="destructive" size="icon" (btnClick)="onDelete(f)">
+                        <svg lucideIcon="trash" size="14"></svg>
+                      </app-button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      <!-- PAGINATION -->
+      <div class="flex justify-center pt-5">
+        <app-pagination
+          [currentPage]="store.currentPage()"
+          [totalPages]="store.totalPages()"
+          [maxVisible]="5"
+          (pageChange)="onPageChange($event)"
+        ></app-pagination>
       </div>
     }
-
-    <!-- PAGINATION -->
-    <div class="flex justify-center pt-5">
-      <app-pagination
-        [currentPage]="store.currentPage()"
-        [totalPages]="store.totalPages()"
-        [maxVisible]="5"
-        (pageChange)="onPageChange($event)"
-      ></app-pagination>
-    </div>
   }
 
   <!-- FORM DIALOG -->

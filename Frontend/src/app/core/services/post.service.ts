@@ -3,6 +3,7 @@ import { environment } from "../../../environments/environment";
 import { IPost } from "../models/model";
 import { HttpClient } from "@angular/common/http";
 import { ApiResponse } from "../models/response";
+import { PropertyStatus } from "../enum/enums";
 
 
 export interface PaginatedPostResponse {
@@ -11,8 +12,14 @@ export interface PaginatedPostResponse {
     page: number;
     limit: number;
     totalPages: number;
+    totalPosts: number;
   };
-  data: IPost[];
+  data: {
+    status: {
+      [key: string]: number;
+    };
+    posts: IPost[];
+  };
 }
 
 
@@ -24,13 +31,18 @@ export class PostService {
   postEndpoint = `${environment.apiUrl}${environment.endpoints.posts}`; // Sử dụng URL từ environment
   private http = inject(HttpClient);
 
+  // Nếu ko có categoryId thì trả về tất cả bài đăng, có categoryId thì trả về bài đăng theo danh mục đó
   getAllPosts(
     page: number = 1,
-    categoryId?: string
+    category?: string,
+    status?: string
   ) {
     let url = `${this.postEndpoint}?page=${page}`;
-    if (categoryId && categoryId !== 'all') {
-      url += `&categoryId=${categoryId}`;
+    if (category) {
+      url += `&category=${category}`;
+    }
+    if (status) {
+      url += `&status=${status}`;
     }
     return this.http.get<PaginatedPostResponse>(url);
   }
@@ -46,8 +58,21 @@ export class PostService {
   }
 
   updatePost(id: string, postData: FormData) {
-    return this.http.put<ApiResponse<IPost>>(`${this.postEndpoint}/${id}`,
+    return this.http.patch<ApiResponse<IPost>>(`${this.postEndpoint}/${id}`,
       postData,
+    );
+  }
+
+  updatePostStatus(
+    id: string,
+    payload: {
+      status: PropertyStatus;
+      reason?: string;
+    }
+  ) {
+    return this.http.patch<ApiResponse<IPost>>(
+      `${this.postEndpoint}/status/${id}`,
+      payload
     );
   }
 }

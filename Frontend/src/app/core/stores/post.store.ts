@@ -17,6 +17,9 @@ export class PostStore {
     // State
     private _posts = signal<IPost[]>([]);
 
+    private _statusStatics = signal<{ [key: string]: number }>({});
+    statusStatics = this._statusStatics.asReadonly();
+
     private _allRealEstatePosts = signal<IPost[]>([]); // Lưu toàn bộ bài đăng bất động sản (không phân trang, không filter)
     allRealEstatePosts = this._allRealEstatePosts.asReadonly();
 
@@ -37,6 +40,7 @@ export class PostStore {
     readonly pageSize = signal(12); // Cố định 12 post mỗi trang
     readonly currentPage = signal(1);
     readonly totalPages = signal(1);
+    readonly totalPosts = signal(0);
 
     // Computed State (Tự động chạy lại khi các tín hiệu trên thay đổi)
     readonly filteredPosts = computed(() => {
@@ -83,14 +87,14 @@ export class PostStore {
     }
     );
 
-    
+
     loadAllRealEstatePosts() {
         this.loading.set(true);
         this.postService.getAllPosts(1, REAL_ESTATE_POST_ID).pipe(
             finalize(() => this.loading.set(false))
         ).subscribe({
             next: res => {
-                this._allRealEstatePosts.set(res.data ?? []);
+                this._allRealEstatePosts.set(res.data.posts ?? []);
             }
         });
     }
@@ -98,15 +102,30 @@ export class PostStore {
     loadPosts() {
         this.loading.set(true);
         const page = this.currentPage();
-        const categoryId = this.selectedCategory();
-        this.postService.getAllPosts(page, categoryId !== 'all' ? categoryId : undefined)
+        const category = this.selectedCategory();
+        const status = this.selectedStatus();
+        this.postService.getAllPosts(
+            page,
+            category !== 'all' ? category : undefined,
+            status !== 'all' ? status : undefined)
             .pipe(finalize(() => this.loading.set(false)))
             .subscribe({
                 next: res => {
                     console.log('API RESPONSE:', res);
-                    this._posts.set(res.data ?? []);
-                    this.totalPages.set(res?.pagination?.totalPages || 1);
-                    this.currentPage.set(res?.pagination?.page || 1);
+                    const posts = res?.data?.posts ?? [];
+                    this._posts.set(posts);
+                    this._statusStatics.set(
+                        res?.data?.status ?? {}
+                    );
+                    this.totalPages.set(
+                        res?.pagination?.totalPages ?? 1
+                    );
+                    this.currentPage.set(
+                        res?.pagination?.page ?? 1
+                    );
+                    this.totalPosts.set(
+                        res?.pagination?.totalPosts ?? 0
+                    );
                 },
                 error: err => {
                     this.toastService.error(err?.error?.message || 'Lỗi tải danh sách')
@@ -219,6 +238,25 @@ export class PostStore {
             finalize(() => this.loading.set(false))
         );
     }
+    updatePostStatus(
+        id: string,
+        status: PropertyStatus,
+        reason?: string
+    ) {
+        this.loading.set(true);
+
+        return this.postService
+            .updatePostStatus(id, {
+                status,
+                reason,
+            })
+            .pipe(
+                tap(() => {
+                    this.loadPostById(id); // Tải lại bài viết để cập nhật trạng thái mới nhất (bao gồm cả lý do từ chối nếu có)
+                }),
+                finalize(() => this.loading.set(false))
+            );
+    }
 
     setPage(page: number) {
         // Nếu page mới không hợp lệ, giữ nguyên page hiện tại
@@ -231,19 +269,19 @@ export class PostStore {
     setSearch(query: string): void {
         this.searchQuery.set(query);
         this.currentPage.set(1);
-        this.loadPosts();
     }
 
     setSort(sort: string): void {
         this.selectedSort.set(sort);
         this.currentPage.set(1);
-        this.loadPosts();
+
     }
 
     setStatus(status: string): void {
         this.selectedStatus.set(status);
         this.currentPage.set(1);
         this.loadPosts();
+
     }
 
 

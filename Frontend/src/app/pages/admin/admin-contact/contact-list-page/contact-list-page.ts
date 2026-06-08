@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideDynamicIcon } from '@lucide/angular';
@@ -17,6 +17,7 @@ import { getContactStatusClass } from '../../../../shared/utils/helper';
 import { ContactStatus } from '../../../../core/enum/enums';
 import { DATE_SORT_OPTIONS } from '../../../../core/constants/general.constant';
 import { CONTACT_STATUS_OPTIONS } from '../../../../core/constants/contact.constant';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-contact-list-page',
@@ -33,8 +34,9 @@ import { CONTACT_STATUS_OPTIONS } from '../../../../core/constants/contact.const
 
 export class ContactListPage implements OnInit {
   protected readonly store = inject(ContactsStore);
+  private toastService = inject(ToastService);
 
-  isListView = signal(false);
+  isListView = signal(true);
   isMobile = signal(false);
   showFormDialog = signal(false);
   showDeleteConfirm = signal(false);
@@ -42,8 +44,15 @@ export class ContactListPage implements OnInit {
   selectedContact = signal<IContact | null>(null);
 
   sortOptions = DATE_SORT_OPTIONS;
-  contactStatusOptions = CONTACT_STATUS_OPTIONS;
+  contactStatusOptions = CONTACT_STATUS_OPTIONS
 
+  // Thêm số lượng phía sau option
+  contactStatusOptionsWithCount = computed(() =>
+    this.contactStatusOptions.map(option => ({
+      ...option,
+      label: `${option.label} (${this.getStatusCount(option.value)})`
+    }))
+  );
   ngOnInit(): void {
     this.onResize();
     this.store.loadContacts();
@@ -102,15 +111,18 @@ export class ContactListPage implements OnInit {
   onSaveContact(contactData: any) {
     const action$ = this.formMode() === 'add'
       ? this.store.addContact(contactData)
-      : this.store.updateContact({ ...this.selectedContact()!, ...contactData });
+      : this.store.updateContactStatus(contactData._id, contactData.status); // Cập nhật trạng thái là thao tác duy nhất khi edit, nếu có thêm trường khác cần update thì sẽ phải gọi API updateContact thay vì updateContactStatus
 
     action$?.subscribe({
-      next: () => {
+      next: (res) => {
         this.showFormDialog.set(false);
         this.selectedContact.set(null);
+        // Success toast is handled inside the store.
+        this.toastService.success(res?.message || 'Lưu liên hệ thành công');
       },
-      error: () => {
+      error: (err) => {
         // Error toast is handled inside the store.
+        this.toastService.error(err?.error?.message || 'Lỗi lưu liên hệ');
       },
     });
   }
@@ -132,6 +144,14 @@ export class ContactListPage implements OnInit {
 
   getContactStatusClass(status: ContactStatus): string {
     return getContactStatusClass(status);
+  }
+
+  getStatusCount(status: string): number {
+    const statusStatics = this.store.statusStatics();
+    if (status === 'all') {
+      return Object.values(statusStatics).reduce((sum, count) => sum + count, 0);
+    }
+    return statusStatics[status] || 0;
   }
 }
 

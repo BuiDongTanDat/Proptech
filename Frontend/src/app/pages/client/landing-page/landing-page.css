@@ -1,0 +1,48 @@
+/* Hiệu ứng mượt mà cho các phần tử scroll-reveal */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  will-change: transform, opacity;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Các lớp con hỗ trợ tạo hiệu ứng xuất hiện tuần tự (staggered delay) */
+.scroll-reveal .scroll-reveal-child {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: transform, opacity;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, 
+              transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+.scroll-reveal .scroll-reveal-child-delayed {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: transform, opacity;
+  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, 
+              transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+/* Khi phần tử xuất hiện trong tầm nhìn */
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal.is-visible .scroll-reveal-child,
+.scroll-reveal.is-visible .scroll-reveal-child-delayed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tránh giật lag hiệu ứng khi người dùng sử dụng thiết bị cấu hình thấp hoặc giảm chuyển động */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .scroll-reveal .scroll-reveal-child,
+  .scroll-reveal .scroll-reveal-child-delayed {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

@@ -7,7 +7,7 @@ import { CustomInput } from '../../../../shared/components/ui/custom-input/custo
 import { Button } from '../../../../shared/components/ui/button/button';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { Dropdown } from "../../../../shared/components/dropdown/dropdown";
-import { USER_ROLE_OPTIONS, USER_STATUS_OPTIONS } from '../../../../core/constants/user.constant';
+import { USER_ROLE_OPTIONS, USER_ROLE_SELECTION, USER_STATUS_OPTIONS } from '../../../../core/constants/user.constant';
 import { getAccountStatusBgClass, getAccountStatusClass } from '../../../../shared/utils/helper';
 import { AccountStatus, UserRole } from '../../../../core/enum/enums';
 
@@ -27,7 +27,7 @@ import { AccountStatus, UserRole } from '../../../../core/enum/enums';
 })
 export class UsersForm {
   store = inject(UserStore);
-  readonly roleOptions = USER_ROLE_OPTIONS;
+  readonly roleOptions = USER_ROLE_SELECTION;
   readonly statusOptions = USER_STATUS_OPTIONS;
 
 

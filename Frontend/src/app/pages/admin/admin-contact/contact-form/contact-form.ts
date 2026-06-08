@@ -83,11 +83,11 @@ export class ContactForm {
     effect(() => {
       const mode = this.mode();
       const contactModal = this.contactModal();
+
       this.currentMode.set(mode);
       this.submitted = false;
 
       if (contactModal) {
-        // Patch value for edit/view
         this.contactForm.patchValue({
           name: contactModal.name || '',
           phone: contactModal.phone || '',
@@ -102,15 +102,25 @@ export class ContactForm {
 
       if (mode === 'view') {
         this.contactForm.disable();
-      } else {
+      }
+
+      if (mode === 'add') {
         this.contactForm.enable();
+      }
+
+      if (mode === 'edit') {
+        this.contactForm.disable();
+
+        // Chỉ cho sửa status
+        this.f.status.enable();
       }
     });
   }
 
   onEdit() {
     this.currentMode.set('edit');
-    this.contactForm.enable();
+    this.contactForm.disable();
+    this.f.status.enable();
   }
 
   onCancel() {
@@ -125,23 +135,44 @@ export class ContactForm {
 
   onSubmit() {
     this.submitted = true;
+
+    const mode = this.currentMode();
+    const contact = this.contactModal();
+
+    // UPDATE STATUS
+    if (mode === 'edit' && contact?._id) {
+
+      const status = this.f.status.value;
+
+      this.store.updateContactStatus(
+        contact._id,
+        status as any
+      ).subscribe({
+        next: () => {
+          this.store.loadContacts();
+
+          this.close.emit();
+        }
+      });
+
+      return;
+    }
+
+    // ADD CONTACT
     this.contactForm.markAllAsTouched();
 
     if (this.contactForm.invalid) {
-      console.log('Form invalid:', this.contactForm.errors);
       return;
     }
-    // Chuẩn hóa dữ liệu gửi đi
-    const formValue = this.contactForm.value;
-    const data = {
+
+    const formValue = this.contactForm.getRawValue();
+
+    this.save.emit({
       name: formValue.name,
       phone: formValue.phone,
       message: formValue.message,
-      status: formValue.status,
-      post: formValue.post ? formValue.post : '', 
-    };
-    console.log('Submitting contact data:', data);
-    this.save.emit(data);
+      post: formValue.post,
+    });
   }
 
   onDelete() {
