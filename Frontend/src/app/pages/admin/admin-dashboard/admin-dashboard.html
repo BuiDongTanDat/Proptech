@@ -1,110 +1,213 @@
-<div class="min-h-screen">
-  <!-- HEADER -->
-  <div class="flex items-start justify-between flex-wrap gap-4 mb-10">
-    <!-- LEFT -->
-    <div>
-      <h1 class="text-xl italic font-bold text-primary tracking-tight slide-in-left ">Dashboard</h1>
+<div class="min-h-screen p-6">
 
-      <p class="text-sm text-gray-500 mt-1 slide-in-left ">
-        Theo dõi và quản lý danh sách bất động sản của bạn, đồng thời xem các số liệu thống kê về
-        hiệu suất và mức độ tương tác của khách hàng.
+  <!-- HEADER -->
+  <div class="flex items-start justify-between flex-wrap gap-4 mb-8">
+    <div>
+      <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">Dashboard</h1>
+      <p class="text-xs text-gray-400 mt-0.5 slide-in-left">
+        Tổng quan hệ thống — <b class="text-primary">{{ totalPosts() }}</b> tin đăng &amp;
+        <b class="text-primary">{{ totalContacts() }}</b> yêu cầu liên hệ
       </p>
     </div>
-
-    <!-- ACTION -->
-    <!-- <app-button variant="primary" className="bg-[#0b1b3b] hover:bg-[#10244d] text-white px-6 py-3 shadow-lg">
-
-      <div class="flex items-center gap-2 text-xs uppercase tracking-[0.2em]">
-
-        <svg lucideIcon="plus" size="14"></svg>
-
-        <span>Thêm bất động sản</span>
-
-      </div>
-
-    </app-button> -->
+    <div class="flex items-center gap-1.5 text-xs text-gray-400">
+      @if (postStore.loading() || contactStore.loading()) {
+        <div class="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-primary"></div>
+        <span>Đang tải...</span>
+      }
+    </div>
   </div>
 
-  <!-- STATS -->
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    <!-- CARD 1 -->
-    <div
-      class="bg-white rounded-sm p-6 min-h-42.5 border border-gray-100 shadow-sm flex flex-col justify-between"
-    >
-      <!-- TOP -->
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] uppercase tracking-[0.2em] text-gray-400">
-          Tổng bất động sản
-        </span>
-
-        <svg lucideIcon="building-2" size="16" class="text-[#0b1b3b]"></svg>
+  <!-- STAT CARDS -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+    <!-- Tổng tin đăng -->
+    <div class="bg-white rounded-md border border-gray-100 shadow-sm px-4 py-4 flex items-center gap-3 fade-in">
+      <div class="w-9 h-9 rounded-md bg-primary/8 flex items-center justify-center shrink-0">
+        <svg lucideIcon="file-text" size="16" class="text-primary"></svg>
       </div>
-
-      <!-- VALUE -->
-      <div>
-        <h2 class="text-6xl italic font-light text-[#0b1b3b] leading-none">142</h2>
-
-        <div class="mt-4 flex items-center gap-2 text-xs uppercase tracking-wide">
-          <span class="text-green-600 font-semibold"> +12% </span>
-
-          <span class="text-gray-400"> so với quý trước </span>
-        </div>
+      <div class="min-w-0">
+        <p class="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Tin đăng</p>
+        <p class="text-xl font-bold text-primary leading-none">{{ totalPosts() }}</p>
       </div>
     </div>
 
-    <!-- CARD 2 -->
-    <div
-      class="bg-white rounded-sm p-6 min-h-42.5 border border-gray-100 shadow-sm flex flex-col justify-between"
-    >
-      <!-- TOP -->
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] uppercase tracking-[0.2em] text-gray-400">
-          Tổng biểu mẫu liên hệ
-        </span>
-
-        <svg lucideIcon="eye" size="16" class="text-orange-500"></svg>
+    <!-- Tin đã xuất bản -->
+    <div class="bg-white rounded-md border border-gray-100 shadow-sm px-4 py-4 flex items-center gap-3 fade-in">
+      <div class="w-9 h-9 rounded-md bg-green-50 flex items-center justify-center shrink-0">
+        <svg lucideIcon="check-circle" size="16" class="text-green-600"></svg>
       </div>
-
-      <!-- VALUE -->
-      <div>
-        <h2 class="text-6xl italic font-light text-[#0b1b3b] leading-none">38</h2>
-
-        <div class="mt-4 flex items-center gap-2 text-xs uppercase tracking-wide">
-          <span class="text-orange-500 font-semibold"> 84% </span>
-
-          <span class="text-gray-400"> tỷ lệ chuyển đổi </span>
-        </div>
+      <div class="min-w-0">
+        <p class="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Đã xuất bản</p>
+        <p class="text-xl font-bold text-green-700 leading-none">{{ publishedCount() }}</p>
       </div>
     </div>
 
-    <!-- CARD 3 -->
-    <div class="relative overflow-hidden rounded-sm shadow-lg h-full bg-primary">
-      <!-- BACKGROUND -->
-      <div
-        class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
-        style="background-image: url('bg_card.png')"
-      ></div>
+    <!-- Yêu cầu liên hệ -->
+    <div class="bg-white rounded-md border border-gray-100 shadow-sm px-4 py-4 flex items-center gap-3 fade-in">
+      <div class="w-9 h-9 rounded-md bg-orange-50 flex items-center justify-center shrink-0">
+        <svg lucideIcon="message-square" size="16" class="text-orange-500"></svg>
+      </div>
+      <div class="min-w-0">
+        <p class="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Liên hệ</p>
+        <p class="text-xl font-bold text-orange-600 leading-none">{{ totalContacts() }}</p>
+      </div>
+    </div>
 
-      <!-- CONTENT -->
-      <div class="relative z-10 flex flex-col h-full justify-between p-6">
-        <!-- TOP -->
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] uppercase tracking-[0.2em] text-white/50">
-            Phạm vi hoạt động
-          </span>
+    <!-- Nhân sự -->
+    <div class="bg-white rounded-md border border-gray-100 shadow-sm px-4 py-4 flex items-center gap-3 fade-in">
+      <div class="w-9 h-9 rounded-md bg-blue-50 flex items-center justify-center shrink-0">
+        <svg lucideIcon="users" size="16" class="text-blue-500"></svg>
+      </div>
+      <div class="min-w-0">
+        <p class="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Nhân sự</p>
+        <p class="text-xl font-bold text-blue-700 leading-none">{{ userStore.filteredUsers().length }}</p>
+      </div>
+    </div>
+  </div>
 
-          <svg lucideIcon="globe" size="16" class="text-white"></svg>
-        </div>
+  <!-- CHARTS ROW -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
 
-        <!-- VALUE -->
+    <!-- BIG CHART: Activity -->
+    <div class="lg:col-span-2 bg-white rounded-md border border-gray-100 shadow-sm p-5 fade-in">
+      <div class="flex items-start justify-between mb-5">
         <div>
-          <h2 class="text-6xl italic font-light leading-none text-white">14</h2>
+          <h3 class="text-xs font-bold text-primary uppercase tracking-wider">Hiệu suất hệ thống</h3>
+          <p class="text-[11px] text-gray-400 mt-0.5">Tin đăng &amp; liên hệ theo ngày trong tuần</p>
+        </div>
+      </div>
+      <div id="chart">
+        <apx-chart
+          [series]="mainChartSeries()"
+          [chart]="mainChartOptions.chart"
+          [xaxis]="mainChartOptions.xaxis"
+          [stroke]="mainChartOptions.stroke"
+          [colors]="mainChartOptions.colors"
+          [dataLabels]="mainChartOptions.dataLabels"
+          [fill]="mainChartOptions.fill"
+          [grid]="mainChartOptions.grid"
+          [legend]="mainChartOptions.legend"
+          [tooltip]="mainChartOptions.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
 
-          <div class="mt-4 text-[10px] uppercase tracking-[0.2em] text-white/50">
-            Quốc gia đang hoạt động
+    <!-- STAFF BREAKDOWN -->
+    <div class="bg-white rounded-md border border-gray-100 shadow-sm p-5 fade-in flex flex-col">
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h3 class="text-xs font-bold text-primary uppercase tracking-wider">Cơ cấu nhân sự</h3>
+          <p class="text-[11px] text-gray-400 mt-0.5">Phân bổ theo vai trò</p>
+        </div>
+      </div>
+
+      <apx-chart
+        [series]="staffChartSeries()"
+        [chart]="staffChartOptions.chart"
+        [xaxis]="staffChartOptions.xaxis"
+        [colors]="staffChartOptions.colors"
+        [plotOptions]="staffChartOptions.plotOptions"
+        [grid]="staffChartOptions.grid"
+      ></apx-chart>
+
+      <!-- Role breakdown list -->
+      <div class="mt-auto pt-4 border-t border-gray-50 space-y-2.5">
+        @for (role of staffBreakdown(); track role.label) {
+          <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full" [style.background]="role.color"></span>
+              <span class="text-gray-500">{{ role.label }}</span>
+            </div>
+            <span class="font-semibold text-primary">{{ role.count }}</span>
           </div>
+        }
+        <div class="flex items-center justify-between text-xs pt-1 border-t border-gray-50">
+          <span class="text-gray-400">Tổng cộng</span>
+          <span class="font-bold text-primary">{{ userStore.filteredUsers().length }} người</span>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- BOTTOM ROW: Contact Status + Recent Contacts -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+    <!-- Contact Status Summary -->
+    <div class="bg-white rounded-md border border-gray-100 shadow-sm p-5 fade-in">
+      <h3 class="text-xs font-bold text-primary uppercase tracking-wider mb-4">Trạng thái liên hệ</h3>
+      <div class="space-y-3">
+        @for (stat of contactStatusStats(); track stat.label) {
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0" [ngClass]="stat.bgClass">
+              <svg [lucideIcon]="stat.icon" size="13" [ngClass]="stat.iconClass"></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-[11px] text-gray-500">{{ stat.label }}</span>
+                <span class="text-xs font-bold text-primary">{{ stat.count }}</span>
+              </div>
+              <div class="h-1 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all duration-500"
+                  [ngClass]="stat.barClass"
+                  [style.width.%]="stat.percent"
+                ></div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Recent Contacts Table -->
+    <div class="lg:col-span-2 bg-white rounded-md border border-gray-100 shadow-sm overflow-hidden fade-in">
+      <div class="px-5 py-4 border-b border-gray-50 flex items-center justify-between">
+        <h3 class="text-xs font-bold text-primary uppercase tracking-wider">Liên hệ gần đây</h3>
+        <span class="text-xs text-green-500 bg-green-100 px-2 py-1 rounded">5 mới nhất</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-50/80">
+            <tr>
+              <th class="px-5 py-3text-xs font-semibold text-gray-400 uppercase tracking-widest">Khách hàng</th>
+              <th class="px-5 py-3text-xs font-semibold text-gray-400 uppercase tracking-widest">Số điện thoại</th>
+              <th class="px-5 py-3text-xs font-semibold text-gray-400 uppercase tracking-widest">Tin nhắn</th>
+              <th class="px-5 py-3text-xs font-semibold text-gray-400 uppercase tracking-widest">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            @for (contact of recentContacts(); track contact._id) {
+              <tr class="hover:bg-gray-50/60 transition-colors duration-150">
+                <td class="px-5 py-3">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shrink-0 uppercase">
+                      {{ contact.name?.charAt(0) }}
+                    </div>
+                    <span class="font-semibold text-primary truncate max-w-28">{{ contact.name }}</span>
+                  </div>
+                </td>
+                <td class="px-5 py-3 text-gray-500  text-xs">{{ contact.phone }}</td>
+                <td class="px-5 py-3 text-gray-400 truncate max-w-32">{{ contact.message || '—' }}</td>
+                <td class="px-5 py-3">
+                  <span
+                    class="min-w-20 inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold uppercase"
+                    [ngClass]="getContactStatusClass(contact.status)"
+                  >
+                    {{ contact.status }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="px-5 py-12 text-center">
+                  <svg lucideIcon="inbox" size="32" class="text-gray-200 mx-auto mb-2"></svg>
+                  <p class="text-xs text-gray-400">Chưa có liên hệ nào</p>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>

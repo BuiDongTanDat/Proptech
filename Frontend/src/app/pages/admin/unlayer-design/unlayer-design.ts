@@ -217,6 +217,7 @@ export class UnlayerDesign implements OnInit, OnDestroy {
   // Luồng duyệt bài đăng
   submitForApproval(): void {
     const post = this.postStore.selectedPost();
+    console.log('Submitting for approval, current status:', post?.status);
     if (!post?._id) return;
 
     this.postStore.updatePostStatus(post._id, 'Chờ duyệt' as any).subscribe({

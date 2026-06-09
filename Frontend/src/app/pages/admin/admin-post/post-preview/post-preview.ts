@@ -7,6 +7,7 @@ import { LucideDynamicIcon } from '@lucide/angular';
 import { DatePipe } from '@angular/common';
 import { PostStore } from '../../../../core/stores/post.store';
 import { getPostStatusClass } from '../../../../shared/utils/helper';
+import { AuthStore } from '../../../../core/stores/auth.store';
 
 @Component({
   selector: 'app-post-preview',
@@ -20,6 +21,7 @@ export class PostReview implements OnInit, OnDestroy {
   private readonly router = inject(Router)
   private readonly sanitizer = inject(DomSanitizer);
   protected readonly store = inject(PostStore);
+  protected readonly authStore = inject(AuthStore);
 
 
   //Signal

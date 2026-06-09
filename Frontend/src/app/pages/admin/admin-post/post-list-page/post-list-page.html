@@ -167,12 +167,16 @@
                 <app-button variant="action" size="icon" (btnClick)="onView(p)">
                   <svg lucideIcon="eye" size="13"></svg>
                 </app-button>
-                <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
-                  <svg lucideIcon="pencil" size="13"></svg>
-                </app-button>
-                <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
+                @if (
+                  authStore.isManager() || (p.status !== 'Xuất bản' && p.status !== 'Riêng tư')
+                ) {
+                  <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
+                    <svg lucideIcon="pencil" size="13"></svg>
+                  </app-button>
+                }
+                <!-- <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
                   <svg lucideIcon="trash" size="13"></svg>
-                </app-button>
+                </app-button> -->
               </div>
             </div>
           </div>
@@ -265,14 +269,17 @@
                     <app-button variant="action" size="icon" (btnClick)="onView(p)">
                       <svg lucideIcon="eye" size="14"></svg>
                     </app-button>
+                    @if (
+                      authStore.isManager() || (p.status !== 'Xuất bản' && p.status !== 'Riêng tư')
+                    ) {
+                      <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
+                        <svg lucideIcon="pencil" size="14"></svg>
+                      </app-button>
+                    }
 
-                    <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
-                      <svg lucideIcon="pencil" size="14"></svg>
-                    </app-button>
-
-                    <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
+                    <!-- <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
                       <svg lucideIcon="trash" size="14"></svg>
-                    </app-button>
+                    </app-button> -->
                   </div>
                 </td>
               </tr>

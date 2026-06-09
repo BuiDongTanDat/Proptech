@@ -244,7 +244,7 @@ export class PostStore {
         reason?: string
     ) {
         this.loading.set(true);
-
+        console.log(`Updating post ${id} to status ${status} with reason:`, reason);
         return this.postService
             .updatePostStatus(id, {
                 status,

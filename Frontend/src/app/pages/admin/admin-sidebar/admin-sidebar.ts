@@ -58,12 +58,12 @@ export class AdminSidebar {
     },
     { label: 'Liên hệ', icon: 'phone', route: '/admin/contact' },
     { label: 'Tài khoản', icon: 'circle-user', route: '/admin/account' },
-    { label: 'Thông tin doanh nghiệp', icon: 'info', route: '/admin/info' },
+    // { label: 'Thông tin doanh nghiệp', icon: 'info', route: '/admin/info' },
   ];
 
   bottomNavItems: NavItem[] = [
-    { label: 'Cá nhân', icon: 'user', route: '/admin/profile' },
-    { label: 'Cài đặt', icon: 'settings', route: '/admin/setting' },
+    // { label: 'Cá nhân', icon: 'user', route: '/admin/profile' },
+    // { label: 'Cài đặt', icon: 'settings', route: '/admin/setting' },
   ];
 
   // Hàm toggle đóng/mở menu con

@@ -71,7 +71,7 @@ export class PostService {
     }
   ) {
     return this.http.patch<ApiResponse<IPost>>(
-      `${this.postEndpoint}/status/${id}`,
+      `${this.postEndpoint}/${id}`,
       payload
     );
   }

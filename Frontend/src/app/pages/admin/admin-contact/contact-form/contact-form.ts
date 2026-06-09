@@ -8,7 +8,7 @@ import { CustomInput } from '../../../../shared/components/ui/custom-input/custo
 import { Button } from '../../../../shared/components/ui/button/button';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
-import { CONTACT_STATUS_OPTIONS } from '../../../../core/constants/contact.constant';
+import { CONTACT_STATUS_OPTIONS, CONTACT_STATUS_UPDATE_OPTIONS } from '../../../../core/constants/contact.constant';
 import { CustomTextarea } from "../../../../shared/components/ui/custom-textarea/custom-textarea";
 
 @Component({
@@ -31,7 +31,7 @@ export class ContactForm {
   userStore = inject(UserStore);
   postStore = inject(PostStore);
 
-  readonly statusOptions = CONTACT_STATUS_OPTIONS;
+  readonly statusOptions = CONTACT_STATUS_UPDATE_OPTIONS;
 
   // Dropdown options for users and posts
   //userOptions = signal<{ label: string; value: string }[]>([]);
@@ -59,6 +59,17 @@ export class ContactForm {
     return this.contactForm.controls;
   }
 
+  private fillForm(contact: any) {
+    this.contactForm.patchValue({
+      name: contact?.name || '',
+      phone: contact?.phone || '',
+      message: contact?.message || '',
+      status: contact?.status || 'Mới',
+      resolvedBy: contact?.resolvedBy?._id || '',
+      post: contact?.post?._id || '', //Khi lưu thì thông tin post là object, nên phải trích ra trường _id thì dropdown mới hiện tương ứng được
+    });
+  }
+
   constructor() {
     // Tải danh sách nhân viên và bài đăng để hiển thị trong dropdown
     this.userStore.loadUsers();
@@ -74,7 +85,7 @@ export class ContactForm {
           location: p.location,
           image: p.cover_picture.url || 'bg_card.png',
           developer: p.developer,
-          post: p._id || ''
+          post: p._id || '' 
         }))
       );
 
@@ -88,15 +99,9 @@ export class ContactForm {
       this.submitted = false;
 
       if (contactModal) {
-        this.contactForm.patchValue({
-          name: contactModal.name || '',
-          phone: contactModal.phone || '',
-          message: contactModal.message || '',
-          status: contactModal.status || 'Mới',
-          resolvedBy: contactModal.resolvedBy?._id || '',
-          post: contactModal.post?._id || '',
-        });
-      } else {
+        this.fillForm(contactModal);
+      }
+      else {
         this.contactForm.reset({ status: 'Mới' });
       }
 
@@ -124,8 +129,10 @@ export class ContactForm {
   }
 
   onCancel() {
-    if (this.currentMode() === 'edit' && this.contactModal()) {
-      this.contactForm.patchValue(this.contactModal());
+    const contact = this.contactModal();
+
+    if (this.currentMode() === 'edit' && contact) {
+      this.fillForm(contact);
       this.contactForm.disable();
       this.currentMode.set('view');
     } else {

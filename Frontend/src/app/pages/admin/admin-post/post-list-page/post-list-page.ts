@@ -15,6 +15,7 @@ import { CategoryStore } from '../../../../core/stores/category.store';
 import { Loading } from '../../../../shared/components/loading/loading';
 import { PROPERTY_STATUS_SORT_OPTIONS } from '../../../../core/constants/post.constant';
 import { DATE_SORT_OPTIONS } from '../../../../core/constants/general.constant';
+import { AuthStore } from '../../../../core/stores/auth.store';
 
 @Component({
   selector: 'app-post-list-page',
@@ -38,6 +39,7 @@ import { DATE_SORT_OPTIONS } from '../../../../core/constants/general.constant';
 export class PostListPage implements OnInit {
   protected readonly store = inject(PostStore);
   protected readonly categoryStore = inject(CategoryStore);
+  protected readonly authStore = inject(AuthStore);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 

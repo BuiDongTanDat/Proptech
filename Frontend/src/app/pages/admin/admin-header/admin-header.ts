@@ -36,14 +36,16 @@ export class AdminHeader {
 
   searchItems: SearchItem[] = [
     { label: 'Trang chủ', route: '/admin/dashboard', icon: 'house' },
-    { label: 'Tin bất động sản', route: '/admin/properties', icon: 'building-2' },
+     { label: 'Danh mục',  route: '/admin/category' , icon: 'list'},
+   { label: 'Tin đăng',  route: '/admin/post', icon: 'building-2' },
     { label: 'Liên hệ', route: '/admin/contact', icon: 'phone' },
     { label: 'Tài khoản', route: '/admin/account', icon: 'circle-user' },
     { label: 'Thông tin doanh nghiệp', route: '/admin/info', icon: 'info' },
-    { label: 'Cá nhân', route: '/admin/profile', icon: 'user' },
-    { label: 'Cài đặt', route: '/admin/setting', icon: 'settings' },
+    // { label: 'Cá nhân', route: '/admin/profile', icon: 'user' },
+    // { label: 'Cài đặt', route: '/admin/setting', icon: 'settings' },
   ];
 
+  
   filteredItems = computed(() => {
     const keyword = this.search().trim().toLowerCase();
     if (!keyword) return [];
