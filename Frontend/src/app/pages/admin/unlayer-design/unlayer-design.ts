@@ -120,15 +120,19 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     { label: 'Miền Trung', value: 'Miền Trung' },
     { label: 'Miền Nam', value: 'Miền Nam' },
   ];
-  readonly statusOptions = PROPERTY_STATUS_OPTIONS;
+  readonly statusOptions = PropertyStatus;
+
 
   readonly postForm = new FormGroup<PostForm>({
-    title: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    developer: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    location: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    region: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    title: new FormControl('', { nonNullable: true }),
+    developer: new FormControl('', { nonNullable: true }),
+    location: new FormControl('', { nonNullable: true }),
+    region: new FormControl('', { nonNullable: true }),
     status: new FormControl(PropertyStatus.DRAFT, { nonNullable: true }),
-    category: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    category: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
   });
 
   readonly rejectReasonControl = new FormControl('', {
@@ -321,7 +325,10 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     });
   }
 
-  saveDesign(mode: SaveMode): void {
+  saveDesign(
+    mode: SaveMode,
+    status?: PropertyStatus
+  ): void {
     this.submitted.set(true);
 
     if (this.postForm.invalid) {
@@ -332,17 +339,18 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     const currentPost = this.postStore.selectedPost();
     const postId = this.isEditMode() ? currentPost?._id ?? null : null;
 
-    if (!this.isEditMode() && !this.coverFile()) {
-      this.toastService.error('Vui lòng chọn ảnh bìa cho bài đăng');
-      return;
-    }
+    // Không bắt buộc tải ảnh bìa
+    // if (!this.isEditMode() && !this.coverFile()) {
+    //   this.toastService.error('Vui lòng chọn ảnh bìa cho bài đăng');
+    //   return;
+    // }
 
     if (!this.emailEditor?.editor || !this.editorReady()) return;
 
     this.submittingMode.set(mode);
 
     this.emailEditor.editor.exportHtml((data: EditorExportData) => {
-      const formData = this.buildFormData(data);
+      const formData = this.buildFormData(data, status);
 
       this.postStore.savePost(postId, formData, { mode }).subscribe({
         next: (res) => {
@@ -448,11 +456,15 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     }
   }
 
-  private buildFormData(editorData: EditorExportData): FormData {
+  private buildFormData(
+    editorData: EditorExportData,
+    status?: PropertyStatus
+  ): FormData {
     const formData = new FormData();
     const currentPost = this.postStore.selectedPost();
 
     if (this.isEditMode() && currentPost) {
+      // Với bài viết đang chỉnh sửa, chỉ gửi những trường đã thay đổi so với dữ liệu gốc để tối ưu payload
       const controls = this.postForm.controls;
 
       if (controls.title.dirty && controls.title.value !== currentPost.title) {
@@ -471,6 +483,7 @@ export class UnlayerDesign implements OnInit, OnDestroy {
         formData.append('category', controls.category.value);
       }
 
+
       const currentDesignJson = JSON.stringify(editorData.design);
       if (currentDesignJson !== currentPost.jsonSource) {
         formData.append('htmlSource', editorData.html);
@@ -482,6 +495,7 @@ export class UnlayerDesign implements OnInit, OnDestroy {
         formData.append('cover_picture', cover);
       }
     } else {
+      // Với bài viết mới, gửi tất cả dữ liệu mà không cần so sánh
       const formValue = this.postForm.getRawValue();
 
       formData.append('title', formValue.title);
@@ -491,6 +505,9 @@ export class UnlayerDesign implements OnInit, OnDestroy {
 
       if (formValue.category) {
         formData.append('category', formValue.category);
+      }
+      if (status) {
+        formData.append('status', status); // Gửi thêm status nếu muốn tạo và gửi duyệt luôn
       }
 
       formData.append('htmlSource', editorData.html);

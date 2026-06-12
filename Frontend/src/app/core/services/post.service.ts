@@ -75,4 +75,14 @@ export class PostService {
       payload
     );
   }
+
+  // Seach with elasticsearch 
+  searchPosts(
+    page: number,
+    keyword: string,
+  ) {
+    const url = `${this.postEndpoint}/search?page=${page}&keyword=${encodeURIComponent(keyword)}`;
+    return this.http.get<PaginatedPostResponse>(url);
+  
+  }
 }

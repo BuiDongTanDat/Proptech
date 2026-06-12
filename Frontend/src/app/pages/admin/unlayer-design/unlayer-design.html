@@ -309,26 +309,40 @@
         <div class="flex gap-2 w-full">
           <!-- CREATE MODE -->
           @if (!isEditMode()) {
-            <div class="flex-grow">
-              <app-button
-                variant="primary"
-                className="w-full py-2.5 rounded-md font-semibold shadow-sm"
-                [disabled]="postStore.loading()"
-                (btnClick)="saveDesign('create')"
-              >
-                <div class="flex items-center justify-center gap-2">
+            <div class="flex gap-2 w-full">
+              <div class="flex-1">
+                <app-button
+                  variant="outline"
+                  className="w-full"
+                  [disabled]="postStore.loading()"
+                  (btnClick)="saveDesign('create', statusOptions.DRAFT)"
+                >
                   @if (submittingMode() === 'create') {
-                    <svg
-                      lucideIcon="loader-circle"
-                      class="animate-spin size-4"
-                      aria-hidden="true"
-                    ></svg>
+                    <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
                   } @else {
-                    <svg lucideIcon="save" class="size-4" aria-hidden="true"></svg>
+                    <svg lucideIcon="save" class="size-4"></svg>
                   }
-                  {{ submittingMode() === 'create' ? 'Đang lưu...' : 'Lưu bài đăng mới' }}
-                </div>
-              </app-button>
+
+                  Lưu nháp
+                </app-button>
+              </div>
+
+              <div class="flex-1">
+                <app-button
+                  variant="primary"
+                  className="w-full"
+                  [disabled]="postStore.loading()"
+                  (btnClick)="saveDesign('create', statusOptions.PENDING_APPROVAL)"
+                >
+                  @if (submittingMode() === 'create') {
+                    <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
+                  } @else {
+                    <svg lucideIcon="send" class="size-4"></svg>
+                  }
+
+                  Lưu & gửi duyệt
+                </app-button>
+              </div>
             </div>
           }
 

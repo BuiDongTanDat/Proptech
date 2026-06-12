@@ -86,8 +86,13 @@ export class PostListPage implements OnInit {
     this.isMobile.set(window.innerWidth < 768);
   }
 
-  onSearch(val: string) {
+  // Nhận giá trị thay đổi từ ô nhập
+  onSearchChange(val: string) {
     this.store.setSearch(val);
+  }
+  // Gọi hàm tìm kiếm khi nhấn nút Search
+  onSearchClick() {
+    this.store.search();
   }
 
   onSortChange(val: string) {

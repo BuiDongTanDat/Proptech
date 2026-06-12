@@ -99,6 +99,7 @@
                 </div>
 
                 <!-- Button -->
+                 @if (authStore.isManager()) {
                 <app-button
                   type="button"
                   variant="accent"
@@ -115,6 +116,7 @@
                   }
                   Gửi lại email
                 </app-button>
+              }
               </div>
             } @else {
               <!-- Bỏ div bọc ngoài không cần thiết, dùng class w-full trực tiếp -->
@@ -138,15 +140,17 @@
             Xóa
           </app-button> -->
 
-          <app-button
-            type="button"
-            className="bg-primary text-white"
-            (btnClick)="onEdit()"
-            [disabled]="store.resendLoading() || store.submitLoading()"
-          >
-            <svg lucideIcon="pencil" class="size-4"></svg>
-            Chỉnh sửa
-          </app-button>
+          @if (authStore.isManager()) {
+            <app-button
+              type="button"
+              className="bg-primary text-white"
+              (btnClick)="onEdit()"
+              [disabled]="store.resendLoading() || store.submitLoading()"
+            >
+              <svg lucideIcon="pencil" class="size-4"></svg>
+              Chỉnh sửa
+            </app-button>
+          }
         } @else {
           <app-button
             type="button"

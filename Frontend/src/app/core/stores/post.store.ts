@@ -263,12 +263,12 @@ export class PostStore {
         if (page < 1 || page > this.totalPages()) return;
 
         this.currentPage.set(page);
-        this.loadPosts();
+         this.loadData(); // Tải lại dữ liệu khi đổi trang
     }
 
     setSearch(query: string): void {
         this.searchQuery.set(query);
-        this.currentPage.set(1);
+        // this.currentPage.set(1);
     }
 
     setSort(sort: string): void {
@@ -284,5 +284,64 @@ export class PostStore {
 
     }
 
+    searchPosts() {
+        this.loading.set(true);
 
+        const page = this.currentPage();
+        const keyword = this.searchQuery().trim();
+
+        this.postService
+            .searchPosts(page, keyword)
+            .pipe(
+                finalize(() => this.loading.set(false))
+            )
+            .subscribe({
+                next: (res) => {
+                    const posts = res?.data?.posts ?? [];
+
+                    this._posts.set(posts);
+
+                    this._statusStatics.set(
+                        res?.data?.status ?? {}
+                    );
+
+                    this.totalPages.set(
+                        res?.pagination?.totalPages ?? 1
+                    );
+
+                    this.currentPage.set(
+                        res?.pagination?.page ?? 1
+                    );
+
+                    this.totalPosts.set(
+                        res?.pagination?.totalPosts ?? 0
+                    );
+                },
+
+                error: (err) => {
+                    this.toastService.error(
+                        err?.error?.message || 'Lỗi tìm kiếm'
+                    );
+
+                    this._posts.set([]);
+                }
+            });
+    }
+
+    private loadData() {
+        const keyword = this.searchQuery().trim();
+
+        // Nếu có keyword thì gọi API tìm kiếm,
+        if (keyword) {
+            this.searchPosts();
+        } else {
+            //  nếu không có thì gọi API lấy tất cả bài đăng (theo filter hiện tại)
+            this.loadPosts();
+        }
+    }
+
+    search(): void {
+        this.currentPage.set(1);
+        this.loadData();
+    }
 }

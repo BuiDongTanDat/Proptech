@@ -1,32 +1,31 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { LucideDynamicIcon } from '@lucide/angular';
+
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
-import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
+import { Button } from '../../../../shared/components/ui/button/button';
+import { IPost } from '../../../../core/models/model';
 
 @Component({
   selector: 'app-properties-list',
-  standalone: true,
   imports: [
     FormsModule,
     RouterLink,
     LucideDynamicIcon,
     CustomInput,
-    Dropdown
+    Button,
   ],
   templateUrl: './properties-list.html',
   styleUrl: './properties-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PropertiesList {
-  @Input() properties: any[] = [];
-  @Input() loading = false;
-  @Input() location = '';
-  @Input() developer = '';
-  @Input() sortOptions: Array<{ label: string; value: string }> = [];
-  @Input() selectedSort = 'newest';
+  readonly properties = input<IPost[]>([]);
+  readonly loading = input(false);
 
-  @Output() locationChange = new EventEmitter<string>();
-  @Output() developerChange = new EventEmitter<string>();
-  @Output() sortChange = new EventEmitter<string>();
+  readonly keyword = input('');
+
+  readonly keywordChange = output<string>();
+  readonly search = output<void>();
 }

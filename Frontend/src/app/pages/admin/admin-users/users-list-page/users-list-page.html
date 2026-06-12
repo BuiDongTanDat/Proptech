@@ -8,12 +8,13 @@
       <p class="text-xs text-gray-400 mt-0.5 slide-in-left">Quản lý tài khoản nhân viên</p>
     </div>
 
-    <div class="flex items-center gap-2">
-     
-      <app-button (btnClick)="onAdd()" text="Thêm tài khoản" startIcon="plus" variant="primary">
-        Thêm tài khoản
-      </app-button>
-    </div>
+    @if (authStore.isManager()) {
+      <div class="flex items-center gap-2">
+        <app-button (btnClick)="onAdd()" text="Thêm tài khoản" startIcon="plus" variant="primary">
+          Thêm tài khoản
+        </app-button>
+      </div>
+    }
   </div>
 
   <!-- TOOLBAR -->
@@ -73,10 +74,10 @@
   } @else {
     <!-- CARD VIEW -->
     @if (!isListView() || isMobile()) {
-      <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         @for (u of store.paginatedUsers(); track u._id) {
           <div
-            class=" fade-in rounded-md shadow-sm group border border-gray-200 p-4 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+            class="fade-in rounded-md shadow-sm group border border-gray-200 p-4 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
             [class]="isCurrentUser(u) ? 'bg-primary text-white' : 'bg-white text-primary'"
           >
             <!-- HEADER -->
@@ -124,9 +125,11 @@
               <app-button (btnClick)="onView(u)" variant="action" size="icon">
                 <svg lucideIcon="eye" size="14"></svg>
               </app-button>
-              <app-button (btnClick)="onEdit(u)" variant="action" size="icon">
-                <svg lucideIcon="pencil" size="14"></svg>
-              </app-button>
+              @if (authStore.isManager()) {
+                <app-button (btnClick)="onEdit(u)" variant="action" size="icon">
+                  <svg lucideIcon="pencil" size="14"></svg>
+                </app-button>
+              }
               <!-- <app-button (btnClick)="onDelete(u)" variant="destructive" size="icon">
                 <svg lucideIcon="trash" size="14"></svg>
               </app-button> -->
@@ -231,9 +234,11 @@
                     <app-button variant="action" size="icon" (btnClick)="onView(u)">
                       <svg lucideIcon="eye" size="14"></svg>
                     </app-button>
-                    <app-button variant="action" size="icon" (btnClick)="onEdit(u)">
-                      <svg lucideIcon="pencil" size="14"></svg>
-                    </app-button>
+                    @if (authStore.isManager()) {
+                      <app-button variant="action" size="icon" (btnClick)="onEdit(u)">
+                        <svg lucideIcon="pencil" size="14"></svg>
+                      </app-button>
+                    }
                     <!-- <app-button variant="destructive" size="icon" (btnClick)="onDelete(u)">
                       <svg lucideIcon="trash" size="14"></svg>
                     </app-button> -->

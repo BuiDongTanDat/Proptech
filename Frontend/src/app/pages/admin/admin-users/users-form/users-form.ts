@@ -10,6 +10,7 @@ import { Dropdown } from "../../../../shared/components/dropdown/dropdown";
 import { USER_ROLE_SELECTIONS, USER_STATUS_SELECTIONS } from '../../../../core/constants/user.constant';
 import { getAccountStatusBgClass, getAccountStatusClass } from '../../../../shared/utils/helper';
 import { AccountStatus, UserRole } from '../../../../core/enum/enums';
+import { AuthStore } from '../../../../core/stores/auth.store';
 
 @Component({
   selector: 'app-users-form',
@@ -27,6 +28,7 @@ import { AccountStatus, UserRole } from '../../../../core/enum/enums';
 })
 export class UsersForm {
   store = inject(UserStore);
+  authStore = inject(AuthStore);
   readonly roleOptions = USER_ROLE_SELECTIONS;
   readonly statusOptions = USER_STATUS_SELECTIONS;
 

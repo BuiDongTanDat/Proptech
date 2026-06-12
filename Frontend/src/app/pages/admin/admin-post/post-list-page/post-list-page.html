@@ -42,14 +42,19 @@
 
   <!-- TOOLBAR -->
   <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
-    <app-custom-input
-      [ngModel]="store.searchQuery()"
-      (ngModelChange)="onSearch($event)"
-      placeholder="Tìm kiếm theo tên hoặc địa chỉ..."
-      icon="search"
-      variant="outline"
-      className="w-64 text-xs"
-    ></app-custom-input>
+    <div class="flex items-center gap-1">
+      <app-custom-input
+        [ngModel]="store.searchQuery()"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Tìm kiếm theo tên hoặc địa chỉ..."
+        variant="outline"
+        className="w-64 text-xs"
+        (keyup.enter)="onSearchClick()"
+        
+      ></app-custom-input>
+
+      <app-button variant="primary" startIcon="search" (btnClick)="onSearchClick()"> </app-button>
+    </div>
 
     <div class="flex items-center gap-2 flex-wrap">
       <div class="hidden md:flex">

@@ -1,78 +1,68 @@
 <section class="space-y-6">
-  <div class="rounded-md border border-gray-200 bg-white/90 p-4 md:p-5 shadow-sm">
-    <div class="grid grid-cols-1 gap-4 xl:grid-cols-[1.4fr_1.4fr_1fr] xl:items-end">
-      <div>
-        <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2"> Vị trí</label>
+  <!-- SEARCH -->
+  <div class="rounded-md border border-gray-200 bg-white p-4 shadow-sm">
+    <div class="flex items-end gap-3">
+      <div class="flex-1">
+        <label
+          for="property-search"
+          class="flex gap-2 mb-2 text-xs uppercase tracking-widest text-gray-400"
+        >
+          <svg lucideIcon="building-2" class="size-4 text-gray-400"></svg>
+          Tìm kiếm bất động sản
+        </label>
+
         <app-custom-input
-          icon="search"
+          id="property-search"
           variant="outline"
-          type="text"
-          placeholder="Nhập khu vực hoặc thành phố..."
-          [ngModel]="location"
-          (ngModelChange)="locationChange.emit($event)"
-        ></app-custom-input>
+          placeholder="Tên dự án, vị trí hoặc chủ đầu tư..."
+          [ngModel]="keyword()"
+          (ngModelChange)="keywordChange.emit($event)"
+          (keyup.enter)="search.emit()"
+        />
       </div>
 
-      <div>
-        <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Chủ đầu tư</label>
-        <app-custom-input
-          icon="search"
-          variant="outline"
-          type="text"
-          placeholder="Nhập tên chủ đầu tư..."
-          [ngModel]="developer"
-          (ngModelChange)="developerChange.emit($event)"
-        ></app-custom-input>
-      </div>
-
-      <div>
-        <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Sắp xếp</label>
-        <app-dropdown
-          [ngModel]="selectedSort"
-          (ngModelChange)="sortChange.emit($event)"
-          [options]="sortOptions"
-          placeholder="Sắp xếp"
-          className="text-xs"
-        ></app-dropdown>
-      </div>
+      <app-button variant="primary" (btnClick)="search.emit()" className="shrink-0">
+        <svg lucideIcon="search" class="size-4"></svg>
+        Tìm kiếm
+      </app-button>
     </div>
   </div>
 
-  @if (loading) {
-    <div class="relative min-h-96 rounded-3xl border border-gray-200 bg-white/70">
+  @if (loading()) {
+    <div class="relative min-h-96 rounded-3xl border border-gray-200 bg-white">
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="flex flex-col items-center gap-3">
-          <svg lucideIcon="loader-circle" class="size-10 text-primary animate-spin"></svg>
-          <span class="text-sm text-primary font-semibold animate-pulse"> Đang tải ... </span>
+          <svg lucideIcon="loader-circle" class="size-10 animate-spin text-primary"></svg>
+
+          <span class="text-sm font-semibold text-primary"> Đang tải... </span>
         </div>
       </div>
     </div>
-  } @else if (properties.length > 0) {
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-16">
-      @for (property of properties; track property._id) {
-        <a class="fade-in group cursor-pointer block " [routerLink]="['/properties', property._id]">
+  } @else if (properties().length > 0) {
+    <div class="grid grid-cols-1 gap-x-10 gap-y-16 lg:grid-cols-2 xl:grid-cols-3">
+      @for (property of properties(); track property._id) {
+        <a class="group block cursor-pointer" [routerLink]="['/properties', property._id]">
           <!-- IMAGE -->
-          <div class="rounded-md relative overflow-hidden group-hover:shadow-lg ">
+          <div class="relative overflow-hidden rounded-md">
             <img
               [src]="property.cover_picture?.url || 'bg_card.png'"
-              [alt]="property.title || 'Tin đăng bất động sản'"
-              class="rounded-md w-full h-65 md:h-80 object-cover group-hover:scale-105 transition duration-500 "
+              [alt]="property.title"
+              class="h-65 w-full rounded-md object-cover transition duration-500 group-hover:scale-105 md:h-80"
             />
 
             <div
-              class="group absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
             >
               <span
-                class="text-white text-sm uppercase tracking-widest border border-white px-4 py-2"
+                class="border border-white px-4 py-2 text-sm uppercase tracking-widest text-white"
               >
                 Xem chi tiết
-                <svg lucideIcon="arrow-right" size="16" class="inline-block "></svg>
               </span>
             </div>
 
             @if (property.developer) {
               <div
-                class="absolute top-2 left-2 bg-primary text-white text-xs uppercase tracking-widest px-2 py-1 rounded"
+                class="absolute left-2 top-2 rounded bg-primary px-2 py-1 text-xs uppercase tracking-widest text-white"
               >
                 {{ property.developer }}
               </div>
@@ -80,25 +70,25 @@
           </div>
 
           <!-- CONTENT -->
-          <div class="bg-white w-[90%] mx-auto -mt-8 relative z-10 p-2 shadow-sm text-center">
-            <h3 class="text-lg text-primary leading-tight">
-              {{ property.title || 'Chưa có tiêu đề' }}
+          <div class="relative z-10 mx-auto -mt-8 w-[90%] bg-white p-3 text-center shadow-sm">
+            <h3 class="text-lg leading-tight text-primary">
+              {{ property.title }}
             </h3>
 
-            <div class="text-xs flex items-center justify-center gap-1 mt-2 text-gray-500 mb-2">
-              <svg lucideIcon="map-pin" class="size-4 inline-block text-gray-400"></svg>
-              <p>{{ property.location || 'Chưa cập nhật vị trí' }}</p>
+            <div class="mt-2 flex items-center justify-center gap-1 text-xs text-gray-500">
+              <svg lucideIcon="map-pin" class="size-4 text-gray-400"></svg>
+
+              <p>{{ property.location }}</p>
             </div>
           </div>
         </a>
       }
     </div>
   } @else {
-    <div
-      class="rounded-2xl border border-dashed border-gray-300 px-6 py-12 text-center text-gray-500"
-    >
-      <p class="text-lg text-primary font-medium">Chưa có bài đăng nào</p>
-      <p class="mt-2 text-sm">Hãy thử thay đổi bộ lọc để xem thêm bất động sản.</p>
+    <div class="rounded-2xl border border-dashed border-gray-300 px-6 py-12 text-center">
+      <p class="text-lg font-medium text-primary">Không tìm thấy bất động sản</p>
+
+      <p class="mt-2 text-sm text-gray-500">Hãy thử từ khóa khác.</p>
     </div>
   }
 </section>

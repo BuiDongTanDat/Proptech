@@ -58,9 +58,14 @@ export class ResetPassword {
 
   onSubmit() {
     this.submitted = true;
-    this.loading.set(true);
-    if (this.resetForm.invalid) return;
-    if (this.passwordMismatch) return;
+
+    if (this.resetForm.invalid) {
+      return;
+    }
+
+    if (this.passwordMismatch) {
+      return;
+    }
 
     if (!this.token) {
       this.toastService.error('Thiếu token xác thực!');
@@ -68,22 +73,34 @@ export class ResetPassword {
     }
 
     const password = this.resetForm.value.newPassword;
-    if (!password) return;
 
-    // TODO: gọi API reset password
+    if (!password) {
+      return;
+    }
+
+    //Chỉ bật loading khi đã kiểm tra đủ điều kiện để gửi request, tránh trường hợp bấm submit nhiều lần khi form chưa valid
+    this.loading.set(true);
+
     this.authService.resetPassword(this.token, password).subscribe({
       next: (res) => {
-        this.toastService.success(res?.message || 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.');
+        this.toastService.success(
+          res?.message || 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.'
+        );
+
         this.loading.set(false);
+
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 1500);
-
       },
 
       error: (err) => {
         console.error('Lỗi đặt lại mật khẩu:', err);
-        this.toastService.error(err?.message || 'Đặt lại mật khẩu thất bại. Vui lòng thử lại.');
+
+        this.toastService.error(
+          err?.message || 'Đặt lại mật khẩu thất bại. Vui lòng thử lại.'
+        );
+
         this.loading.set(false);
       }
     });

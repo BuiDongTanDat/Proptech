@@ -76,29 +76,42 @@ export class SetupPassword implements AfterViewInit {
 
   onSubmit() {
     this.submitted = true;
-    this.loading.set(true);
 
-    if (this.setupForm.invalid) return;
-    if (this.passwordMismatch) return;
+    if (this.setupForm.invalid) {
+      return;
+    }
+
+    if (this.passwordMismatch) {
+      return;
+    }
 
     if (!this.token) {
       this.toastService.error('Thiếu token xác thực!');
       return;
     }
 
+    this.loading.set(true);
+
     const password = this.setupForm.value.newPassword;
 
     this.authService.setupPassword(this.token, password).subscribe({
       next: (res) => {
-        this.toastService.success(res?.message || 'Thiết lập mật khẩu thành công! Vui lòng đăng nhập.');
+        this.toastService.success(
+          res?.message || 'Thiết lập mật khẩu thành công! Vui lòng đăng nhập.'
+        );
+
         this.loading.set(false);
+
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 1500);
       },
 
       error: (err) => {
-        this.toastService.error(err?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
+        this.toastService.error(
+          err?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.'
+        );
+
         this.loading.set(false);
       }
     });
