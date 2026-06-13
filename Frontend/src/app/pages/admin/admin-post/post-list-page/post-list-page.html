@@ -3,7 +3,7 @@
   <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
     <div>
       <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">Tin đăng</h1>
-      <p class="text-xs text-gray-400 mt-0.5 slide-in-left">Quản lý tin đăng</p>
+      <p class="text-xs text-gray-500 mt-0.5 slide-in-left">Quản lý tin đăng</p>
     </div>
 
     <div class="flex items-center gap-2">
@@ -99,7 +99,7 @@
     <app-loading></app-loading>
   } @else if (store.filteredPosts().length === 0) {
     <div class="flex flex-col items-center gap-2 py-16">
-      <svg lucideIcon="inbox" size="48" class="text-gray-300"></svg>
+      <svg lucideIcon="inbox" size="48" class="text-gray-500"></svg>
       <p class="text-sm text-gray-500">Không tìm thấy tin đăng nào</p>
     </div>
   } @else {
@@ -108,83 +108,108 @@
     @if (!isListView() || isMobile()) {
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
         @for (p of store.filteredPosts(); track p._id) {
-          <div
-            class="fade-in rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden"
-          >
-            <!-- IMAGE & STATUS -->
-            <div class="relative h-30 overflow-hidden bg-gray-100">
-              <img
-                [src]="p.cover_picture?.url || 'bg_card.png'"
-                [alt]="p.title"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <span
-                [class]="getPostStatusClass(p.status)"
-                class="absolute top-2 right-2 px-2 py-0.5 rounded text-xs font-semibold tracking-wide"
-              >
-                {{ p.status }}
-              </span>
-            </div>
+         <div
+  class="fade-in rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden h-full flex flex-col"
+>
+  <!-- IMAGE & STATUS -->
+  <div class="relative h-30 overflow-hidden bg-gray-100">
+    <img
+      [src]="p.cover_picture?.url || 'bg_card.png'"
+      [alt]="p.title"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+    />
 
-            <!-- CONTENT -->
-            <div class="flex-1 flex flex-col gap-1 px-3.5 pt-3 pb-0">
-              <h3 class="text-[13px] font-semibold text-primary truncate leading-snug">
-                {{ p.title || 'Chưa có tiêu đề' }}
-              </h3>
+    <span
+      [class]="getPostStatusClass(p.status)"
+      class="absolute top-2 right-2 px-2 py-0.5 rounded text-xs font-semibold tracking-wide"
+    >
+      {{ p.status }}
+    </span>
+  </div>
 
-              <p class="flex items-center gap-1 text-xs text-gray-400 truncate">
-                <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-300"></svg>
-                {{ p.location || 'Chưa có địa chỉ' }}
-              </p>
+  <!-- CONTENT -->
+  <div class="flex-1 flex flex-col gap-2 px-3.5 pt-3">
 
-              <div class="mt-2 grid grid-cols-2 gap-2">
-                <div class="rounded-md bg-gray-50 px-2 py-1.5">
-                  <p class="text-[10px] text-gray-400 uppercase">Chủ đầu tư</p>
-                  <p class="text-xs font-medium text-primary truncate">
-                    {{ p.developer || 'N/A' }}
-                  </p>
-                </div>
+    <!-- TITLE (fixed height) -->
+    <h3 class="text-[13px] font-semibold text-primary leading-snug min-h-[36px] line-clamp-2">
+      {{ p.title || '' }}
+    </h3>
 
-                <div class="rounded-md bg-gray-50 px-2 py-1.5 col-span-2">
-                  <p class="text-[10px] text-gray-400 uppercase">Tác giả</p>
-                  <p class="text-xs font-medium text-primary truncate">
-                    {{ p.author?.name || 'N/A' }}
-                  </p>
-                </div>
-              </div>
-            </div>
+    <!-- LOCATION -->
+    <p class="flex items-center gap-1 text-xs text-gray-500 min-h-[18px]">
+      <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-500"></svg>
 
-            <!-- FOOTER/ACTIONS -->
-            <div
-              class="flex items-center justify-between px-3.5 py-2.5 mt-2.5 border-t border-gray-100"
-            >
-              <div class="flex flex-col items-start gap-1">
-                <span class="flex items-center gap-1 text-xs text-gray-400">
-                  {{ p.category?.name || 'N/A' }}
-                </span>
-                <span class="flex items-center gap-1 text-xs text-gray-400">
-                  <svg lucideIcon="pencil" size="14" class="text-gray-400"></svg>
-                  {{ p.updatedAt | date: 'dd/MM/yyyy hh:mm' }}
-                </span>
-              </div>
+      @if (p.location) {
+        <span class="truncate">{{ p.location }}</span>
+      } @else {
+        <span class="invisible">placeholder</span>
+      }
+    </p>
 
-              <div class="flex items-center gap-1.5">
-                <app-button variant="action" size="icon" (btnClick)="onView(p)">
-                  <svg lucideIcon="eye" size="13"></svg>
-                </app-button>
-                @if (
-                  authStore.isManager() || (p.status !== 'Xuất bản' && p.status !== 'Riêng tư')
-                ) {
-                  <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
-                    <svg lucideIcon="pencil" size="13"></svg>
-                  </app-button>
-                }
-                <!-- <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
-                  <svg lucideIcon="trash" size="13"></svg>
-                </app-button> -->
-              </div>
-            </div>
-          </div>
+    <!-- GRID INFO -->
+    <div class="mt-1 grid grid-cols-2 gap-2 min-h-[70px]">
+
+      <!-- DEVELOPER -->
+      <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]">
+        <p class="text-[10px] text-gray-500 uppercase">Chủ đầu tư</p>
+
+        @if (p.developer) {
+          <p class="text-xs font-medium text-primary truncate">
+            {{ p.developer }}
+          </p>
+        } @else {
+          <span class="text-xs text-gray-500"></span>
+        }
+      </div>
+
+      <!-- AUTHOR -->
+      <div class="rounded-md bg-gray-50 px-2 py-1.5 col-span-2 min-h-[34px]">
+        <p class="text-[10px] text-gray-500 uppercase">Tác giả</p>
+
+        @if (p.author?.name) {
+          <p class="text-xs font-medium text-primary truncate">
+            {{ p.author?.name }}
+          </p>
+        } @else {
+          <span class="text-xs text-gray-500"></span>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="mt-auto flex items-center justify-between px-3.5 py-2.5 border-t border-gray-100">
+
+    <!-- LEFT INFO -->
+    <div class="flex flex-col items-start gap-1 min-h-[36px]">
+
+      <span class="text-xs text-gray-500 min-h-[16px]">
+        {{ p.category?.name || '' }}
+      </span>
+
+      <span class="flex items-center gap-1 text-xs text-gray-500">
+        <svg lucideIcon="pencil" size="14" class="text-gray-500"></svg>
+        {{ p.updatedAt | date: 'dd/MM/yyyy HH:mm:ss' }}
+      </span>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="flex items-center gap-1.5">
+
+      <app-button variant="action" size="icon" (btnClick)="onView(p)">
+        <svg lucideIcon="eye" size="13"></svg>
+      </app-button>
+
+      @if (authStore.isManager() || (p.status !== 'Xuất bản' && p.status !== 'Riêng tư')) {
+        <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
+          <svg lucideIcon="pencil" size="13"></svg>
+        </app-button>
+      }
+
+    </div>
+  </div>
+</div>
         }
       </div>
     }
@@ -195,23 +220,23 @@
         <table class="w-full border-collapse text-xs">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
                 Tin đăng
               </th>
-              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
                 Chủ đầu tư
               </th>
-              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
+              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
                 Tác giả
               </th>
 
-              <th class="px-3 py-2 text-center text-[10px] font-semibold text-gray-400 uppercase">
+              <th class="px-3 py-2 text-center text-[10px] font-semibold text-gray-500 uppercase">
                 Trạng thái
               </th>
-              <th class="px-3 py-2 text-center text-[10px] font-semibold text-gray-400 uppercase">
+              <th class="px-3 py-2 text-center text-[10px] font-semibold text-gray-500 uppercase">
                 Cập nhật lần cuối
               </th>
-              <th class="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase">
+              <th class="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">
                 Thao tác
               </th>
             </tr>
@@ -228,24 +253,24 @@
                     class="w-15 h-10 object-cover rounded mr-2 float-left"
                   />
                   <h3 class="text-xs font-medium text-primary truncate max-w-45">
-                    {{ p.title || 'Chưa có tiêu đề' }}
+                    {{ p.title || '' }}
                   </h3>
                   <p class="text-xs text-gray-500 truncate max-w-100">
-                    {{ p.location || 'Chưa có địa chỉ' }}
+                    {{ p.location || '' }}
                   </p>
                 </td>
 
                 <!-- DEVELOPER -->
                 <td class="px-3 py-2">
                   <p class="text-xs text-primary truncate max-w-30">
-                    {{ p.developer || 'Không xác định' }}
+                    {{ p.developer || '' }}
                   </p>
                 </td>
 
                 <!-- TÁC GIẢ -->
                 <td class="px-3 py-2">
                   <p class="text-xs text-primary truncate max-w-30">
-                    {{ p.author?.name || 'Không xác định' }}
+                    {{ p.author?.name || '' }}
                   </p>
                 </td>
 
@@ -262,7 +287,7 @@
                 <!-- CREATED -->
                 <td class="px-3 py-2 text-center">
                   <span class="text-xs text-primary whitespace-nowrap">
-                    {{ p.updatedAt | date: 'dd/MM/yyyy hh:MM' }}
+                    {{ p.updatedAt | date: 'dd/MM/yyyy hh:MM:ss' }}
                   </span>
                 </td>
 

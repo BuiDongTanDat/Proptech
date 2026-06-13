@@ -3,7 +3,7 @@ import { ClientLayout } from './shared/layout/client-layout/client-layout';
 import { AuthGuard } from './core/guards/auth.guard';
 import { NoAuthGuard } from './core/guards/no-auth.guard';
 import { TokenGuard } from './core/guards/token.guard';
-import { UnlayerDesign } from './pages/admin/unlayer-design/unlayer-design';
+import { UnlayerDesign } from './pages/admin/admin-post/unlayer-design/unlayer-design';
 import { PostReview } from './pages/admin/admin-post/post-preview/post-preview';
 
 export const routes: Routes = [

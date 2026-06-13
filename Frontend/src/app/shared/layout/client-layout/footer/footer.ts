@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Button } from '../../components/ui/button/button';
-import { CustomInput } from "../../components/ui/custom-input/custom-input";
+import { CustomInput } from '../../../components/ui/custom-input/custom-input';
+import { Button } from '../../../components/ui/button/button';
+
 
 @Component({
   selector: 'app-footer',

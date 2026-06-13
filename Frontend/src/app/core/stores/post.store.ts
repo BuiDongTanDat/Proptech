@@ -197,26 +197,7 @@ export class PostStore {
     savePost(
         postId: string | null,
         postData: FormData,
-        options: {
-            mode: 'draft' | 'update' | 'publish' | 'create';
-        }
     ) {
-        console.log('Saving post with ID:', postId, 'and options:', options);
-
-        switch (options.mode) {
-            case 'draft':
-            case 'create':
-                postData.set('status', PropertyStatus.DRAFT);
-                break;
-
-            case 'publish':
-                postData.set('status', PropertyStatus.PUBLISHED);
-                break;
-
-            case 'update':
-                break;
-        }
-
         const request$ = postId
             ? this.postService.updatePost(postId, postData)
             : this.postService.createPost(postData);

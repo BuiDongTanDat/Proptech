@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Button } from "../../components/ui/button/button";
+import { Button } from "../../../components/ui/button/button";
 import { LucideDynamicIcon } from '@lucide/angular';
 
 @Component({

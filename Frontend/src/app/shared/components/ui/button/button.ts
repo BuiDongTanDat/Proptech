@@ -80,7 +80,7 @@ export class Button {
       case 'action':
         return 'bg-white border border-gray-200 text-primary/90 hover:bg-primary hover:border-primary hover:text-white';
       default:
-        return 'bg-primary hover:bg-tertiary text-white border border-primary hover:border-tertiary';
+        return 'bg-primary hover:bg-primary-hover text-white border border-primary hover:border-primary-hover';
     }
   }
 

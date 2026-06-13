@@ -8,7 +8,9 @@
 } */
 
 @theme {
-  --color-primary: #1A2B48;
+  --color-primary: #003566;
+  --color-primary-hover: #0096c7; /* xanh sáng hơn */
+  --color-primary-light: #3B6FD8; /* optional */
   --color-secondary: #006D5B;
   --color-tertiary: #F26419;
   --color-destructive: #e63946;
@@ -20,14 +22,14 @@
 @layer base {
   :root {
     /* Core palette */
-    --primary: #1A2B48;
+    --primary: #003566;
     --secondary: #006D5B;
     --tertiary: #F26419;
     --neutral: #F8F9FA;
 
     /* Base UI */
     --background: #F8F9FA;
-    --foreground: #1A2B48;
+    --foreground: #003566;
 
     --card: #ffffff;
     --border: rgba(26, 43, 72, 0.12);
@@ -48,7 +50,7 @@
     --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #1A2B48, #006D5B);
+    --gradient-primary: linear-gradient(135deg, #003566, #006D5B);
     --gradient-accent: linear-gradient(135deg, #006D5B, #F26419);
     --gradient-warm: linear-gradient(135deg, #F26419, #ff8c42);
   }

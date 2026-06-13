@@ -71,7 +71,7 @@
             class="flex items-center justify-between bg-primary p-3 rounded-md border border-gray-100"
           >
             <span class="text-xs font-semibold text-white uppercase tracking-wider"
-              >Trạng thái hiện tại</span
+              >Trạng thái</span
             >
             <span
               class="inline-flex px-2.5 py-1 rounded-md text-xs font-semibold"
@@ -120,12 +120,14 @@
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
               >Tiêu đề bài viết</label
             >
-            <app-custom-input
+            <app-custom-textarea
               formControlName="title"
-              placeholder="Nhập tiêu đề..."
+              placeholder="Nhập tiêu đề bài đăng..."
               variant="outline"
-              className="rounded-md border-gray-200"
-            ></app-custom-input>
+              [rows]="3"
+              
+              [disabled]="postStore.loading()"
+            ></app-custom-textarea>
             @if (submitted() && f['title'].errors?.['required']) {
               <p class="text-[11px] text-red-500 font-semibold">* Tiêu đề không được để trống</p>
             }
@@ -152,12 +154,12 @@
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
               >Vị trí địa lý</label
             >
-            <app-custom-input
+            <app-custom-textarea
               formControlName="location"
-              placeholder="Nhập vị trí..."
+              placeholder="Nhập vị trí dự án (ví dụ: Quận 1, TP.HCM)..."
               variant="outline"
-              className="rounded-md border-gray-200"
-            ></app-custom-input>
+              [rows]="2"
+            ></app-custom-textarea>
             @if (submitted() && f['location'].errors?.['required']) {
               <p class="text-[11px] text-red-500 font-semibold">* Vị trí không được để trống</p>
             }
@@ -315,15 +317,17 @@
                   variant="outline"
                   className="w-full"
                   [disabled]="postStore.loading()"
-                  (btnClick)="saveDesign('create', statusOptions.DRAFT)"
+                  (btnClick)="saveDesign('create-draft')"
                 >
-                  @if (submittingMode() === 'create') {
-                    <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
-                  } @else {
-                    <svg lucideIcon="save" class="size-4"></svg>
-                  }
+                  <div class="flex items-center justify-center gap-2">
+                    @if (submittingMode() === 'create-draft') {
+                      <svg lucideIcon="loader-circle" class="animate-spin size-4 shrink-0"></svg>
+                    } @else {
+                      <svg lucideIcon="save" class="size-4 shrink-0"></svg>
+                    }
 
-                  Lưu nháp
+                    <span>Lưu nháp</span>
+                  </div>
                 </app-button>
               </div>
 
@@ -332,15 +336,17 @@
                   variant="primary"
                   className="w-full"
                   [disabled]="postStore.loading()"
-                  (btnClick)="saveDesign('create', statusOptions.PENDING_APPROVAL)"
+                  (btnClick)="saveDesign('create-pending')"
                 >
-                  @if (submittingMode() === 'create') {
-                    <svg lucideIcon="loader-circle" class="animate-spin size-4"></svg>
-                  } @else {
-                    <svg lucideIcon="send" class="size-4"></svg>
-                  }
+                  <div class="flex items-center justify-center gap-2">
+                    @if (submittingMode() === 'create-pending') {
+                      <svg lucideIcon="loader-circle" class="animate-spin size-4 shrink-0"></svg>
+                    } @else {
+                      <svg lucideIcon="send" class="size-4 shrink-0"></svg>
+                    }
 
-                  Lưu & gửi duyệt
+                    <span>Lưu & gửi duyệt</span>
+                  </div>
                 </app-button>
               </div>
             </div>
@@ -387,7 +393,7 @@
                   } @else {
                     <svg lucideIcon="save" class="size-4" aria-hidden="true"></svg>
                   }
-                  {{ submittingMode() === 'update' ? 'Lưu...' : 'Lưu thay đổi' }}
+                  {{ submittingMode() === 'update' ? 'Đang lưu...' : 'Lưu thay đổi' }}
                 </div>
               </app-button>
             </div>
