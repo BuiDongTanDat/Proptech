@@ -11,6 +11,7 @@ import { LucideDynamicIcon } from '@lucide/angular';
     RouterLink,
     RouterLinkActive,
     Button,
+    LucideDynamicIcon
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',
@@ -22,13 +23,18 @@ export class Header {
 
   navItems = [
     { label: 'Trang chủ', path: '/' },
-    { label: 'Tin bất động sản', path: '/properties' },
+    { label: 'Dự án', path: '/properties' },
+    { label: 'Tin tức', path: '/news' },
+    { label: 'Tuyển dụng', path: '/hiring' },
     { label: 'Về chúng tôi', path: '/about' },
   ]
 
+  // Trạng thái đóng mở menu trên mobile
+  isMobileMenuOpen = false;
   isScrolled: boolean = false;
   hideNavbar = false;
-   private lastScrollTop = 0;
+  private lastScrollTop = 0;
+
 
   // Lắng nghe sự kiện scroll của window
   onWindowScroll(): void {
@@ -47,5 +53,13 @@ export class Header {
     }
 
     this.lastScrollTop = Math.max(currentScroll, 0);
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 }

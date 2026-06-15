@@ -1,16 +1,15 @@
 <nav
   [class.shadow-md]="isScrolled"
-
   [class.-translate-y-full]="hideNavbar"
   class="bg-white fixed top-0 left-0 right-0 z-50 text-primary transition-all duration-300 w-full px-4"
 >
-  <div class="mx-auto px-6">
+  <div class="mx-auto px-4 sm:px-6">
     <div class="flex items-center justify-between h-14">
       <!-- LOGO -->
       <div class="text-xl tracking-wide font-medium">AH.RPM</div>
 
-      <!-- MENU -->
-      <div class="flex items-center gap-8 text-sm">
+      <!-- DESKTOP MENU -->
+      <div class="hidden md:flex items-center gap-8 text-sm">
         @for (item of navItems; track $index) {
           <a
             [routerLink]="item.path"
@@ -26,14 +25,12 @@
           >
             {{ item.label }}
 
-            <!-- HOVER LINE -->
             <span
               class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 w-0 group-hover:w-full"
             ></span>
 
-            <!-- ACTIVE LINE -->
             <span
-              class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
+              class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300"
               [ngClass]="rla.isActive ? 'w-full' : 'w-0'"
             ></span>
           </a>
@@ -41,17 +38,58 @@
       </div>
 
       <!-- RIGHT ACTION -->
-      <div class="flex items-center gap-6">
-        <!-- SEARCH ICON -->
-        <i
-          class="fa-solid fa-magnifying-glass text-lg cursor-pointer hover:text-black transition"
-        ></i>
-
-        <!-- BUTTON -->
-        <app-button startIcon="phone" variant="primary" size="md" className="italic">
+      <div class="flex items-center gap-4">
+        <!-- CONTACT BUTTON -->
+        <app-button 
+        startIcon="phone" 
+        variant="primary" 
+        size="md" 
+        class="italic hidden lg:inline-flex">
           Liên hệ
+        </app-button>
+
+        <!-- MOBILE MENU BUTTON -->
+        <app-button
+          type="button"
+          variant="ghost"
+          size="icon"
+          (click)="toggleMobileMenu()"
+          class="md:hidden flex items-center justify-center"
+          aria-label="Toggle menu"
+        >
+          <svg lucideIcon="list" class="size-6 text-gray-700"></svg>
         </app-button>
       </div>
     </div>
   </div>
+
+  <!-- MOBILE MENU -->
+  @if (isMobileMenuOpen) {
+    <div class="slide-down md:hidden border-t border-gray-100 bg-white px-6 py-4">
+      <div class="flex flex-col gap-3">
+        @for (item of navItems; track $index) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="text-primary font-semibold"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="closeMobileMenu()"
+            class="text-sm  py-2 text-gray-500 hover:text-primary transition"
+          >
+            {{ item.label }}
+          </a>
+        }
+
+        <div class="pt-3 border-t border-gray-100">
+          <app-button
+            startIcon="phone"
+            variant="primary"
+            size="md"
+            className="w-full justify-center"
+          >
+            Liên hệ
+          </app-button>
+        </div>
+      </div>
+    </div>
+  }
 </nav>

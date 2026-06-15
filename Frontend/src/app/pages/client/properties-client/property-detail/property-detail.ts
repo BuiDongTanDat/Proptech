@@ -4,12 +4,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LucideDynamicIcon } from '@lucide/angular';
 import { Subscription, finalize } from 'rxjs';
-import { IPost } from '../../../core/models/model';
-import { PostStore, REAL_ESTATE_POST_ID } from '../../../core/stores/post.store';
-import { PostService } from '../../../core/services/post.service';
-import { ContactsStore } from '../../../core/stores/contacts.store';
-import { ToastService } from '../../../core/services/toast.service';
-import { SanitizeHtmlPipe } from '../../../core/pipes/sanitize-html.pipe';
+import { IPost } from '../../../../core/models/model';
+import { PostStore, REAL_ESTATE_POST_ID } from '../../../../core/stores/post.store';
+import { PostService } from '../../../../core/services/post.service';
+import { ContactsStore } from '../../../../core/stores/contacts.store';
+import { ToastService } from '../../../../core/services/toast.service';
+import { SanitizeHtmlPipe } from '../../../../core/pipes/sanitize-html.pipe';
 
 @Component({
   selector: 'app-property-detail',

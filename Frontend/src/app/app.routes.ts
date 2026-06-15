@@ -25,12 +25,32 @@ export const routes: Routes = [
             {
                 path: 'properties',
                 loadComponent: () => import('./pages/client/properties-client/properties-page/properties-page').then(m => m.PropertiesPage),
-                title: 'Bất động sản',
+                title: 'Dự án',
             },
             {
                 path: 'properties/:id',
-                loadComponent: () => import('./pages/client/property-detail/property-detail').then(m => m.PropertyDetail),
-                title: 'Chi tiết bất động sản',
+                loadComponent: () => import('./pages/client/properties-client/property-detail/property-detail').then(m => m.PropertyDetail),
+                title: 'Chi tiết dự án',
+            },
+            {
+                path: 'news',
+                loadComponent: () => import('./pages/client/news-page/news-list-page/news-list-page').then(m => m.NewsListPage),
+                title: 'Tin tức',
+            },
+            {
+                path: 'news/:id',
+                loadComponent: () => import('./pages/client/news-page/new-detail/new-detail').then(m => m.NewDetail),
+                title: 'Chi tiết tin tức',
+            },
+            {
+                path: 'hiring',
+                loadComponent: () => import('./pages/client/hiring-page/hiring-list-page/hiring-list-page').then(m => m.HiringListPage),
+                title: 'Tuyển dụng',
+            },
+            {
+                path: 'hiring/:id',
+                loadComponent: () => import('./pages/client/hiring-page/hiring-detail/hiring-detail').then(m => m.HiringDetail),
+                title: 'Chi tiết tuyển dụng',
             },
             {
                 path: 'about',

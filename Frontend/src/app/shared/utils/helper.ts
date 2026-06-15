@@ -59,215 +59,138 @@ export function getAccountStatusBgClass(status: AccountStatus): string {
 }
 
 
-export const contactFormTemplate =
-    `
-      <div
+export const contactFormTemplate = `
+<div
   style="
-    width: 100%;
-    background: linear-gradient(135deg, #162b52 0%, #1f3c73 100%);
-    padding: 48px 24px;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    width:100%;
+    padding:24px 16px;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+    background:transparent;
   "
 >
   <div
     style="
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 48px;
-      flex-wrap: wrap;
+      max-width:1200px;
+      margin:0 auto;
     "
   >
-    <!-- LEFT CONTENT -->
-    <div style="flex: 1; min-width: 280px">
-      <div
-        style="
-          display: inline-block;
-          padding: 6px 12px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          color: #ffffff;
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.5px;
-          font-family: Arial, Helvetica, sans-serif;
-        "
-      >
-        NHẬN THÔNG TIN DỰ ÁN
-      </div>
-
-      <h2
-        style="
-          margin: 16px 0 10px;
-          color: #ffffff;
-          font-size: 30px;
-          line-height: 1.25;
-          font-weight: 700;
-          font-family: Arial, Helvetica, sans-serif;
-        "
-      >
-        Đăng ký nhận tư vấn bất động sản
-      </h2>
-
-      <p
-        style="
-          margin: 0;
-          max-width: 520px;
-          color: rgba(255, 255, 255, 0.85);
-          font-size: 13px;
-          line-height: 1.8;
-          font-family: Arial, Helvetica, sans-serif;
-        "
-      >
-        Cập nhật bảng giá, chính sách ưu đãi và những dự án mới nhất.
-        Đội ngũ chuyên viên của chúng tôi sẽ liên hệ hỗ trợ trong thời gian sớm nhất.
-      </p>
-    </div>
-
-    <!-- FORM CARD -->
     <div
       style="
-        width: 420px;
-        max-width: 100%;
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 24px;
-        box-sizing: border-box;
-        box-shadow:
-          0 10px 20px rgba(0, 0, 0, 0.05),
-          0 20px 40px rgba(0, 0, 0, 0.08);
+        text-align:center;
+        margin-bottom:20px;
       "
     >
-      <div style="margin-bottom: 20px">
-        <h3
-          style="
-            margin: 0;
-            color: #111827;
-            font-size: 18px;
-            font-weight: 700;
-            font-family: Arial, Helvetica, sans-serif;
-          "
-        >
-          Đăng ký ngay
-        </h3>
-
-        <p
-          style="
-            margin: 6px 0 0;
-            color: #6b7280;
-            font-size: 12px;
-            line-height: 1.6;
-            font-family: Arial, Helvetica, sans-serif;
-          "
-        >
-          Điền thông tin để được tư vấn miễn phí.
-        </p>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 12px">
-        <!-- NAME -->
-        <input
-          type="text"
-          placeholder="Họ và tên"
-          style="
-            width: 100%;
-            height: 44px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 0 14px;
-            font-size: 12px;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #111827;
-            background: #fafafa;
-            box-sizing: border-box;
-            outline: none;
-          "
-        />
-
-        <!-- PHONE -->
-        <input
-          type="tel"
-          placeholder="Số điện thoại"
-          style="
-            width: 100%;
-            height: 44px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 0 14px;
-            font-size: 12px;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #111827;
-            background: #fafafa;
-            box-sizing: border-box;
-            outline: none;
-          "
-        />
-
-        <!-- MESSAGE -->
-        <textarea
-          placeholder="Nội dung cần tư vấn..."
-          style="
-            width: 100%;
-            height: 120px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-size: 12px;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #111827;
-            background: #fafafa;
-            resize: none;
-            line-height: 1.6;
-            box-sizing: border-box;
-            outline: none;
-          "
-        ></textarea>
-
-        <!-- BUTTON -->
-        <button
-          type="button"
-          data-action="emit-contact-form"
-          style="
-            width: 100%;
-            height: 46px;
-            border: none;
-            border-radius: 10px;
-            background: #ff6b00;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
-            font-family: Arial, Helvetica, sans-serif;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.25);
-          "
-        >
-          ĐĂNG KÝ NHẬN THÔNG TIN
-        </button>
-      </div>
-
-      <p
+      <div
         style="
-          margin: 14px 0 0;
-          text-align: center;
-          color: #9ca3af;
-          font-size: 11px;
-          line-height: 1.5;
-          font-family: Arial, Helvetica, sans-serif;
+          color:#162b52;
+          font-size:28px;
+          font-weight:700;
+          font-style:italic;
+          line-height:1.4;
         "
       >
-        Chúng tôi cam kết bảo mật thông tin khách hàng.
-      </p>
+        *Đăng ký nhận trọn bộ thông tin dự án, hỗ trợ tham quan thực tế và tư vấn trực tiếp
+      </div>
+
+      <div
+        style="
+          margin-top:6px;
+          color:#162b52;
+          font-size:14px;
+          font-style:italic;
+          opacity:0.8;
+        "
+      >
+        Cập nhật bảng giá, chính sách bán hàng và ưu đãi mới nhất
+      </div>
+    </div>
+
+    <div
+      style="
+        display:flex;
+        gap:18px;
+        flex-wrap:wrap;
+        align-items:center;
+      "
+    >
+      <!-- HỌ TÊN -->
+      <input
+        type="text"
+        placeholder="Họ tên (*)"
+        style="
+          flex:1;
+          min-width:220px;
+          height:40px;
+          border:none;
+          padding:0 14px;
+          box-sizing:border-box;
+          background:#ffffff;
+          color:#111827;
+          font-size:14px;
+          outline:none;
+        "
+      />
+
+      <!-- SỐ ĐIỆN THOẠI -->
+      <input
+        type="tel"
+        placeholder="Số điện thoại (*)"
+        style="
+          flex:1;
+          min-width:220px;
+          height:40px;
+          border:none;
+          padding:0 14px;
+          box-sizing:border-box;
+          background:#ffffff;
+          color:#111827;
+          font-size:14px;
+          outline:none;
+        "
+      />
+
+      <!-- EMAIL -->
+      <input
+        type="email"
+        placeholder="Email"
+        style="
+          flex:1;
+          min-width:220px;
+          height:40px;
+          border:none;
+          padding:0 14px;
+          box-sizing:border-box;
+          background:#ffffff;
+          color:#111827;
+          font-size:14px;
+          outline:none;
+        "
+      />
+
+      <!-- BUTTON -->
+      <button
+        type="button"
+        data-action="emit-contact-form"
+        style="
+          min-width:240px;
+          height:40px;
+          border:none;
+          padding:0 24px;
+          background:#162b52;
+          color:#ffffff;
+          font-size:14px;
+          font-weight:700;
+          cursor:pointer;
+          white-space:nowrap;
+        "
+      >
+        ĐĂNG KÝ TƯ VẤN
+      </button>
     </div>
   </div>
 </div>
-    `.trim();
-
-
+`.trim();
 export const contactFormTemplateDesign = {
     counters: {
         u_row: 1,
