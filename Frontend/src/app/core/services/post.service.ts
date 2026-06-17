@@ -33,11 +33,12 @@ export class PostService {
 
   // Nếu ko có categoryId thì trả về tất cả bài đăng, có categoryId thì trả về bài đăng theo danh mục đó
   getAllPosts(
+    type: string,
     page: number = 1,
     category?: string,
     status?: string
   ) {
-    let url = `${this.postEndpoint}?page=${page}`;
+    let url = `${this.postEndpoint}/${type}?page=${page}`;
     if (category) {
       url += `&category=${category}`;
     }
@@ -47,23 +48,25 @@ export class PostService {
     return this.http.get<PaginatedPostResponse>(url);
   }
 
-  getPostById(id: string) {
-    return this.http.get<ApiResponse<IPost>>(`${this.postEndpoint}/${id}`);
+  getPostById(type: string, id: string) {
+    return this.http.get<ApiResponse<IPost>>(`${this.postEndpoint}/${type}/${id}`);
   }
 
-  createPost(postData: FormData) {
-    return this.http.post<ApiResponse<IPost>>(`${this.postEndpoint}`,
+  createPost(type: string, postData: FormData) {
+    return this.http.post<ApiResponse<IPost>>(
+      `${this.postEndpoint}/${type}`,
       postData,
     );
   }
 
-  updatePost(id: string, postData: FormData) {
-    return this.http.patch<ApiResponse<IPost>>(`${this.postEndpoint}/${id}`,
+  updatePost(type: string, id: string, postData: FormData) {
+    return this.http.patch<ApiResponse<IPost>>(`${this.postEndpoint}/${type}/${id}`,
       postData,
     );
   }
 
   updatePostStatus(
+    type: string,
     id: string,
     payload: {
       status: PropertyStatus;
@@ -71,18 +74,42 @@ export class PostService {
     }
   ) {
     return this.http.patch<ApiResponse<IPost>>(
-      `${this.postEndpoint}/${id}`,
+      `${this.postEndpoint}/${type}/${id}`,
       payload
     );
   }
 
-  // Seach with elasticsearch 
+  // Tìm bài đăng nội bộ (dành cho admin)
   searchPosts(
+    type: string,
     page: number,
     keyword: string,
   ) {
-    const url = `${this.postEndpoint}/search?page=${page}&keyword=${encodeURIComponent(keyword)}`;
+    const url = `${this.postEndpoint}/${type}/search?page=${page}&keyword=${encodeURIComponent(keyword)}`;
     return this.http.get<PaginatedPostResponse>(url);
-  
+
+  }
+
+  // Tìm bài đăng công khai (client)
+  searchPublicPosts(
+    type: string,
+    page: number,
+    keyword: string,
+  ) {
+    const url = `${this.postEndpoint}/${type}/public/search?page=${page}&keyword=${encodeURIComponent(keyword)}`;
+    return this.http.get<PaginatedPostResponse>(url);
+  }
+
+  // Lấy toàn bộ bài đăng công khai (client)
+  getAllPublicPosts(
+    type: string,
+    page: number = 1,
+  ) {
+    return this.http.get<PaginatedPostResponse>(`${this.postEndpoint}/${type}/public?page=${page}`);
+  }
+
+  // Lấy bài đăng công khai theo ID (client)
+  getPublicPostById(type: string, id: string) {
+    return this.http.get<ApiResponse<IPost>>(`${this.postEndpoint}/${type}/public/${id}`);
   }
 }

@@ -16,7 +16,7 @@
       [loading]="loading()"
       [keyword]="store.searchQuery()"
       (keywordChange)="store.setSearch($event)"
-      (search)="onSearch()"
+      (search)="store.searchPublic()"
     >
     </app-properties-list>
 

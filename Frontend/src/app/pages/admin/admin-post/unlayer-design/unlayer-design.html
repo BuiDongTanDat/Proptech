@@ -4,10 +4,10 @@
     <app-button
       size="icon"
       variant="outline"
-      class="fixed top-3 left-4 z-50 shadow-md rounded-full bg-white border-gray-200"
+      class="fixed top-3 left-4 z-50  rounded-full bg-white border-gray-200"
       (btnClick)="toggleLeftPanel()"
     >
-      <svg lucideIcon="maximize" size="18" aria-hidden="true"></svg>
+      <svg lucideIcon="chevron-right" size="18" aria-hidden="true"></svg>
     </app-button>
   }
 
@@ -28,13 +28,13 @@
     <app-button
       size="icon"
       variant="outline"
-      class="absolute top-4 right-4 z-20 rounded-full bg-white border-gray-200 shadow-sm transition-all duration-300"
+      class="absolute top-4 right-4 z-20 rounded-full bg-white border-gray-200  transition-all duration-300"
       [class.opacity-100]="leftPanelOpen()"
       [class.opacity-0]="!leftPanelOpen()"
       [class.pointer-events-none]="!leftPanelOpen()"
       (btnClick)="toggleLeftPanel()"
     >
-      <svg lucideIcon="minimize" size="16" aria-hidden="true"></svg>
+      <svg lucideIcon="x" size="16" aria-hidden="true"></svg>
     </app-button>
 
     <!-- Sidebar Wrapper -->
@@ -44,7 +44,7 @@
       [class.opacity-0]="!leftPanelOpen()"
       [class.pointer-events-none]="!leftPanelOpen()"
     >
-      <!-- Header -->
+      <!-- Header linh hoạt theo loại bài đăng -->
       <div
         class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 shrink-0 bg-gray-50/50"
       >
@@ -54,10 +54,14 @@
 
         <div>
           @if (isEditMode()) {
-            <h2 class="text-sm font-semibold text-gray-800">Chỉnh sửa bài đăng</h2>
+            <h2 class="text-sm font-semibold text-gray-800">
+              Chỉnh sửa {{ currentConfig().label.toLowerCase() }}
+            </h2>
             <p class="text-[11px] text-gray-400 mt-0.5">Cập nhật thông tin và thiết kế</p>
           } @else {
-            <h2 class="text-sm font-semibold text-gray-800">Tạo bài đăng mới</h2>
+            <h2 class="text-sm font-semibold text-gray-800">
+              Tạo {{ currentConfig().label.toLowerCase() }} mới
+            </h2>
             <p class="text-[11px] text-gray-400 mt-0.5">Nhập thông tin và thiết kế</p>
           }
         </div>
@@ -75,9 +79,9 @@
             >
             <span
               class="inline-flex px-2.5 py-1 rounded-md text-xs font-semibold"
-              [class]="getStatusClass(f.status.value)"
+              [class]="getStatusClass(postForm.controls['status'].value)"
             >
-              {{ f.status.value || 'Bản nháp' }}
+              {{ postForm.controls['status'].value || 'Bản nháp' }}
             </span>
           </div>
 
@@ -98,127 +102,102 @@
             </div>
           }
 
-          <!-- Danh mục tuyển chọn -->
-          <div class="bg-primary rounded-md p-3 space-y-1.5">
-            <label class="block text-xs font-semibold text-white uppercase tracking-wider"
-              >Danh mục</label
-            >
-            <app-dropdown
-              formControlName="category"
-              [options]="categories().map((c) => ({ label: c.name, value: c._id! }))"
-              className="w-full text-sm font-medium border-gray-200"
-              [disabled]="isEditMode() && postStore.loading()"
-              placeholder="Chọn danh mục bài đăng"
-            ></app-dropdown>
-            @if (submitted() && f['category'].errors?.['required']) {
-              <p class="text-[11px] text-red-500 font-semibold">* Vui lòng chọn danh mục</p>
-            }
-          </div>
+          <!-- VÒNG LẶP RENDER CÁC TRƯỜNG NHẬP DỮ LIỆU ĐỘNG -->
+          @for (field of resolvedFormFields(); track field.key) {
+            <div class="space-y-1">
+              <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ field.label }}
+              </label>
 
-          <!-- Tiêu đề -->
-          <div class="space-y-1">
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
-              >Tiêu đề bài viết</label
-            >
-            <app-custom-textarea
-              formControlName="title"
-              placeholder="Nhập tiêu đề bài đăng..."
-              variant="outline"
-              [rows]="3"
-              
-              [disabled]="postStore.loading()"
-            ></app-custom-textarea>
-            @if (submitted() && f['title'].errors?.['required']) {
-              <p class="text-[11px] text-red-500 font-semibold">* Tiêu đề không được để trống</p>
-            }
-          </div>
+              @if (field.type === 'input') {
+                <app-custom-input
+                  [formControlName]="field.key"
+                  [placeholder]="field.placeholder || ''"
+                  variant="outline"
+                  className="rounded-md border-gray-200"
+                ></app-custom-input>
+              }
 
-          <!-- Chủ đầu tư -->
-          <div class="space-y-1">
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
-              >Chủ đầu tư</label
-            >
-            <app-custom-input
-              formControlName="developer"
-              placeholder="Nhập tên chủ đầu tư..."
-              variant="outline"
-              className="rounded-md border-gray-200"
-            ></app-custom-input>
-            @if (submitted() && f['developer'].errors?.['required']) {
-              <p class="text-[11px] text-red-500 font-semibold">* Chủ đầu tư không được để trống</p>
-            }
-          </div>
+              @if (field.type === 'date') {
+                <app-custom-input
+                  type="date"
+                  [formControlName]="field.key"
+                  [placeholder]="field.placeholder || ''"
+                  variant="outline"
+                  className="rounded-md border-gray-200"
+                ></app-custom-input>
+              }
 
-          <!-- Vị trí -->
-          <div class="space-y-1">
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
-              >Vị trí địa lý</label
-            >
-            <app-custom-textarea
-              formControlName="location"
-              placeholder="Nhập vị trí dự án (ví dụ: Quận 1, TP.HCM)..."
-              variant="outline"
-              [rows]="2"
-            ></app-custom-textarea>
-            @if (submitted() && f['location'].errors?.['required']) {
-              <p class="text-[11px] text-red-500 font-semibold">* Vị trí không được để trống</p>
-            }
-          </div>
+              @if (field.type === 'textarea') {
+                <app-custom-textarea
+                  [formControlName]="field.key"
+                  [placeholder]="field.placeholder || ''"
+                  variant="outline"
+                  [rows]="field.key === 'title' ? 3 : 2"
+                ></app-custom-textarea>
+              }
 
-          <!-- Khu vực miền -->
-          <div class="space-y-1">
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
-              >Khu vực vùng miền</label
-            >
-            <app-dropdown
-              formControlName="region"
-              [options]="regionOptions"
-              className="w-full rounded-md border-gray-200"
-            ></app-dropdown>
-          </div>
+              @if (field.type === 'dropdown') {
+                <app-dropdown
+                  [formControlName]="field.key"
+                  [options]="field.options || []"
+                  className="w-full rounded-md border-gray-200"
+                  [placeholder]="field.placeholder || 'Chọn...'"
+                ></app-dropdown>
+              }
 
-          <!-- Ảnh bìa -->
-          <div class="space-y-2">
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
-              >Ảnh bìa đại diện</label
-            >
-
-            <div
-              class="border-2 border-dashed border-gray-200 rounded-md cursor-pointer hover:border-amber-600 hover:bg-amber-50/10 transition-all duration-300 overflow-hidden p-2"
-              (click)="coverInput.click()"
-              (dragover)="$event.preventDefault()"
-              (drop)="onCoverFileDrop($event)"
-            >
-              @if (coverPreviewUrl()) {
-                <img
-                  [src]="coverPreviewUrl()!"
-                  width="400"
-                  height="300"
-                  class="w-full h-44 object-cover rounded-lg shadow-xs"
-                  alt="Ảnh bìa bài đăng"
-                />
-              } @else {
-                <div class="h-40 flex flex-col items-center justify-center text-center space-y-2">
-                  <svg lucideIcon="image-plus" class="size-6 text-gray-300"></svg>
-                  <p class="text-xs text-gray-500">Tải tệp ảnh hoặc Kéo thả ảnh vào đây</p>
-                </div>
+              @if (submitted() && getControl(field.key).errors?.['required']) {
+                <p class="text-[11px] text-red-500 font-semibold">
+                  * {{ field.label }} không được để trống
+                </p>
               }
             </div>
-            <input
-              #coverInput
-              type="file"
-              accept="image/*"
-              class="hidden"
-              (change)="onCoverFileSelected($event)"
-              [disabled]="!editorReady() || postStore.loading()"
-            />
-          </div>
+          }
+
+          <!-- VÒNG LẶP RENDER TRƯỜNG HÌNH ẢNH BIỂU DIỄN ĐỘNG -->
+          @for (imgField of imageFields(); track imgField.key) {
+            <div class="space-y-2">
+              <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ imgField.label }}
+              </label>
+
+              <div
+                class="border-2 border-dashed border-gray-200 rounded-md cursor-pointer hover:border-amber-600 hover:bg-amber-50/10 transition-all duration-300 overflow-hidden p-2"
+                (click)="coverInput.click()"
+                (dragover)="$event.preventDefault()"
+                (drop)="onCoverFileDrop($event)"
+              >
+                @if (coverPreviewUrl()) {
+                  <img
+                    [src]="coverPreviewUrl()!"
+                    width="400"
+                    height="300"
+                    class="w-full h-44 object-cover rounded-lg shadow-xs"
+                    alt="Ảnh bìa bài đăng"
+                  />
+                } @else {
+                  <div class="h-40 flex flex-col items-center justify-center text-center space-y-2">
+                    <svg lucideIcon="image-plus" class="size-6 text-gray-300"></svg>
+                    <p class="text-xs text-gray-500">Tải tệp ảnh hoặc Kéo thả ảnh vào đây</p>
+                  </div>
+                }
+              </div>
+
+              <input
+                #coverInput
+                type="file"
+                accept="image/*"
+                class="hidden"
+                (change)="onCoverFileSelected($event)"
+                [disabled]="!editorReady() || postStore.loading()"
+              />
+            </div>
+          }
         </div>
       </form>
 
       <!-- FOOTER ACTIONS -->
       <div class="p-4 border-t border-gray-100 bg-gray-50 shrink-0 space-y-3">
-        <!-- Luồng gửi và xử lý duyệt trạng thái -->
         @if (postStore.selectedPost()?.status === 'Bản nháp') {
           <div class="w-full">
             <app-button
@@ -265,7 +244,6 @@
             </div>
           </div>
         } @else if (postStore.selectedPost()?.status === 'Xuất bản' && authStore.isManager()) {
-          <!-- Trạng thái ĐÃ XUẤT BẢN: Cho phép chuyển về Riêng tư -->
           <div class="w-full flex flex-col gap-2 bg-white p-3 rounded-md border border-gray-100">
             <div class="text-xs items-center justify-start inline-flex text-gray-500">
               <svg
@@ -286,7 +264,6 @@
             </app-button>
           </div>
         } @else if (postStore.selectedPost()?.status === 'Riêng tư' && authStore.isManager()) {
-          <!-- Trạng thái RIÊNG TƯ: Cho phép xuất bản trực tiếp trở lại -->
           <div class="w-full flex flex-col gap-2 bg-white p-3 rounded-md border border-gray-100">
             <div class="text-xs items-center justify-start inline-flex text-gray-500">
               <svg
@@ -325,7 +302,6 @@
                     } @else {
                       <svg lucideIcon="save" class="size-4 shrink-0"></svg>
                     }
-
                     <span>Lưu nháp</span>
                   </div>
                 </app-button>
@@ -344,7 +320,6 @@
                     } @else {
                       <svg lucideIcon="send" class="size-4 shrink-0"></svg>
                     }
-
                     <span>Lưu & gửi duyệt</span>
                   </div>
                 </app-button>
@@ -354,28 +329,6 @@
 
           <!-- EDIT MODE -->
           @if (isEditMode()) {
-            <!-- <div class="flex-1">
-              <app-button
-                variant="outline"
-                className="w-full py-2.5 rounded-md border-gray-200 hover:bg-gray-100"
-                [disabled]="postStore.loading()"
-                (btnClick)="saveDesign('draft')"
-              >
-                <div class="flex items-center justify-center gap-1.5">
-                  @if (submittingMode() === 'draft') {
-                    <svg
-                      lucideIcon="loader-circle"
-                      class="animate-spin size-4"
-                      aria-hidden="true"
-                    ></svg>
-                  } @else {
-                    <svg lucideIcon="save" class="size-4" aria-hidden="true"></svg>
-                  }
-                  {{ submittingMode() === 'draft' ? 'Lưu...' : 'Lưu nháp' }}
-                </div>
-              </app-button>
-            </div> -->
-
             <div class="flex-1">
               <app-button
                 variant="primary"
@@ -405,15 +358,16 @@
 
   <!-- MAIN CANVAS -->
   <div class="flex-grow flex flex-col overflow-hidden bg-gray-100">
-    <!-- Header của Panel thiết kế (Chứa tính năng nạp/xuất cấu trúc JSON và form liên hệ) -->
+    <!-- Header của Panel thiết kế - Tiêu đề đã được làm linh hoạt theo loại bài viết -->
     <div
       class="h-14 border-b border-gray-200 bg-white px-6 flex items-center justify-between shrink-0"
       [class.pl-16]="!leftPanelOpen()"
     >
-      <span class="text-sm font-semibold text-gray-700">Trình soạn thảo thiết kế</span>
+      <span class="text-sm font-semibold text-gray-700">
+        Trình soạn thảo thiết kế {{ currentConfig().label.toLowerCase() }}
+      </span>
 
       <div class="flex items-center gap-2">
-        <!-- Nút Thêm Form liên hệ -->
         <app-button
           variant="outline"
           className="border-amber-600/30 text-amber-800 hover:bg-amber-50/50 text-xs font-medium py-1.5 px-3 rounded-lg flex items-center gap-1.5"
@@ -425,7 +379,6 @@
         </app-button>
 
         @if (!isEditMode()) {
-          <!-- Nút Nhập file cấu hình JSON -->
           <label
             class="h-8 flex items-center gap-1.5 px-3 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 cursor-pointer transition text-xs font-medium text-gray-700"
           >
@@ -440,7 +393,6 @@
             />
           </label>
 
-          <!-- Nút Xuất file cấu hình JSON -->
           <app-button
             variant="outline"
             className="text-xs font-medium py-1.5 px-3 rounded-lg border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-1.5"

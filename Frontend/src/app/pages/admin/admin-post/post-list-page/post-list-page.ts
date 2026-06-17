@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit, ChangeDetectionStrategy, inject, signal, effect } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal, effect, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { Button } from '../../../../shared/components/ui/button/button';
@@ -50,6 +50,15 @@ export class PostListPage implements OnInit {
   formMode = signal<'view' | 'edit' | 'add'>('view');
   selectedPost = signal<IPost | null>(null);
 
+  // Tab hiện hành
+  activeTab = signal<'project' | 'news' | 'recruitment'>('project');
+  tabs: { label: string; value: 'news' | 'project' | 'recruitment' }[] = [
+    { label: 'Dự án', value: 'project' },
+    { label: 'Tin tức', value: 'news' },
+    { label: 'Tuyển dụng', value: 'recruitment' }
+  ];
+
+
   sortOptions = DATE_SORT_OPTIONS;
 
   statusSortOptions = PROPERTY_STATUS_SORT_OPTIONS;
@@ -58,13 +67,25 @@ export class PostListPage implements OnInit {
     label: option.value === 'all' ? 'Tất cả' : option.label
   }));
   categoryOptions = signal<{ label: string; value: string }[]>([]);
-  showCategoryDropdown = signal(false);
+
+  // Chỉ hiển thị bộ lọc danh mục khi tab hiện tại là 'Dự án' (project)
+  readonly showCategoryDropdown = computed(() => {
+    return this.activeTab() === 'project' && this.categoryStore.categories().length > 0;
+  });
+
+  // Tự động lọc danh sách tin hiển thị theo tab đang hoạt động
+  readonly displayedPosts = computed(() => {
+    const posts = this.store.filteredPosts();
+    const tab = this.activeTab();
+    return posts.filter(p => {
+      const postType = (p as any).type || 'project';
+      return postType === tab;
+    });
+  });
 
   constructor() {
     effect(() => {
       const categories = this.categoryStore.categories();
-      this.showCategoryDropdown.set(categories.length > 0);
-
       this.categoryOptions.set([
         { label: 'Tất cả danh mục', value: 'all' },
         ...categories.map(c => ({
@@ -111,6 +132,13 @@ export class PostListPage implements OnInit {
     this.store.setPage(page);
   }
 
+  onTabChange(tab: 'project' | 'news' | 'recruitment') {
+    this.activeTab.set(tab);
+    // Cập nhật type trong Store để loadPosts gọi đúng API theo type
+    this.store.currentType.set(tab === 'project' ? 'properties' : tab);
+    this.store.loadPosts(); // call API lại
+  }
+
   onExport() {
     alert('Export file!');
   }
@@ -119,25 +147,19 @@ export class PostListPage implements OnInit {
     this.isListView.set(isList);
   }
 
-  //UI
-  onAdd() {
-    this.router.navigate(['../post/add'], {
-      relativeTo: this.route
-    });
+  // Sửa lỗi điều hướng sử dụng đường dẫn tuyệt đối
+  onAdd(type: 'news' | 'project' | 'recruitment') {
+    this.router.navigate(['/admin/post', type, 'add']);
   }
 
   onEdit(post: IPost) {
-    this.router.navigate([
-      'admin/post/editor',
-      post._id
-    ]);
+    const type = (post as any).type || this.route.snapshot.paramMap.get('type') || 'project';
+    this.router.navigate(['/admin/post', type, 'editor', post._id]);
   }
 
   onView(post: IPost) {
-    this.router.navigate([
-      'admin/post/view',
-      post._id
-    ]);
+    const type = (post as any).type || this.route.snapshot.paramMap.get('type') || 'project';
+    this.router.navigate(['/admin/post', type, 'view', post._id]);
   }
 
   onDelete(post: IPost) {

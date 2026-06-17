@@ -43,13 +43,13 @@ export const routes: Routes = [
                 title: 'Chi tiết tin tức',
             },
             {
-                path: 'hiring',
-                loadComponent: () => import('./pages/client/hiring-page/hiring-list-page/hiring-list-page').then(m => m.HiringListPage),
+                path: 'recruitments',
+                loadComponent: () => import('./pages/client/recruitment-page/recruitment-list-page/recruitment-list-page').then(m => m.recruitmentsListPage),
                 title: 'Tuyển dụng',
             },
             {
-                path: 'hiring/:id',
-                loadComponent: () => import('./pages/client/hiring-page/hiring-detail/hiring-detail').then(m => m.HiringDetail),
+                path: 'recruitments/:id',
+                loadComponent: () => import('./pages/client/recruitment-page/recruitment-detail/recruitment-detail').then(m => m.recruitmentsDetail),
                 title: 'Chi tiết tuyển dụng',
             },
             {
@@ -160,20 +160,19 @@ export const routes: Routes = [
 
     // Admin Post Add page (Không lồng bên trong AdminLayout)
     {
-
-        path: 'admin/post/add',
+        path: 'admin/post/:type/add',
         component: UnlayerDesign,
-        title: 'Thêm tin bất động sản',
-
-    },
-    {
-        path: 'admin/post/view/:id',
-        component: PostReview
+        title: 'Thêm bài viết',
     },
 
     {
-        path: 'admin/post/editor/:id',
-        component: UnlayerDesign
+        path: 'admin/post/:type/view/:id',
+        component: PostReview,
+    },
+
+    {
+        path: 'admin/post/:type/editor/:id',
+        component: UnlayerDesign,
     },
     // Error pages 
     {

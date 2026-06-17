@@ -54,7 +54,7 @@ export class PropertyDetail implements OnInit, OnDestroy {
       const id = params.get('id');
       if (id) {
         window.scrollTo(0, 0);
-        this.store.loadPostById(id);
+        this.store.loadPublicPostById(id);
         this.loadSuggestedPosts(id);
       }
     });
@@ -72,7 +72,7 @@ export class PropertyDetail implements OnInit, OnDestroy {
 
   protected loadSuggestedPosts(currentId: string): void {
     this.suggestedLoading.set(true);
-    this.postService.getAllPosts(1, REAL_ESTATE_POST_ID)
+    this.postService.getAllPublicPosts(this.store.currentType())
       .pipe(finalize(() => this.suggestedLoading.set(false)))
       .subscribe({
         next: res => {

@@ -31,170 +31,110 @@
       <svg lucideIcon="x" class="size-4"></svg>
     </app-button>
 
-    <!-- HEADER -->
+    <!-- HEADER (Cố định phía trên) -->
     <div class="flex items-center gap-2 px-5 py-4 border-b border-gray-100 shrink-0 bg-gray-50/50">
       <app-button size="icon" variant="outline" (btnClick)="goBack()">
         <svg lucideIcon="arrow-left" class="size-4"></svg>
       </app-button>
 
       <div>
-        <h2 class="text-xs font-bold text-primary">Thông tin bài đăng</h2>
+        <h2 class="text-xs font-bold text-primary">
+          Thông tin {{ currentConfig().label.toLowerCase() }}
+        </h2>
         <p class="text-xs text-gray-400 mt-0.5">Chi tiết thuộc tính</p>
       </div>
     </div>
 
-    <!-- BODY -->
-    <div class="flex-1 overflow-y-auto px-5 py-4 space-y-4 text-xs">
-      @if (store.loading()) {
-        <div class="flex justify-center py-10">
-          <svg lucideIcon="loader-circle" class="size-6 animate-spin text-primary"></svg>
-        </div>
-
-      } @else if (store.selectedPost(); as post) {
+    <!-- NỘI DUNG LOGIC -->
+    @if (store.loading()) {
+      <div class="flex-1 flex items-center justify-center py-10">
+        <svg lucideIcon="loader-circle" class="size-6 animate-spin text-primary"></svg>
+      </div>
+    } @else if (store.selectedPost(); as post) {
+      
+      <!-- BODY (Phần cuộn nội dung) -->
+      <div class="flex-1 overflow-y-auto px-5 py-4 space-y-4 text-xs">
         <!-- STATUS -->
-        <div
-          class="flex items-center justify-between bg-primary p-3 rounded-md border border-gray-100"
-        >
-          <span class="text-xs font-semibold text-white uppercase tracking-wider">
-            Trạng thái
-          </span>
-
-          <span
-            class="inline-flex px-2 py-0.5 rounded text-xs font-semibold"
-            [class]="getStatusClass(post.status)"
-          >
+        <div class="flex items-center justify-between bg-primary p-3 rounded-md border border-gray-100">
+          <span class="text-xs font-semibold text-white uppercase tracking-wider">Trạng thái</span>
+          <span class="inline-flex px-2 py-0.5 rounded text-xs font-semibold" [class]="getStatusClass(post.status)">
             {{ post.status || '' }}
           </span>
         </div>
 
-        <!-- Tác giả -->
+        <!-- TÁC GIẢ -->
         <div class="bg-gray-50 border border-gray-200 rounded-md p-3 space-y-1">
           <div class="flex items-center gap-2 text-sm font-medium text-gray-800">
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider"
-              >TÁC GIẢ</label
-            >
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">TÁC GIẢ</label>
             {{ post.author?.name || '' }}
           </div>
-
           <div class="flex items-center gap-2 text-xs text-gray-500">
             <svg lucideIcon="calendar" class="size-3.5"></svg>
             {{ post?.createdAt | date: 'dd/MM/yyyy HH:mm' }}
           </div>
         </div>
 
-        <!-- CATEGORY -->
-        <div class="bg-primary rounded-lg p-2 border border-primary">
-          <label class="block text-xs font-semibold text-white uppercase tracking-wider mb-2">
-            Danh mục
-          </label>
-          <div
-            class="w-full rounded-md border-2 border-primary bg-white px-3 py-2 text-xs font-semibold text-primary truncate"
-          >
-            {{ post.category?.name || '' }}
-          </div>
-        </div>
-
-        <!-- TITLE -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            Tiêu đề
-          </label>
-          <div
-            class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 leading-relaxed"
-          >
-            {{ post.title || '' }}
-          </div>
-        </div>
-
-        <!-- DEVELOPER -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            Chủ đầu tư
-          </label>
-          <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700">
-            {{ post.developer || '' }}
-          </div>
-        </div>
-
-        <!-- LOCATION -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            Vị trí
-          </label>
-          <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700">
-            {{ post.location || '' }}
-          </div>
-        </div>
-
-        <!-- REGION -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            Khu vực
-          </label>
-          <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700">
-            {{ post.region || '' }}
-          </div>
-        </div>
-
-        <!-- COVER -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-            Ảnh bìa
-          </label>
-
-          <div class="border border-gray-200 rounded-md overflow-hidden bg-white p-2">
-            @if (post.cover_picture.url) {
-              <img
-                [src]="post.cover_picture.url"
-                class="w-full h-44 object-cover rounded-md"
-                alt="Cover"
-              />
+        <!-- HIỂN THỊ CÁC TRƯỜNG THÔNG TIN ĐỘNG -->
+        @for (field of previewFields(); track field.key) {
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              {{ field.label }}
+            </label>
+            
+            @if (field.type === 'image') {
+              <div class="border border-gray-200 rounded-md overflow-hidden bg-white p-2">
+                @if (field.value) {
+                  <img [src]="field.value" class="w-full h-44 object-cover rounded-md" [alt]="field.label" />
+                } @else {
+                  <div class="h-40 flex flex-col items-center justify-center text-center space-y-2 bg-gray-50">
+                    <svg lucideIcon="image" class="size-6 text-gray-300"></svg>
+                    <p class="text-[10px] text-gray-400">Không có {{ field.label.toLowerCase() }}</p>
+                  </div>
+                }
+              </div>
             } @else {
-              <div class="h-40 flex flex-col items-center justify-center text-center space-y-2">
-                <svg lucideIcon="image-off" class="size-6 text-gray-400"></svg>
-                <p class="text-xs text-gray-500">Không có ảnh bìa</p>
+              <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 leading-relaxed">
+                {{ field.type === 'date' ? (field.value | date: 'dd/MM/yyyy') : (field.value || '---') }}
               </div>
             }
           </div>
-        </div>
-      } @else {
-        <p class="text-center text-gray-400 py-10">Không tìm thấy dữ liệu</p>
-      }
-    </div>
+        }
+      </div>
 
-    <!-- FOOTER -->
-    @if (
-      authStore.isManager() ||
-      (store.selectedPost()?.status !== 'Xuất bản' && store.selectedPost()?.status !== 'Riêng tư')
-    ) {
-      <div class="p-4 border-t border-gray-100 bg-gray-50 shrink-0">
-        <app-button
-          variant="primary"
-          className="w-full"
-          (btnClick)="onEdit()"
-          [disabled]="store.loading() || !store.selectedPost()"
-        >
-          <svg lucideIcon="pencil" class="size-4 mr-2"></svg>
-          Chỉnh sửa bài đăng
-        </app-button>
+      <!-- FOOTER (Cố định phía dưới - Nằm cùng khối với 'post') -->
+      @if (authStore.isManager() || (post.status !== 'Xuất bản' && post.status !== 'Riêng tư')) {
+        <div class="p-4 border-t border-gray-100 bg-gray-50 shrink-0">
+          <app-button
+            variant="primary"
+            className="w-full"
+            (btnClick)="onEdit()"
+            [disabled]="store.loading()"
+          >
+            <svg lucideIcon="pencil" class="size-4 mr-2"></svg>
+            Chỉnh sửa bài đăng
+          </app-button>
+        </div>
+      }
+
+    } @else {
+      <!-- TRẠNG THÁI KHÔNG TÌM THẤY DỮ LIỆU -->
+      <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-gray-400">
+        <svg lucideIcon="alert-circle" class="size-10 mb-2 opacity-20"></svg>
+        <p class="text-xs">Không thể tải dữ liệu bài đăng.<br />Vui lòng kiểm tra lại đường dẫn.</p>
+        <app-button variant="outline" size="sm" className="mt-4" (btnClick)="goBack()">Quay lại</app-button>
       </div>
     }
   </aside>
 
-  <!-- PREVIEW -->
+  <!-- PREVIEW (Bên phải) -->
   <main class="flex-1 bg-gray-200 relative">
-    @if (store.loading()) {
-      <div class="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-        <svg lucideIcon="loader-circle" class="size-10 animate-spin text-primary"></svg>
-      </div>
-    }
-
     @if (displayUrl()) {
       <iframe [src]="displayUrl()" class="w-full h-full border-none bg-white"></iframe>
     } @else if (!store.loading()) {
-      <div class="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
-        <svg lucideIcon="inbox" class="size-12 opacity-20"></svg>
-        <p class="text-xs">Nội dung bài đăng trống hoặc không hợp lệ</p>
+      <div class="w-full h-full flex flex-col items-center justify-center text-gray-500 bg-white">
+        <svg lucideIcon="file-text" class="size-12 opacity-10"></svg>
+        <p class="text-xs font-medium opacity-60 mt-2">Nội dung bài viết đang trống</p>
+        
       </div>
     }
   </main>

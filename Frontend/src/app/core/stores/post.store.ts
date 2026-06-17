@@ -14,7 +14,11 @@ export class PostStore {
     private toastService = inject(ToastService);
     private categoryService = inject(CategoryService);
 
+
     // State
+    // Mặc định là 'properties' (Dự án)
+    readonly currentType = signal<string>('properties');
+
     private _posts = signal<IPost[]>([]);
 
     private _statusStatics = signal<{ [key: string]: number }>({});
@@ -87,10 +91,9 @@ export class PostStore {
     }
     );
 
-
     loadAllRealEstatePosts() {
         this.loading.set(true);
-        this.postService.getAllPosts(1, REAL_ESTATE_POST_ID).pipe(
+        this.postService.getAllPublicPosts(this.currentType()).pipe(
             finalize(() => this.loading.set(false))
         ).subscribe({
             next: res => {
@@ -99,15 +102,24 @@ export class PostStore {
         });
     }
 
+
+
+    // Hàm quan trọng nhất: Thiết lập loại bài đăng và tải lại toàn bộ
+    setType(type: string) {
+        this.currentType.set(type);
+        this.currentPage.set(1);
+        this.searchQuery.set('');
+        this.selectedStatus.set('all');
+        this.loadPosts();
+    }
+
     loadPosts() {
         this.loading.set(true);
-        const page = this.currentPage();
-        const category = this.selectedCategory();
-        const status = this.selectedStatus();
         this.postService.getAllPosts(
-            page,
-            category !== 'all' ? category : undefined,
-            status !== 'all' ? status : undefined)
+            this.currentType(),
+            this.currentPage(),
+            this.selectedCategory() !== 'all' ? this.selectedCategory() : undefined,
+            this.selectedStatus() !== 'all' ? this.selectedStatus() : undefined)
             .pipe(finalize(() => this.loading.set(false)))
             .subscribe({
                 next: res => {
@@ -136,36 +148,24 @@ export class PostStore {
             });
     }
 
-    // Dùng tạm khi chưa có API public
-    loadPublicPosts() {
+    // Tìm kiếm bài đăng dựa theo từ khóa (admin)
+    searchPosts() {
         this.loading.set(true);
-        this.postService.getAllPosts().pipe(
-            finalize(() => this.loading.set(false))
-        );
-    }
-
-    // Dùng tạm khi chưa có API public
-    loadPublicPostsById(id: string) {
-        this.loading.set(true);
-        this.postService.getPostById(id).pipe(
-            finalize(() => this.loading.set(false))
-        );
-    }
-
-    loadCategories() {
-        this.categoryService.getCategories().subscribe({
-            next: res => {
-                this.categories.set(res.data);
-            },
-            error: err => {
-                this.toastService.error(err?.error?.message || 'Lỗi tải danh mục');
-            }
-        });
-    }
-    setCategory(categoryId: string) {
-        this.selectedCategory.set(categoryId);
-        this.currentPage.set(1);
-        this.loadPosts();
+        this.postService.searchPosts(
+            this.currentType(),
+            this.currentPage(),
+            this.searchQuery().trim()
+        )
+            .pipe(finalize(() => this.loading.set(false)))
+            .subscribe({
+                next: res => {
+                    this._posts.set(res?.data?.posts ?? []);
+                    this._statusStatics.set(res?.data?.status ?? {});
+                    this.totalPages.set(res?.pagination?.totalPages ?? 1);
+                    this.totalPosts.set(res?.pagination?.totalPosts ?? 0);
+                },
+                error: (err) => this.toastService.error(err.error?.message || 'Lỗi tìm kiếm bài viết')
+            });
     }
 
     loadPostById(id: string): void {
@@ -173,7 +173,7 @@ export class PostStore {
         // Reset selected post trước khi tải mới
         this._selectedPost.set(null);
 
-        this.postService.getPostById(id)
+        this.postService.getPostById(this.currentType(), id)
             .pipe(finalize(() => this.loading.set(false)))
             .subscribe({
                 next: res => {
@@ -188,19 +188,16 @@ export class PostStore {
             });
     }
 
-    // Clear trạng thái (dùng khi thêm mới)
-    clearSelectedPost() {
-        this._selectedPost.set(null);
-    }
 
     // Hàm call API dựa theo trạng thái form (thêm mới hoặc cập nhật)
     savePost(
         postId: string | null,
         postData: FormData,
     ) {
+        const type = this.currentType();
         const request$ = postId
-            ? this.postService.updatePost(postId, postData)
-            : this.postService.createPost(postData);
+            ? this.postService.updatePost(type, postId, postData)
+            : this.postService.createPost(type, postData);
 
         this.loading.set(true);
 
@@ -219,6 +216,7 @@ export class PostStore {
             finalize(() => this.loading.set(false))
         );
     }
+
     updatePostStatus(
         id: string,
         status: PropertyStatus,
@@ -227,7 +225,9 @@ export class PostStore {
         this.loading.set(true);
         console.log(`Updating post ${id} to status ${status} with reason:`, reason);
         return this.postService
-            .updatePostStatus(id, {
+            .updatePostStatus(
+                this.currentType(),
+                id, {
                 status,
                 reason,
             })
@@ -239,14 +239,65 @@ export class PostStore {
             );
     }
 
-    setPage(page: number) {
-        // Nếu page mới không hợp lệ, giữ nguyên page hiện tại
-        if (page < 1 || page > this.totalPages()) return;
-
-        this.currentPage.set(page);
-         this.loadData(); // Tải lại dữ liệu khi đổi trang
+    // Dùng tạm khi chưa có API public
+    loadPublicPosts() {
+        this.loading.set(true);
+        this.postService.getAllPublicPosts(this.currentType(), this.currentPage())
+            .pipe(finalize(() => this.loading.set(false)))
+            .subscribe({
+                next: res => {
+                    this._posts.set(res.data.posts);
+                    this._allRealEstatePosts.set(res.data.posts); // Cập nhật danh sách bài đăng bất động sản công khai
+                    this.totalPages.set(res.pagination.totalPages);
+                }
+            });
     }
 
+    // Dùng tạm khi chưa có API public
+    loadPublicPostById(id: string) {
+        this.loading.set(true);
+        this.postService.getPublicPostById(this.currentType(), id)
+            .pipe(finalize(() => this.loading.set(false)))
+            .subscribe({
+                next: res => this._selectedPost.set(res.data)
+            });
+    }
+
+    // Helper
+    loadCategories() {
+        this.categoryService.getCategories().subscribe({
+            next: res => {
+                this.categories.set(res.data);
+            },
+            error: err => {
+                this.toastService.error(err?.error?.message || 'Lỗi tải danh mục');
+            }
+        });
+    }
+    setCategory(categoryId: string) {
+        this.selectedCategory.set(categoryId);
+        this.currentPage.set(1);
+        this.loadPosts();
+    }
+
+    // Clear trạng thái (dùng khi thêm mới)
+    clearSelectedPost() {
+        this._selectedPost.set(null);
+    }
+
+    readonly isAdminMode = signal<boolean>(false);
+    setPage(page: number) {
+        if (page < 1 || page > this.totalPages()) return;
+        this.currentPage.set(page);
+
+        if (this.isAdminMode()) {
+            this.loadData(); // Gọi API admin
+        } else {
+            this.loadPublicData(); // Gọi API public
+        }
+    }
+
+    // Cập nhật giá trị cho ô nhập
     setSearch(query: string): void {
         this.searchQuery.set(query);
         // this.currentPage.set(1);
@@ -265,50 +316,6 @@ export class PostStore {
 
     }
 
-    searchPosts() {
-        this.loading.set(true);
-
-        const page = this.currentPage();
-        const keyword = this.searchQuery().trim();
-
-        this.postService
-            .searchPosts(page, keyword)
-            .pipe(
-                finalize(() => this.loading.set(false))
-            )
-            .subscribe({
-                next: (res) => {
-                    const posts = res?.data?.posts ?? [];
-
-                    this._posts.set(posts);
-
-                    this._statusStatics.set(
-                        res?.data?.status ?? {}
-                    );
-
-                    this.totalPages.set(
-                        res?.pagination?.totalPages ?? 1
-                    );
-
-                    this.currentPage.set(
-                        res?.pagination?.page ?? 1
-                    );
-
-                    this.totalPosts.set(
-                        res?.pagination?.totalPosts ?? 0
-                    );
-                },
-
-                error: (err) => {
-                    this.toastService.error(
-                        err?.error?.message || 'Lỗi tìm kiếm'
-                    );
-
-                    this._posts.set([]);
-                }
-            });
-    }
-
     private loadData() {
         const keyword = this.searchQuery().trim();
 
@@ -321,8 +328,50 @@ export class PostStore {
         }
     }
 
+    // Khi người dùng nhấn nút tìm kiếm, reset page về 1 và gọi loadData
     search(): void {
         this.currentPage.set(1);
         this.loadData();
     }
+
+    searchPublic(): void {
+        this.currentPage.set(1);
+        this.loadPublicData();
+    }
+
+    //Logic tải dữ liệu công khai (Client)
+    private loadPublicData() {
+        const keyword = this.searchQuery().trim();
+        const type = this.currentType();
+        const page = this.currentPage();
+
+        this.loading.set(true);
+
+        if (keyword) {
+            // Gọi API search public đã có trong PostService
+            this.postService.searchPublicPosts(type, page, keyword)
+                .pipe(finalize(() => this.loading.set(false)))
+                .subscribe({
+                    next: res => {
+                        this._posts.set(res?.data?.posts ?? []);
+                        this._allRealEstatePosts.set(res?.data?.posts ?? []); // Cập nhật danh sách bài đăng bất động sản công khai
+                        this.totalPages.set(res?.pagination?.totalPages ?? 1);
+                        this.totalPosts.set(res?.pagination?.totalPosts ?? 0);
+                    },
+                    error: (err) => {
+                        this.toastService.error(err.error?.message || 'Lỗi tìm kiếm');
+                        this._allRealEstatePosts.set([]); // Nếu có lỗi, xóa danh sách bài đăng bất động sản công khai
+                        this._posts.set([]);
+                    }
+                });
+        } else {
+            // Nếu không có keyword, quay lại lấy danh sách public bình thường
+            this.loadPublicPosts();
+        }
+    }
+
+
+
+
+
 }

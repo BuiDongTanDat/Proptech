@@ -16,7 +16,7 @@ export class PropertiesPage {
   protected readonly store = inject(PostStore);
 
   readonly loading = this.store.loading;
-  readonly posts = this.store.filteredPosts;
+  readonly posts = this.store.allRealEstatePosts;
 
   readonly sortOptions = [
     { label: 'Mới nhất', value: 'newest' },
@@ -25,9 +25,11 @@ export class PropertiesPage {
 
   readonly selectedSort = signal('newest');
 
-  constructor() {
+  ngOnInit() {
+    this.store.isAdminMode.set(false); // Đảm bảo đang ở chế độ client
+    this.store.loadPublicPosts(); // Tải danh sách ban đầu
     this.store.selectedCategory.set(REAL_ESTATE_POST_ID);
-    this.store.loadPosts();
+    this.store.loadAllRealEstatePosts(); // Sử dụng hàm mới để load tất cả bài đăng bất động sản công khai
   }
 
   onSearch(): void {

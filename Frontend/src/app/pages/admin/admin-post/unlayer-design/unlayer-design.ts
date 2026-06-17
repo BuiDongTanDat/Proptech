@@ -9,6 +9,7 @@ import {
   effect,
   EventEmitter,
   Output,
+  computed,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmailEditorComponent, EmailEditorModule } from 'angular-email-editor';
@@ -27,17 +28,14 @@ import { AuthStore } from '../../../../core/stores/auth.store';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { CustomTextarea } from '../../../../shared/components/ui/custom-textarea/custom-textarea';
 import { DatePipe } from '@angular/common';
+import {
+  POST_PAGE_CONFIG,
+  PostType,
+  isPostType,
+} from '../../../../core/config/post.config';
+import { CustomDatePicker } from "../../../../shared/components/custom-date-picker/custom-date-picker";
 
 type PostAction = 'create-draft' | 'create-pending' | 'publish' | 'update';
-
-interface PostForm {
-  title: FormControl<string>;
-  developer: FormControl<string>;
-  location: FormControl<string>;
-  region: FormControl<string>;
-  status: FormControl<string>;
-  category: FormControl<string>;
-}
 
 interface EditorExportData {
   design: unknown;
@@ -68,8 +66,9 @@ interface ContactFormTemplatePayload {
     ReactiveFormsModule,
     ConfirmDialog,
     CustomTextarea,
-    DatePipe
-  ],
+    DatePipe,
+    CustomDatePicker
+],
   templateUrl: './unlayer-design.html',
   styleUrl: './unlayer-design.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -109,29 +108,42 @@ export class UnlayerDesign implements OnInit, OnDestroy {
 
   // Unlayer Editor Config 
   readonly editorOptions = {
-    projectId: 286892,
+    projectId: 123456,
     displayMode: 'web' as const,
     version: 'latest',
   };
 
-  readonly regionOptions = [
-    { label: 'Miền Bắc', value: 'Miền Bắc' },
-    { label: 'Miền Trung', value: 'Miền Trung' },
-    { label: 'Miền Nam', value: 'Miền Nam' },
-  ];
   readonly statusOptions = PropertyStatus;
+  readonly postType = signal<PostType>('project');
+  readonly currentConfig = computed(() => POST_PAGE_CONFIG[this.postType()]);
 
+  // Lấy các cấu hình trường không chứa hình ảnh
+  readonly formFields = computed(() =>
+    this.currentConfig().fields.filter((field) => field.type !== 'image')
+  );
 
-  readonly postForm = new FormGroup<PostForm>({
-    title: new FormControl('', { nonNullable: true }),
-    developer: new FormControl('', { nonNullable: true }),
-    location: new FormControl('', { nonNullable: true }),
-    region: new FormControl('', { nonNullable: true }),
+  // Tự động phân giải và nạp danh mục cho trường có key là 'category'
+  readonly resolvedFormFields = computed(() => {
+    const fields = this.formFields();
+    const cats = this.categoryStore.categories();
+    return fields.map((field) => {
+      if (field.key === 'category') {
+        return {
+          ...field,
+          options: cats.map((c) => ({ label: c.name, value: c._id ?? '' })),
+        };
+      }
+      return field;
+    });
+  });
+
+  readonly imageFields = computed(() =>
+    this.currentConfig().fields.filter((field) => field.type === 'image')
+  );
+
+  // Khởi tạo form cơ bản với duy nhất trường trạng thái ban đầu
+  readonly postForm = new FormGroup<Record<string, FormControl<any>>>({
     status: new FormControl(PropertyStatus.DRAFT, { nonNullable: true }),
-    category: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required]
-    }),
   });
 
   readonly rejectReasonControl = new FormControl('', {
@@ -139,13 +151,19 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     validators: [Validators.required],
   });
 
-  readonly categories = this.categoryStore.categories;
-
   get f() {
     return this.postForm.controls;
   }
 
   ngOnInit(): void {
+    const type = this.route.snapshot.paramMap.get('type');
+
+    if (isPostType(type)) {
+      this.postType.set(type);
+    }
+
+    this.initDynamicFields();
+
     const postId = this.route.snapshot.paramMap.get('id');
     this.isEditMode.set(!!postId);
 
@@ -155,8 +173,9 @@ export class UnlayerDesign implements OnInit, OnDestroy {
       this.postStore.loadPostById(postId);
     } else {
       this.postStore.clearSelectedPost();
+
       const selectedCat = this.postStore.selectedCategory();
-      if (selectedCat && selectedCat !== 'all') {
+      if (selectedCat && selectedCat !== 'all' && this.postForm.contains('category')) {
         this.postForm.patchValue({ category: selectedCat });
       }
     }
@@ -166,33 +185,60 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     this.revokeCoverPreviewUrl();
   }
 
-  // Effects
+  // Khởi tạo các trường động theo cấu hình loại bài viết hiện tại
+  private initDynamicFields(): void {
+    // Xóa bớt các điều khiển không phải 'status' để tránh dư thừa khi đổi loại bài đăng
+    const keys = Object.keys(this.postForm.controls);
+    for (const key of keys) {
+      if (key !== 'status') {
+        // this.postForm.removeControl(key);
+      }
+    }
+
+    for (const field of this.formFields()) {
+      this.postForm.addControl(
+        field.key,
+        new FormControl('', {
+          nonNullable: true,
+          validators: field.required ? [Validators.required] : [],
+        })
+      );
+    }
+  }
+
+  protected getControl(key: string): FormControl<any> {
+    return this.postForm.controls[key] as FormControl<any>;
+  }
+
+  // Đồng bộ hóa dữ liệu từ PostStore vào FormGroup dựa trên cấu hình động
   private readonly syncPostToFormEffect = effect(() => {
     const post = this.postStore.selectedPost();
     const isReady = this.editorReady();
 
     if (!post?._id) return;
 
-    // 1. Luôn cập nhật giá trị status mới nhất lên form để đồng bộ Badge hiển thị
-    this.postForm.patchValue({
-      status: post.status ?? PropertyStatus.DRAFT,
-    }, { emitEvent: false });
+    const isNewPost = this.loadedPostId() !== post._id;
 
-    // 2. Nếu là cùng một bài viết đang sửa, dừng lại để tránh nạp lại Unlayer gây mất undo/redo stack
-    if (this.loadedPostId() === post._id) {
+    const patchValue: Record<string, any> = {
+      status: post.status ?? PropertyStatus.DRAFT,
+    };
+
+    // Chỉ gán giá trị nếu trường đó tồn tại trong cấu hình form hiện hành
+    for (const field of this.formFields()) {
+      if (field.key === 'category') {
+        patchValue['category'] = post.category?._id ?? '';
+      } else {
+        patchValue[field.key] = (post as any)[field.key] ?? '';
+      }
+    }
+
+    this.postForm.patchValue(patchValue, { emitEvent: false });
+
+    if (!isNewPost) {
       return;
     }
 
     this.loadedPostId.set(post._id);
-
-    // 3. Chỉ điền các thông tin gốc và nạp thiết kế Unlayer một lần duy nhất khi chuyển bài viết
-    this.postForm.patchValue({
-      title: post.title ?? '',
-      developer: post.developer ?? '',
-      location: post.location ?? '',
-      region: post.region ?? '',
-      category: post.category?._id ?? '',
-    }, { emitEvent: false });
 
     if (post.cover_picture?.url) {
       this.coverPreviewUrl.set(post.cover_picture.url);
@@ -209,15 +255,14 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     } else {
       this.postForm.enable({ emitEvent: false });
     }
-    this.f.status.disable({ emitEvent: false });
+    //luôn giữ trường 'status' ở trạng thái disabled để tránh người dùng thay đổi trực tiếp
+    this.postForm.controls['status']?.disable({ emitEvent: false });
   });
 
   onEditorLoaded(): void {
-    // 1. Sử dụng biến cục bộ để đảm bảo TypeScript nhận biết editor đã được khởi tạo, tránh lỗi truy cập thuộc tính trên undefined
     const editorInstance = this.emailEditor;
     if (!editorInstance || !editorInstance.editor) return;
 
-    // 2. Sau khi editor đã sẵn sàng, thiết lập cấu hình 100% chiều rộng cho nội dung bên trong.
     editorInstance.editor.addEventListener('design:loaded', () => {
       editorInstance.editor.setBodyValues({
         contentWidth: '100%'
@@ -226,17 +271,14 @@ export class UnlayerDesign implements OnInit, OnDestroy {
 
     this.editorReady.set(true);
 
-    // Nếu đã có bài viết được load trước khi editor sẵn sàng, thì nạp thiết kế vào editor ngay
     const post = this.postStore.selectedPost();
     if (post?.jsonSource) {
       this.loadEditorDesign(post.jsonSource);
     }
   }
 
-  // Luồng duyệt bài đăng
   submitForApproval(): void {
     const post = this.postStore.selectedPost();
-    console.log('Submitting for approval, current status:', post?.status);
     if (!post?._id) return;
 
     this.postStore.updatePostStatus(post._id, 'Chờ duyệt' as any).subscribe({
@@ -249,8 +291,6 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     });
   }
 
-
-  // Xác nhận xuất bản (Publish)
   openPublishConfirm(): void {
     this.showPublishConfirm.set(true);
   }
@@ -275,7 +315,6 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     });
   }
 
-  // Xác nhận hủy duyệt (Reject) kèm lý do
   openRejectConfirm(): void {
     this.rejectReasonControl.reset('');
     this.submittedReject.set(false);
@@ -295,7 +334,6 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     }
 
     const reason = this.rejectReasonControl.value;
-
     const post = this.postStore.selectedPost();
     if (!post?._id) return;
 
@@ -315,7 +353,6 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     });
   }
 
-  // Xác nhận Chuyển về riêng tư (Private)
   openPrivateConfirm(): void {
     this.showPrivateConfirm.set(true);
   }
@@ -343,32 +380,26 @@ export class UnlayerDesign implements OnInit, OnDestroy {
   saveDesign(action: PostAction): void {
     this.submitted.set(true);
 
-    // Kiểm tra form trước khi xuất thiết kế từ Unlayer
     if (this.postForm.invalid) {
       this.postForm.markAllAsTouched();
       return;
     }
 
-    // Lấy thông tin bài viết hiện tại nếu là update
     const post = this.postStore.selectedPost();
     const postId = this.isEditMode() ? post?._id ?? null : null;
 
     if (!this.emailEditor?.editor || !this.editorReady()) return;
 
-    // Set giá trị action đang submit
     this.submittingMode.set(action);
 
     this.emailEditor.editor.exportHtml((data: EditorExportData) => {
-
-      const status = this.resolveStatus(action); // Gọi hàm lấy status
-      const formData = this.buildFormData(data, status); // Xây dựng FormData
+      const status = this.resolveStatus(action);
+      const formData = this.buildFormData(data, status);
 
       this.postStore.savePost(postId, formData).subscribe({
         next: (res) => {
           this.submittingMode.set(null);
           this.toastService.success(res?.message || 'Lưu thành công');
-
-          // Sau khi thao tác thành công, điều hướng về trang danh sách bài viết
           this.router.navigate(['/admin/post']);
         },
         error: (err) => {
@@ -378,7 +409,6 @@ export class UnlayerDesign implements OnInit, OnDestroy {
       });
     });
   }
-
 
   exportDesignAsJson(): void {
     if (!this.emailEditor?.editor) return;
@@ -464,8 +494,6 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     }
   }
 
-
-
   private setCoverFile(file: File): void {
     this.revokeCoverPreviewUrl();
     this.coverFile.set(file);
@@ -489,8 +517,6 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     URL.revokeObjectURL(url);
   }
 
-  // HELPERS
-
   private createContactFormTemplate(): ContactFormTemplatePayload {
     const html = contactFormTemplate;
     const design = contactFormTemplateDesign;
@@ -499,24 +525,9 @@ export class UnlayerDesign implements OnInit, OnDestroy {
       templateName: 'contact-form',
       title: 'Biểu mẫu liên hệ',
       fields: [
-        {
-          name: 'name',
-          label: 'Họ và tên',
-          placeholder: 'Nhập họ và tên',
-          type: 'text',
-        },
-        {
-          name: 'phone',
-          label: 'Số điện thoại',
-          placeholder: 'Nhập số điện thoại',
-          type: 'tel',
-        },
-        {
-          name: 'message',
-          label: 'Lời nhắn',
-          placeholder: 'Nhập lời nhắn',
-          type: 'textarea',
-        },
+        { name: 'name', label: 'Họ và tên', placeholder: 'Nhập họ và tên', type: 'text' },
+        { name: 'phone', label: 'Số điện thoại', placeholder: 'Nhập số điện thoại', type: 'tel' },
+        { name: 'message', label: 'Lời nhắn', placeholder: 'Nhập lời nhắn', type: 'textarea' },
       ],
       html,
       design,
@@ -534,27 +545,27 @@ export class UnlayerDesign implements OnInit, OnDestroy {
   ): FormData {
     const formData = new FormData();
     const currentPost = this.postStore.selectedPost();
+    const formValue = this.postForm.getRawValue();
 
+    // formData.append('type', this.postType());
+
+    // Nếu là edit, chỉ thêm những trường đã thay đổi vào FormData để tránh ghi đè dữ liệu không cần thiết
     if (this.isEditMode() && currentPost) {
-      // Với bài viết đang chỉnh sửa, chỉ gửi những trường đã thay đổi so với dữ liệu gốc để tối ưu payload
-      const controls = this.postForm.controls;
+      for (const field of this.formFields()) {
+        const control = this.postForm.controls[field.key];
+        const newValue = control?.value ?? '';
+        let oldValue = '';
 
-      if (controls.title.dirty && controls.title.value !== currentPost.title) {
-        formData.append('title', controls.title.value);
-      }
-      if (controls.developer.dirty && controls.developer.value !== currentPost.developer) {
-        formData.append('developer', controls.developer.value);
-      }
-      if (controls.location.dirty && controls.location.value !== currentPost.location) {
-        formData.append('location', controls.location.value);
-      }
-      if (controls.region.dirty && controls.region.value !== currentPost.region) {
-        formData.append('region', controls.region.value);
-      }
-      if (controls.category.dirty && controls.category.value !== currentPost.category?._id) {
-        formData.append('category', controls.category.value);
-      }
+        if (field.key === 'category') {
+          oldValue = currentPost.category?._id ?? '';
+        } else {
+          oldValue = (currentPost as any)[field.key] ?? '';
+        }
 
+        if (control?.dirty && newValue !== oldValue) {
+          formData.append(field.key, newValue);
+        }
+      }
 
       const currentDesignJson = JSON.stringify(editorData.design);
       if (currentDesignJson !== currentPost.jsonSource) {
@@ -567,27 +578,15 @@ export class UnlayerDesign implements OnInit, OnDestroy {
         formData.append('cover_picture', cover);
       }
     } else {
-      // Với bài viết mới, gửi tất cả dữ liệu mà không cần so sánh
-      const formValue = this.postForm.getRawValue();
-
-      formData.append('title', formValue.title);
-      if (formValue.developer) {
-        formData.append('developer', formValue.developer);
+      for (const field of this.formFields()) {
+        const value = formValue[field.key];
+        if (value !== undefined && value !== null && value !== '') {
+          formData.append(field.key, value);
+        }
       }
 
-      if (formValue.location) {
-        formData.append('location', formValue.location);
-      }
-
-      if (formValue.region) {
-        formData.append('region', formValue.region);
-      }
-
-      if (formValue.category) {
-        formData.append('category', formValue.category);
-      }
       if (status) {
-        formData.append('status', status); // Gửi thêm status nếu muốn tạo và gửi duyệt luôn
+        formData.append('status', status);
       }
 
       formData.append('htmlSource', editorData.html);
@@ -602,18 +601,15 @@ export class UnlayerDesign implements OnInit, OnDestroy {
     return formData;
   }
 
-  // Helper method để xác định status mới dựa trên action đang thực hiện
+  // Hàm xử lý trạng thái bài đăng dựa trên hành động người dùng
   private resolveStatus(action: PostAction): PropertyStatus {
     switch (action) {
       case 'create-draft':
         return PropertyStatus.DRAFT;
-
       case 'create-pending':
         return PropertyStatus.PENDING_APPROVAL;
-
       case 'publish':
         return PropertyStatus.PUBLISHED;
-
       case 'update':
         return this.postStore.selectedPost()?.status ?? PropertyStatus.DRAFT;
     }

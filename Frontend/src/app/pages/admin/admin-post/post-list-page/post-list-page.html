@@ -3,17 +3,40 @@
   <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
     <div>
       <h1 class="text-base italic font-bold text-primary tracking-tight slide-in-left">Tin đăng</h1>
-      <p class="text-xs text-gray-500 mt-0.5 slide-in-left">Quản lý tin đăng</p>
+      <p class="text-xs text-gray-500 mt-0.5 slide-in-left">Quản lý các loại bài đăng hệ thống</p>
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- <app-button variant="outline" startIcon="download" (btnClick)="onExport()">
-        Xuất file
-      </app-button> -->
-
-      <app-button variant="primary" startIcon="plus" (btnClick)="onAdd()"> Thêm mới </app-button>
+      <!-- Nút thêm mới tự động đổi tên và điều hướng theo Tab đang hoạt động -->
+      <app-button variant="primary" startIcon="plus" (btnClick)="onAdd(activeTab())">
+        Thêm
+        {{
+          activeTab() === 'project' ? 'Dự án' : activeTab() === 'news' ? 'Tin tức' : 'Tuyển dụng'
+        }}
+      </app-button>
     </div>
   </div>
+
+  <!-- TABS BAR -->
+  <div class="border-b border-gray-200 mb-5">
+    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+      @for (tab of tabs; track tab.value) {
+        <button
+          (click)="onTabChange(tab.value )"
+          [class]="
+            activeTab() === tab.value
+              ? 'border-primary text-primary font-semibold'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="cursor-pointer whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-all"
+        >
+          {{ tab.label }}
+        </button>
+      }
+    </nav>
+  </div>
+
+  <!-- STATUS BUTTONS BAR -->
   <div class="flex items-center gap-2 flex-wrap mb-5">
     @for (status of statusButtonOptions; track status.value) {
       <app-button
@@ -24,7 +47,6 @@
       >
         <div class="flex w-full items-center justify-between gap-2">
           <span>{{ status.label }}</span>
-
           <span
             class="rounded-full px-2 py-0.5 text-xs font-medium transition-colors"
             [ngClass]="
@@ -46,11 +68,10 @@
       <app-custom-input
         [ngModel]="store.searchQuery()"
         (ngModelChange)="onSearchChange($event)"
-        placeholder="Tìm kiếm theo tên hoặc địa chỉ..."
+        placeholder="Tìm kiếm theo tiêu đề..."
         variant="outline"
         className="w-64 text-xs"
         (keyup.enter)="onSearchClick()"
-        
       ></app-custom-input>
 
       <app-button variant="primary" startIcon="search" (btnClick)="onSearchClick()"> </app-button>
@@ -97,119 +118,120 @@
 
   @if (store.loading()) {
     <app-loading></app-loading>
-  } @else if (store.filteredPosts().length === 0) {
+  } @else if (displayedPosts().length === 0) {
     <div class="flex flex-col items-center gap-2 py-16">
       <svg lucideIcon="inbox" size="48" class="text-gray-500"></svg>
-      <p class="text-sm text-gray-500">Không tìm thấy tin đăng nào</p>
+      <p class="text-sm text-gray-500">Không tìm thấy bài đăng nào trong tab này</p>
     </div>
   } @else {
     <!-- CARD VIEW -->
-
     @if (!isListView() || isMobile()) {
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
-        @for (p of store.filteredPosts(); track p._id) {
-         <div
-  class="fade-in rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden h-full flex flex-col"
->
-  <!-- IMAGE & STATUS -->
-  <div class="relative h-30 overflow-hidden bg-gray-100">
-    <img
-      [src]="p.cover_picture?.url || 'bg_card.png'"
-      [alt]="p.title"
-      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-    />
+        @for (p of displayedPosts(); track p._id) {
+          <div
+            class="fade-in rounded-md shadow-md group border border-gray-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white overflow-hidden h-full flex flex-col"
+          >
+            <!-- IMAGE & STATUS -->
+            <div class="relative h-30 overflow-hidden bg-gray-100">
+              <img
+                [src]="p.cover_picture?.url || 'bg_card.png'"
+                [alt]="p.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
 
-    <span
-      [class]="getPostStatusClass(p.status)"
-      class="absolute top-2 right-2 px-2 py-0.5 rounded text-xs font-semibold tracking-wide"
-    >
-      {{ p.status }}
-    </span>
-  </div>
+              <span
+                [class]="getPostStatusClass(p.status)"
+                class="absolute top-2 right-2 px-2 py-0.5 rounded text-xs font-semibold tracking-wide"
+              >
+                {{ p.status }}
+              </span>
+            </div>
 
-  <!-- CONTENT -->
-  <div class="flex-1 flex flex-col gap-2 px-3.5 pt-3">
+            <!-- CONTENT -->
+            <div class="flex-1 flex flex-col gap-2 px-3.5 pt-3">
+              <!-- TITLE -->
+              <h3
+                class="text-[13px] font-semibold text-primary leading-snug min-h-[36px] line-clamp-2"
+              >
+                {{ p.title || '' }}
+              </h3>
 
-    <!-- TITLE (fixed height) -->
-    <h3 class="text-[13px] font-semibold text-primary leading-snug min-h-[36px] line-clamp-2">
-      {{ p.title || '' }}
-    </h3>
+              <!-- SUB-INFO (Location / Summary) -->
+              <p class="flex items-center gap-1 text-xs text-gray-500 min-h-[18px]">
+                @if (activeTab() === 'project') {
+                  <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-500"></svg>
+                  <span class="truncate">{{ p.location || '' }}</span>
+                } @else if (activeTab() === 'recruitment') {
+                  <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-500"></svg>
+                  <span class="truncate">{{ p.location || '' }}</span>
+                } @else {
+                  <span class="invisible">placeholder</span>
+                }
+              </p>
 
-    <!-- LOCATION -->
-    <p class="flex items-center gap-1 text-xs text-gray-500 min-h-[18px]">
-      <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-500"></svg>
+              <!-- GRID INFO -->
+              <div class="mt-1 grid grid-cols-2 gap-2 min-h-[70px]">
+                @if (activeTab() === 'project') {
+                  <!-- DEVELOPER -->
+                  <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]">
+                    <p class="text-[10px] text-gray-500 uppercase">Chủ đầu tư</p>
+                    <p class="text-xs font-medium text-primary truncate">
+                      {{ p.developer || '' }}
+                    </p>
+                  </div>
+                } @else if (activeTab() === 'recruitment') {
+                  <!-- SALARY -->
+                  <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]">
+                    <p class="text-[10px] text-gray-500 uppercase">Mức lương</p>
+                    <p class="text-xs font-medium text-primary truncate"></p>
+                  </div>
+                }
 
-      @if (p.location) {
-        <span class="truncate">{{ p.location }}</span>
-      } @else {
-        <span class="invisible">placeholder</span>
-      }
-    </p>
+                <!-- AUTHOR -->
+                <div
+                  class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]"
+                  [class.col-span-2]="activeTab() === 'news'"
+                >
+                  <p class="text-[10px] text-gray-500 uppercase">Tác giả</p>
+                  <p class="text-xs font-medium text-primary truncate">
+                    {{ p.author?.name || '' }}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-    <!-- GRID INFO -->
-    <div class="mt-1 grid grid-cols-2 gap-2 min-h-[70px]">
+            <!-- FOOTER -->
+            <div
+              class="mt-auto flex items-center justify-between px-3.5 py-2.5 border-t border-gray-100"
+            >
+              <!-- LEFT INFO -->
+              <div class="flex flex-col items-start gap-1 min-h-[36px]">
+                <span class="text-xs text-gray-500 min-h-[16px]">
+                  {{ p.category?.name || '' }}
+                </span>
 
-      <!-- DEVELOPER -->
-      <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]">
-        <p class="text-[10px] text-gray-500 uppercase">Chủ đầu tư</p>
+                <span class="flex items-center gap-1 text-xs text-gray-500">
+                  <svg lucideIcon="pencil" size="14" class="text-gray-500"></svg>
+                  {{ p.updatedAt | date: 'dd/MM/yyyy HH:mm:ss' }}
+                </span>
+              </div>
 
-        @if (p.developer) {
-          <p class="text-xs font-medium text-primary truncate">
-            {{ p.developer }}
-          </p>
-        } @else {
-          <span class="text-xs text-gray-500"></span>
-        }
-      </div>
+              <!-- ACTIONS -->
+              <div class="flex items-center gap-1.5">
+                <app-button variant="action" size="icon" (btnClick)="onView(p)">
+                  <svg lucideIcon="eye" size="13"></svg>
+                </app-button>
 
-      <!-- AUTHOR -->
-      <div class="rounded-md bg-gray-50 px-2 py-1.5 col-span-2 min-h-[34px]">
-        <p class="text-[10px] text-gray-500 uppercase">Tác giả</p>
-
-        @if (p.author?.name) {
-          <p class="text-xs font-medium text-primary truncate">
-            {{ p.author?.name }}
-          </p>
-        } @else {
-          <span class="text-xs text-gray-500"></span>
-        }
-      </div>
-
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="mt-auto flex items-center justify-between px-3.5 py-2.5 border-t border-gray-100">
-
-    <!-- LEFT INFO -->
-    <div class="flex flex-col items-start gap-1 min-h-[36px]">
-
-      <span class="text-xs text-gray-500 min-h-[16px]">
-        {{ p.category?.name || '' }}
-      </span>
-
-      <span class="flex items-center gap-1 text-xs text-gray-500">
-        <svg lucideIcon="pencil" size="14" class="text-gray-500"></svg>
-        {{ p.updatedAt | date: 'dd/MM/yyyy HH:mm:ss' }}
-      </span>
-    </div>
-
-    <!-- ACTIONS -->
-    <div class="flex items-center gap-1.5">
-
-      <app-button variant="action" size="icon" (btnClick)="onView(p)">
-        <svg lucideIcon="eye" size="13"></svg>
-      </app-button>
-
-      @if (authStore.isManager() || (p.status !== 'Xuất bản' && p.status !== 'Riêng tư')) {
-        <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
-          <svg lucideIcon="pencil" size="13"></svg>
-        </app-button>
-      }
-
-    </div>
-  </div>
-</div>
+                @if (
+                  authStore.isManager() || (p.status !== 'Xuất bản' && p.status !== 'Riêng tư')
+                ) {
+                  <app-button variant="action" size="icon" (btnClick)="onEdit(p)">
+                    <svg lucideIcon="pencil" size="13"></svg>
+                  </app-button>
+                }
+              </div>
+            </div>
+          </div>
         }
       </div>
     }
@@ -221,11 +243,22 @@
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
               <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
-                Tin đăng
+                Bài đăng
               </th>
-              <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
-                Chủ đầu tư
-              </th>
+
+              @if (activeTab() === 'project') {
+                <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                  Chủ đầu tư
+                </th>
+              } @else if (activeTab() === 'recruitment') {
+                <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                  Phòng ban
+                </th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                  Hạn hồ sơ
+                </th>
+              }
+
               <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
                 Tác giả
               </th>
@@ -243,9 +276,9 @@
           </thead>
 
           <tbody>
-            @for (p of store.filteredPosts(); track p._id) {
+            @for (p of displayedPosts(); track p._id) {
               <tr class="group border-b border-gray-100 hover:bg-gray-50/70 transition-colors">
-                <!-- TITLE -->
+                <!-- TITLE & COVER -->
                 <td class="px-3 py-2">
                   <img
                     [src]="p.cover_picture?.url || 'bg_card.png'"
@@ -256,16 +289,29 @@
                     {{ p.title || '' }}
                   </h3>
                   <p class="text-xs text-gray-500 truncate max-w-100">
-                    {{ p.location || '' }}
+                    @if (activeTab() === 'project') {
+                      {{ p.location || '' }}
+                    } @else if (activeTab() === 'recruitment') {
+                      {{ p.location || '' }}
+                    }
                   </p>
                 </td>
 
-                <!-- DEVELOPER -->
-                <td class="px-3 py-2">
-                  <p class="text-xs text-primary truncate max-w-30">
-                    {{ p.developer || '' }}
-                  </p>
-                </td>
+                <!-- THÔNG TIN RIÊNG CHO TỪNG TAB -->
+                @if (activeTab() === 'project') {
+                  <td class="px-3 py-2">
+                    <p class="text-xs text-primary truncate max-w-30">
+                      {{ p.developer || '' }}
+                    </p>
+                  </td>
+                } @else if (activeTab() === 'recruitment') {
+                  <td class="px-3 py-2">
+                    <p class="text-xs text-primary truncate max-w-30"></p>
+                  </td>
+                  <td class="px-3 py-2">
+                    <p class="text-xs text-primary whitespace-nowrap"></p>
+                  </td>
+                }
 
                 <!-- TÁC GIẢ -->
                 <td class="px-3 py-2">
@@ -284,10 +330,10 @@
                   </span>
                 </td>
 
-                <!-- CREATED -->
+                <!-- UPDATED AT -->
                 <td class="px-3 py-2 text-center">
                   <span class="text-xs text-primary whitespace-nowrap">
-                    {{ p.updatedAt | date: 'dd/MM/yyyy hh:MM:ss' }}
+                    {{ p.updatedAt | date: 'dd/MM/yyyy HH:mm:ss' }}
                   </span>
                 </td>
 
@@ -306,10 +352,6 @@
                         <svg lucideIcon="pencil" size="14"></svg>
                       </app-button>
                     }
-
-                    <!-- <app-button variant="destructive" size="icon" (btnClick)="onDelete(p)">
-                      <svg lucideIcon="trash" size="14"></svg>
-                    </app-button> -->
                   </div>
                 </td>
               </tr>
