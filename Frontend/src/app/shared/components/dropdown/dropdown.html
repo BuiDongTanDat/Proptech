@@ -19,7 +19,7 @@
     <span
       class="truncate text-xs"
       [class]="
-        selectedValue() !== null && selectedValue() !== '' ? 'text-primary' : 'text-gray-400'
+        selectedValue() !== null && selectedValue() !== '' ? valueClass() : placeholderClass()
       "
     >
       {{ selectedValue() !== null && selectedValue() !== '' ? selectedLabel() : placeholder() }}

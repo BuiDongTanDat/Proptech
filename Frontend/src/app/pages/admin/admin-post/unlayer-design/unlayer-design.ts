@@ -13,12 +13,11 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmailEditorComponent, EmailEditorModule } from 'angular-email-editor';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Button } from '../../../../shared/components/ui/button/button';
 import { CustomInput } from '../../../../shared/components/ui/custom-input/custom-input';
 import { LucideDynamicIcon } from '@lucide/angular';
-import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 import { PostStore } from '../../../../core/stores/post.store';
 import { PropertyStatus } from '../../../../core/enum/enums';
 import { ToastService } from '../../../../core/services/toast.service';
@@ -34,6 +33,8 @@ import {
   isPostType,
 } from '../../../../core/config/post.config';
 import { CustomDatePicker } from "../../../../shared/components/custom-date-picker/custom-date-picker";
+import { TEMPLATE_OPTIONS } from '../../../../core/constants/template.constant';
+import { Dropdown } from '../../../../shared/components/dropdown/dropdown';
 
 type PostAction = 'create-draft' | 'create-pending' | 'publish' | 'update';
 
@@ -67,8 +68,9 @@ interface ContactFormTemplatePayload {
     ConfirmDialog,
     CustomTextarea,
     DatePipe,
-    CustomDatePicker
-],
+    CustomDatePicker,
+    FormsModule
+  ],
   templateUrl: './unlayer-design.html',
   styleUrl: './unlayer-design.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -108,7 +110,7 @@ export class UnlayerDesign implements OnInit, OnDestroy {
 
   // Unlayer Editor Config 
   readonly editorOptions = {
-    projectId: 123456,
+    projectId: 286892,
     displayMode: 'web' as const,
     version: 'latest',
   };
@@ -154,6 +156,15 @@ export class UnlayerDesign implements OnInit, OnDestroy {
   get f() {
     return this.postForm.controls;
   }
+
+  // Logic xử lý chọn template
+  readonly templateOptions = TEMPLATE_OPTIONS.map(x => ({
+    label: x.label,
+    value: x.value,
+  }));
+  readonly showTemplateConfirm = signal(false);
+  readonly selectedTemplate = signal<string>('');
+  readonly pendingTemplate = signal<(typeof TEMPLATE_OPTIONS)[number] | null>(null);
 
   ngOnInit(): void {
     const type = this.route.snapshot.paramMap.get('type');
@@ -613,5 +624,37 @@ export class UnlayerDesign implements OnInit, OnDestroy {
       case 'update':
         return this.postStore.selectedPost()?.status ?? PropertyStatus.DRAFT;
     }
+  }
+
+  // Xử lý template 
+  onTemplateSelected(value: string): void {
+    const template = TEMPLATE_OPTIONS.find(
+      x => x.value === value
+    );
+
+    if (!template) return;
+
+    this.pendingTemplate.set(template);
+    this.showTemplateConfirm.set(true);
+  }
+
+  confirmLoadTemplate(): void {
+    const template = this.pendingTemplate();
+
+    if (!template) return;
+
+    this.emailEditor?.editor?.loadDesign(
+      template.design as any
+    );
+
+    this.pendingTemplate.set(null);
+    this.showTemplateConfirm.set(false);
+
+    this.toastService.success(`Đã tải mẫu "${template.label}"`);
+  }
+
+  closeTemplateConfirm(): void {
+    this.showTemplateConfirm.set(false);
+    this.pendingTemplate.set(null);
   }
 }

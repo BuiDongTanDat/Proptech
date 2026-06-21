@@ -170,10 +170,10 @@
               </p>
 
               <!-- GRID INFO -->
-              <div class="mt-1 grid grid-cols-2 gap-2 min-h-[70px]">
+              <div class="mt-1 grid grid-cols-2 gap-2 min-h-17.5">
                 @if (activeTab() === 'project') {
                   <!-- DEVELOPER -->
-                  <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]">
+                  <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-8.5">
                     <p class="text-[10px] text-gray-500 uppercase">Chủ đầu tư</p>
                     <p class="text-xs font-medium text-primary truncate">
                       {{ p.developer || '' }}
@@ -181,7 +181,7 @@
                   </div>
                 } @else if (activeTab() === 'recruitment') {
                   <!-- SALARY -->
-                  <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]">
+                  <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-8.5">
                     <p class="text-[10px] text-gray-500 uppercase">Mức lương</p>
                     <p class="text-xs font-medium text-primary truncate"></p>
                   </div>
@@ -189,7 +189,7 @@
 
                 <!-- AUTHOR -->
                 <div
-                  class="rounded-md bg-gray-50 px-2 py-1.5 min-h-[34px]"
+                  class="rounded-md bg-gray-50 px-2 py-1.5 min-h-8.5"
                   [class.col-span-2]="activeTab() === 'news'"
                 >
                   <p class="text-[10px] text-gray-500 uppercase">Tác giả</p>

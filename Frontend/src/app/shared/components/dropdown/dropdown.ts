@@ -55,7 +55,9 @@ export class Dropdown implements ControlValueAccessor, AfterViewChecked, AfterVi
   readonly className = input('');
   readonly itemSize = input<number>(36); // Tùy chính độ cao mỗi option
   readonly maxVisible = input<number>(MAX_VISIBLE); // Tùy chỉnh số lượng option hiển thị trước khi scroll xuất hiện
-
+  readonly placeholderClass = input('text-gray-400');
+  readonly valueClass = input('text-primary');
+  
   /** Template tuỳ chỉnh cho mỗi option */
   @ContentChild(TemplateRef)
   optionTemplate?: TemplateRef<{ $implicit: DropdownOption; selected: boolean }>;
@@ -64,7 +66,7 @@ export class Dropdown implements ControlValueAccessor, AfterViewChecked, AfterVi
   private readonly elRef = inject(ElementRef<HTMLElement>);
   private readonly overlay = inject(Overlay);
   readonly scrollStrategy = this.overlay.scrollStrategies.reposition();
-  
+
   // State
   readonly isOpen = signal(false);
   readonly search = signal('');

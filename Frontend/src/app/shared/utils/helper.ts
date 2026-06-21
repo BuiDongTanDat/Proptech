@@ -59,138 +59,147 @@ export function getAccountStatusBgClass(status: AccountStatus): string {
 }
 
 
+
 export const contactFormTemplate = `
 <div
   style="
-    width:100%;
-    padding:24px 16px;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-    background:transparent;
+    width: 100%;
+    padding: 20px 10px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: transparent;
   "
 >
-  <div
-    style="
-      max-width:1200px;
-      margin:0 auto;
-    "
-  >
-    <div
-      style="
-        text-align:center;
-        margin-bottom:20px;
-      "
-    >
-      <div
+  <div style="max-width: 1000px; margin: 0 auto;">
+    <!-- Tiêu đề -->
+    <div style="text-align: center; margin-bottom: 18px;">
+      <h2
         style="
-          color:#162b52;
-          font-size:28px;
-          font-weight:700;
-          font-style:italic;
-          line-height:1.4;
+          color: #162b52;
+          font-size: 20px;
+          font-weight: 700;
+          margin: 0 0 6px 0;
+          text-transform: uppercase;
+          line-height: 1.2;
         "
       >
-        *Đăng ký nhận trọn bộ thông tin dự án, hỗ trợ tham quan thực tế và tư vấn trực tiếp
-      </div>
+        Đăng ký nhận tư vấn chuyên sâu
+      </h2>
 
-      <div
+      <p
         style="
-          margin-top:6px;
-          color:#162b52;
-          font-size:14px;
-          font-style:italic;
-          opacity:0.8;
+          color: #4b5563;
+          font-size: 13px;
+          margin: 0;
+          font-style: italic;
         "
       >
-        Cập nhật bảng giá, chính sách bán hàng và ưu đãi mới nhất
-      </div>
+        Nhận ngay bảng giá mới nhất & bộ tài liệu pháp lý dự án
+      </p>
     </div>
 
+    <!-- Form -->
     <div
       style="
-        display:flex;
-        gap:18px;
-        flex-wrap:wrap;
-        align-items:center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
       "
     >
-      <!-- HỌ TÊN -->
-      <input
-        type="text"
-        placeholder="Họ tên (*)"
+      <!-- Input -->
+      <div
         style="
-          flex:1;
-          min-width:220px;
-          height:40px;
-          border:none;
-          padding:0 14px;
-          box-sizing:border-box;
-          background:#ffffff;
-          color:#111827;
-          font-size:14px;
-          outline:none;
-        "
-      />
-
-      <!-- SỐ ĐIỆN THOẠI -->
-      <input
-        type="tel"
-        placeholder="Số điện thoại (*)"
-        style="
-          flex:1;
-          min-width:220px;
-          height:40px;
-          border:none;
-          padding:0 14px;
-          box-sizing:border-box;
-          background:#ffffff;
-          color:#111827;
-          font-size:14px;
-          outline:none;
-        "
-      />
-
-      <!-- EMAIL -->
-      <input
-        type="email"
-        placeholder="Email"
-        style="
-          flex:1;
-          min-width:220px;
-          height:40px;
-          border:none;
-          padding:0 14px;
-          box-sizing:border-box;
-          background:#ffffff;
-          color:#111827;
-          font-size:14px;
-          outline:none;
-        "
-      />
-
-      <!-- BUTTON -->
-      <button
-        type="button"
-        data-action="emit-contact-form"
-        style="
-          min-width:240px;
-          height:40px;
-          border:none;
-          padding:0 24px;
-          background:#162b52;
-          color:#ffffff;
-          font-size:14px;
-          font-weight:700;
-          cursor:pointer;
-          white-space:nowrap;
+          flex: 1;
+          min-width: 260px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
         "
       >
-        ĐĂNG KÝ TƯ VẤN
-      </button>
+        <input
+          type="text"
+          placeholder="Họ tên của bạn (*)"
+          style="
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 13px;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
+            outline: none;
+          "
+        />
+
+        <input
+          type="tel"
+          placeholder="Số điện thoại (*)"
+          style="
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 13px;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
+            outline: none;
+          "
+        />
+      </div>
+
+      <!-- Textarea -->
+      <div style="flex: 1.4; min-width: 260px;">
+        <textarea
+          placeholder="Lời nhắn (Ví dụ: Tôi muốn nhận báo giá căn 2 phòng ngủ...)"
+          style="
+            width: 100%;
+            height: 90px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 13px;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
+            outline: none;
+            resize: none;
+            font-family: inherit;
+          "
+        ></textarea>
+      </div>
+
+      <!-- Button -->
+      <div style="width: 100%; margin-top: 2px;">
+        <button
+          type="button"
+          data-action="emit-contact-form"
+          style="
+            width: 100%;
+            max-width: 240px;
+            height: 42px;
+            display: block;
+            margin: 0 auto;
+            background: #162b52;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          "
+        >
+          Gửi thông tin
+        </button>
+      </div>
     </div>
   </div>
 </div>
 `.trim();
+
 export const contactFormTemplateDesign = {
     counters: {
         u_row: 1,

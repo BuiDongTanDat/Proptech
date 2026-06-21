@@ -50,17 +50,6 @@ export class PostStore {
     readonly filteredPosts = computed(() => {
         let result = [...this._posts()]; //Clone nó trước
 
-        // Lọc theo tìm kiếm
-        const query = this.searchQuery().toLowerCase().trim();
-        if (query) {
-            result = result.filter(p =>
-                p.title.toLowerCase().includes(query) ||
-                p.location.toLowerCase().includes(query) ||
-                p.developer.toLowerCase().includes(query)
-                //p.region.toLowerCase().includes(query)
-            );
-        }
-
         // Lọc theo trạng thái bài đăng
         const status = this.selectedStatus();
         if (status !== 'all') {
@@ -124,6 +113,8 @@ export class PostStore {
             .subscribe({
                 next: res => {
                     console.log('API RESPONSE:', res);
+                    console.log('TYPE:', this.currentType());
+                    console.log('STATUS:', res?.data?.status);
                     const posts = res?.data?.posts ?? [];
                     this._posts.set(posts);
                     this._statusStatics.set(
@@ -138,6 +129,7 @@ export class PostStore {
                     this.totalPosts.set(
                         res?.pagination?.totalPosts ?? 0
                     );
+
                 },
                 error: err => {
                     this.toastService.error(err?.error?.message || 'Lỗi tải danh sách')
@@ -316,6 +308,7 @@ export class PostStore {
 
     }
 
+    // Call api load data cho phía Admin
     private loadData() {
         const keyword = this.searchQuery().trim();
 
@@ -334,6 +327,7 @@ export class PostStore {
         this.loadData();
     }
 
+    // Search public posts (Client)
     searchPublic(): void {
         this.currentPage.set(1);
         this.loadPublicData();

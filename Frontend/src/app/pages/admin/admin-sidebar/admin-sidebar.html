@@ -3,7 +3,7 @@
   [class.-translate-x-full]="isLeftSidebarCollapsed()"
   [class.translate-x-0]="!isLeftSidebarCollapsed()"
   [class.md:translate-x-0]="true"
-  [class.w-64]="!isLeftSidebarCollapsed()"
+  [class.w-50]="!isLeftSidebarCollapsed()"
   [class.w-20]="isLeftSidebarCollapsed()"
 >
   <div class="flex-1 overflow-y-auto overflow-x-hidden">
@@ -13,15 +13,16 @@
       [class.justify-center]="isLeftSidebarCollapsed()"
       [class.gap-3]="!isLeftSidebarCollapsed()"
     >
-      <div class="h-10 w-1.5 shrink-0 rounded-full bg-primary"></div>
-
       @if (!isLeftSidebarCollapsed()) {
+        <div class="h-10 w-1.5 shrink-0 rounded-full bg-primary"></div>
         <div class="flex flex-col animate-in slide-in-from-left-2 duration-200 overflow-hidden">
           <span class="text-xl font-bold tracking-tight text-primary truncate">AH.RPM</span>
           <span class="text-xs font-medium uppercase tracking-wider text-gray-500 truncate"
             >Management</span
           >
         </div>
+      } @else {
+        <span class="text-xl font-bold tracking-tight text-primary truncate">AH</span>
       }
     </div>
 
@@ -34,7 +35,7 @@
             <button
               type="button"
               (click)="toggleSubMenu(item.label)"
-              class="cursor-pointer group relative flex w-full items-center rounded-md px-3 py-2.5 text-sm hover:translate-x-1 transition-all duration-200 hover:bg-gray-100"
+              class="cursor-pointer group relative flex w-full items-center rounded-md px-3 py-2 text-sm hover:translate-x-1 transition-all duration-200 hover:bg-gray-100"
               [class.bg-gray-100]="isParentActive(item)"
               [attr.aria-expanded]="isSubMenuOpen(item.label)"
               [attr.aria-label]="item.label"
@@ -47,7 +48,7 @@
                 <div class="flex items-center min-w-0" [class.gap-3]="!isLeftSidebarCollapsed()">
                   <svg
                     [lucideIcon]="item.icon"
-                    class="size-5 shrink-0 transition-colors duration-200"
+                    class="size-4 shrink-0 transition-colors duration-200"
                     [class.text-primary]="isParentActive(item)"
                     [class.text-gray-500]="!isParentActive(item)"
                     [class.group-hover:text-primary]="!isParentActive(item)"
@@ -56,7 +57,7 @@
 
                   @if (!isLeftSidebarCollapsed()) {
                     <span
-                      class="truncate transition-colors duration-200"
+                      class="text-xs truncate transition-colors duration-200"
                       [class.text-primary]="isParentActive(item)"
                       [class.text-gray-500]="!isParentActive(item)"
                       [class.group-hover:text-primary]="!isParentActive(item)"
@@ -120,7 +121,7 @@
                           aria-hidden="true"
                         ></svg>
                         <span
-                          class="truncate transition-colors duration-200"
+                          class="text-xs truncate transition-colors duration-200"
                           [class.text-white]="childRla.isActive"
                           [class.text-gray-500]="!childRla.isActive"
                           [class.group-hover:text-primary]="!childRla.isActive"
@@ -140,7 +141,7 @@
             [routerLink]="item.route"
             #rla="routerLinkActive"
             routerLinkActive="bg-primary shadow-sm"
-            class="group relative flex items-center rounded-md px-3 py-2.5 text-sm transition-all duration-200 hover:bg-gray-100"
+            class="group relative flex items-center rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-gray-100"
             [class.hover:bg-primary]="rla.isActive"
           >
             <div
@@ -150,7 +151,7 @@
             >
               <svg
                 [lucideIcon]="item.icon"
-                class="size-5 shrink-0 transition-colors duration-200"
+                class="size-4 shrink-0 transition-colors duration-200"
                 [class.text-white]="rla.isActive"
                 [class.text-gray-500]="!rla.isActive"
                 [class.group-hover:text-primary]="!rla.isActive"
@@ -159,7 +160,7 @@
 
               @if (!isLeftSidebarCollapsed()) {
                 <span
-                  class="truncate transition-colors duration-200"
+                  class="text-xs truncate transition-colors duration-200"
                   [class.text-white]="rla.isActive"
                   [class.text-gray-500]="!rla.isActive"
                   [class.group-hover:text-primary]="!rla.isActive"
@@ -188,8 +189,6 @@
     </nav>
   </div>
 
-  
-
   <!-- BOTTOM NAV — đồng bộ style với main nav -->
   <div>
     <!-- <hr class="mx-3 my-1 border-gray-200" /> -->
@@ -199,7 +198,7 @@
           [routerLink]="item.route"
           #rla="routerLinkActive"
           routerLinkActive="bg-primary shadow-sm"
-          class="group relative flex items-center rounded-md px-3 py-2.5 text-sm transition-all duration-200 hover:bg-gray-100"
+          class="group relative flex items-center rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-gray-100"
           [class.hover:bg-primary]="rla.isActive"
         >
           <div
@@ -209,7 +208,7 @@
           >
             <svg
               [lucideIcon]="item.icon"
-              class="size-5 shrink-0 transition-colors duration-200"
+              class="size-4 shrink-0 transition-colors duration-200"
               [class.text-white]="rla.isActive"
               [class.text-gray-500]="!rla.isActive"
               [class.group-hover:text-primary]="!rla.isActive"
@@ -218,7 +217,7 @@
 
             @if (!isLeftSidebarCollapsed()) {
               <span
-                class="truncate transition-colors duration-200"
+                class="text-xs truncate transition-colors duration-200"
                 [class.text-white]="rla.isActive"
                 [class.text-gray-500]="!rla.isActive"
                 [class.group-hover:text-primary]="!rla.isActive"
@@ -252,7 +251,7 @@
       <button
         type="button"
         (click)="onSignOut()"
-        class="group relative flex w-full items-center rounded-md px-3 py-2.5 text-sm transition-all duration-200 hover:bg-red-50"
+        class="cursor-pointer group relative flex w-full items-center rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-red-50"
       >
         <div
           class="flex w-full min-w-0 items-center transition-transform duration-200 group-hover:translate-x-1"
@@ -261,13 +260,13 @@
         >
           <svg
             lucideIcon="log-out"
-            class="size-5 shrink-0 text-red-400 transition-colors duration-200 group-hover:text-red-600"
+            class="size-4 shrink-0 text-red-400 transition-colors duration-200 group-hover:text-red-600"
             aria-hidden="true"
           ></svg>
 
           @if (!isLeftSidebarCollapsed()) {
             <span
-              class="cursor-pointer truncate text-red-400 transition-colors duration-200 group-hover:text-red-600"
+              class="text-xs truncate text-red-400 transition-colors duration-200 group-hover:text-red-600"
             >
               Đăng xuất
             </span>

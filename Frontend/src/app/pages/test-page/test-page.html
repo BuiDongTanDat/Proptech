@@ -28,192 +28,143 @@
   </app-dialog>
 </section>
 
+```html
 <div
   style="
     width: 100%;
-    background: linear-gradient(135deg, #162b52 0%, #1f3c73 100%);
-    padding: 48px 24px;
+    padding: 20px 10px;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: transparent;
   "
 >
-  <div
-    style="
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 48px;
-      flex-wrap: wrap;
-    "
-  >
-    <!-- LEFT CONTENT -->
-    <div style="flex: 1; min-width: 280px">
-      <div
-        style="
-          display: inline-block;
-          padding: 6px 12px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          color: #ffffff;
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.5px;
-        "
-      >
-        NHẬN THÔNG TIN DỰ ÁN
-      </div>
-
+  <div style="max-width: 1000px; margin: 0 auto;">
+    <!-- Tiêu đề -->
+    <div style="text-align: center; margin-bottom: 18px;">
       <h2
         style="
-          margin: 16px 0 10px;
-          color: #ffffff;
-          font-size: 30px;
-          line-height: 1.25;
+          color: #162b52;
+          font-size: 20px;
           font-weight: 700;
+          margin: 0 0 6px 0;
+          text-transform: uppercase;
+          line-height: 1.2;
         "
       >
-        Đăng ký nhận tư vấn bất động sản
+        Đăng ký nhận tư vấn chuyên sâu
       </h2>
 
       <p
         style="
-          margin: 0;
-          max-width: 520px;
-          color: rgba(255, 255, 255, 0.85);
+          color: #4b5563;
           font-size: 13px;
-          line-height: 1.8;
+          margin: 0;
+          font-style: italic;
         "
       >
-        Cập nhật bảng giá, chính sách ưu đãi và những dự án mới nhất. Đội ngũ chuyên viên của chúng
-        tôi sẽ liên hệ hỗ trợ trong thời gian sớm nhất.
+        Nhận ngay bảng giá mới nhất & bộ tài liệu pháp lý dự án
       </p>
     </div>
 
-    <!-- FORM CARD -->
+    <!-- Form -->
     <div
       style="
-        width: 420px;
-        max-width: 100%;
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 24px;
-        box-sizing: border-box;
-        box-shadow:
-          0 10px 20px rgba(0, 0, 0, 0.05),
-          0 20px 40px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
       "
     >
-      <div style="margin-bottom: 20px">
-        <h3 style="margin: 0; color: #111827; font-size: 18px; font-weight: 700">Đăng ký ngay</h3>
-
-        <p style="margin: 6px 0 0; color: #6b7280; font-size: 12px; line-height: 1.6">
-          Điền thông tin để được tư vấn miễn phí.
-        </p>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 12px">
-        <!-- NAME -->
+      <!-- Input -->
+      <div
+        style="
+          flex: 1;
+          min-width: 260px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        "
+      >
         <input
           type="text"
-          placeholder="Họ và tên"
+          placeholder="Họ tên của bạn (*)"
           style="
             width: 100%;
-            height: 44px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 0 14px;
-            font-size: 12px;
-            color: #111827;
-            background: #fafafa;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 13px;
             box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
             outline: none;
           "
         />
 
-        <!-- PHONE -->
         <input
           type="tel"
-          placeholder="Số điện thoại"
+          placeholder="Số điện thoại (*)"
           style="
             width: 100%;
-            height: 44px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 0 14px;
-            font-size: 12px;
-            color: #111827;
-            background: #fafafa;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 13px;
             box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
             outline: none;
           "
         />
+      </div>
 
-        <!-- MESSAGE -->
+      <!-- Textarea -->
+      <div style="flex: 1.4; min-width: 260px;">
         <textarea
-          rows="4"
-          placeholder="Nội dung cần tư vấn..."
+          placeholder="Lời nhắn (Ví dụ: Tôi muốn nhận báo giá căn 2 phòng ngủ...)"
           style="
             width: 100%;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-size: 12px;
-            color: #111827;
-            background: #fafafa;
-            resize: none;
-            line-height: 1.6;
+            height: 90px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 13px;
             box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
             outline: none;
+            resize: none;
+            font-family: inherit;
           "
         ></textarea>
+      </div>
 
-        <!-- BUTTON -->
+      <!-- Button -->
+      <div style="width: 100%; margin-top: 2px;">
         <button
           type="button"
           data-action="emit-contact-form"
           style="
             width: 100%;
-            height: 46px;
-            border: none;
-            border-radius: 10px;
-            background: #ff6b00;
+            max-width: 240px;
+            height: 42px;
+            display: block;
+            margin: 0 auto;
+            background: #162b52;
             color: #ffffff;
-            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
             font-weight: 700;
-            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.25);
-          "
-          onmouseover="
-            this.style.background = '#ea580c';
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 14px 28px rgba(255,107,0,.35)';
-          "
-          onmouseout="
-            this.style.background = '#ff6b00';
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 8px 20px rgba(255,107,0,.25)';
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
           "
         >
-          ĐĂNG KÝ NHẬN THÔNG TIN
+          Gửi thông tin
         </button>
       </div>
-
-      <p
-        style="
-          margin: 14px 0 0;
-          text-align: center;
-          color: #9ca3af;
-          font-size: 11px;
-          line-height: 1.5;
-        "
-      >
-        Chúng tôi cam kết bảo mật thông tin khách hàng.
-      </p>
     </div>
   </div>
 </div>
+```
+

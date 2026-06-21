@@ -4,7 +4,7 @@
     <app-button
       size="icon"
       variant="outline"
-      class="fixed top-3 left-4 z-50  rounded-full bg-white border-gray-200"
+      class="fixed top-3 left-4 z-50 rounded-full bg-white border-gray-200"
       (btnClick)="toggleLeftPanel()"
     >
       <svg lucideIcon="chevron-right" size="18" aria-hidden="true"></svg>
@@ -28,7 +28,7 @@
     <app-button
       size="icon"
       variant="outline"
-      class="absolute top-4 right-4 z-20 rounded-full bg-white border-gray-200  transition-all duration-300"
+      class="absolute top-4 right-4 z-20 rounded-full bg-white border-gray-200 transition-all duration-300"
       [class.opacity-100]="leftPanelOpen()"
       [class.opacity-0]="!leftPanelOpen()"
       [class.pointer-events-none]="!leftPanelOpen()"
@@ -68,7 +68,7 @@
       </div>
 
       <!-- FORM -->
-      <form [formGroup]="postForm" class="flex flex-col flex-grow min-h-0 bg-white">
+      <form [formGroup]="postForm" class="flex flex-col grow min-h-0 bg-white">
         <div class="flex-1 px-5 py-4 space-y-5 overflow-y-auto custom-scrollbar">
           <!-- Trạng thái hiện tại -->
           <div
@@ -271,7 +271,7 @@
                 class="size-4 inline-block mr-1 text-amber-500"
                 aria-hidden="true"
               ></svg>
-              Bài đăng đang ẩn ở chế độ riêng tư
+              Bài đăng đang ẩn ở chế độ <b>Riêng tư</b>
             </div>
             <app-button
               variant="primary"
@@ -357,17 +357,33 @@
   </aside>
 
   <!-- MAIN CANVAS -->
-  <div class="flex-grow flex flex-col overflow-hidden bg-gray-100">
+  <div class="grow flex flex-col overflow-hidden bg-gray-100">
     <!-- Header của Panel thiết kế - Tiêu đề đã được làm linh hoạt theo loại bài viết -->
     <div
       class="h-14 border-b border-gray-200 bg-white px-6 flex items-center justify-between shrink-0"
       [class.pl-16]="!leftPanelOpen()"
     >
       <span class="text-sm font-semibold text-gray-700">
-        Trình soạn thảo thiết kế {{ currentConfig().label.toLowerCase() }}
+        <!-- Trình soạn thảo thiết kế {{ currentConfig().label.toLowerCase() }} -->
       </span>
 
       <div class="flex items-center gap-2">
+        <!-- Dropdown Mẫu thiết kế -->
+        <app-dropdown
+          [options]="templateOptions"
+          [ngModel]="pendingTemplate()"
+          (ngModelChange)="onTemplateSelected($event)"
+          placeholder="Tải mẫu thiết kế"
+           placeholderClass="text-primary"
+           className="w-35!"
+   
+        >
+        <span class="flex items-center gap-1 text-xs text-gray-700">
+          <svg lucideIcon="file-template" class="size-3.5" aria-hidden="true"></svg>  
+        </span>
+        </app-dropdown>
+
+        
         <app-button
           variant="outline"
           className="border-amber-600/30 text-amber-800 hover:bg-amber-50/50 text-xs font-medium py-1.5 px-3 rounded-lg flex items-center gap-1.5"
@@ -379,6 +395,7 @@
         </app-button>
 
         @if (!isEditMode()) {
+          <div class="h-6 w-px bg-gray-200 mx-1"></div>
           <label
             class="h-8 flex items-center gap-1.5 px-3 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 cursor-pointer transition text-xs font-medium text-gray-700"
           >
@@ -546,6 +563,38 @@
           ></svg>
         }
         Xác nhận chuyển riêng tư
+      </app-button>
+    </div>
+  </div>
+</app-confirm-dialog>
+
+<!-- CONFIRMATION DIALOG: Load mẫu -->
+<app-confirm-dialog
+  [show]="showTemplateConfirm()"
+  title="Tải mẫu thiết kế"
+  titleClass="text-primary"
+  icon="triangle-alert"
+  (closed)="closeTemplateConfirm()"
+  [closeOnBackdrop]="false"
+>
+  <div class="flex flex-col gap-4 p-1">
+    <p class="text-sm text-gray-600">
+      Bạn có chắc chắn muốn tải mẫu
+      <b>{{ pendingTemplate()?.label }}</b
+      >?<br/>
+    <span class="text-xs text-red-500">
+       Toàn bộ thiết kế hiện tại trong editor sẽ bị ghi đè và không thể hoàn tác.
+    </span>
+
+    </p>
+
+    
+
+    <div class="flex justify-end gap-2">
+      <app-button variant="outline" (btnClick)="closeTemplateConfirm()"> Hủy </app-button>
+
+      <app-button variant="primary" (btnClick)="confirmLoadTemplate()">
+        Xác nhận tải mẫu
       </app-button>
     </div>
   </div>
