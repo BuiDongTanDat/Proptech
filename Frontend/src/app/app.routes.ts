@@ -43,12 +43,12 @@ export const routes: Routes = [
                 title: 'Chi tiết tin tức',
             },
             {
-                path: 'recruitments',
+                path: 'jobs',
                 loadComponent: () => import('./pages/client/recruitment-page/recruitment-list-page/recruitment-list-page').then(m => m.recruitmentsListPage),
                 title: 'Tuyển dụng',
             },
             {
-                path: 'recruitments/:id',
+                path: 'jobs/:id',
                 loadComponent: () => import('./pages/client/recruitment-page/recruitment-detail/recruitment-detail').then(m => m.recruitmentsDetail),
                 title: 'Chi tiết tuyển dụng',
             },

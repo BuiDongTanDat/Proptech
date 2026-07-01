@@ -11,7 +11,7 @@
       <app-button variant="primary" startIcon="plus" (btnClick)="onAdd(activeTab())">
         Thêm
         {{
-          activeTab() === 'project' ? 'Dự án' : activeTab() === 'news' ? 'Tin tức' : 'Tuyển dụng'
+          activeTab() === 'properties' ? 'Dự án' : activeTab() === 'news' ? 'Tin tức' : 'Tuyển dụng'
         }}
       </app-button>
     </div>
@@ -158,10 +158,10 @@
 
               <!-- SUB-INFO (Location / Summary) -->
               <p class="flex items-center gap-1 text-xs text-gray-500 min-h-[18px]">
-                @if (activeTab() === 'project') {
+                @if (activeTab() === 'properties') {
                   <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-500"></svg>
                   <span class="truncate">{{ p.location || '' }}</span>
-                } @else if (activeTab() === 'recruitment') {
+                } @else if (activeTab() === 'jobs') {
                   <svg lucideIcon="map-pin" size="11" class="shrink-0 text-gray-500"></svg>
                   <span class="truncate">{{ p.location || '' }}</span>
                 } @else {
@@ -171,7 +171,7 @@
 
               <!-- GRID INFO -->
               <div class="mt-1 grid grid-cols-2 gap-2 min-h-17.5">
-                @if (activeTab() === 'project') {
+                @if (activeTab() === 'properties') {
                   <!-- DEVELOPER -->
                   <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-8.5">
                     <p class="text-[10px] text-gray-500 uppercase">Chủ đầu tư</p>
@@ -179,7 +179,7 @@
                       {{ p.developer || '' }}
                     </p>
                   </div>
-                } @else if (activeTab() === 'recruitment') {
+                } @else if (activeTab() === 'jobs') {
                   <!-- SALARY -->
                   <div class="rounded-md bg-gray-50 px-2 py-1.5 min-h-8.5">
                     <p class="text-[10px] text-gray-500 uppercase">Mức lương</p>
@@ -246,11 +246,11 @@
                 Bài đăng
               </th>
 
-              @if (activeTab() === 'project') {
+              @if (activeTab() === 'properties') {
                 <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
                   Chủ đầu tư
                 </th>
-              } @else if (activeTab() === 'recruitment') {
+              } @else if (activeTab() === 'jobs') {
                 <th class="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
                   Phòng ban
                 </th>
@@ -289,22 +289,22 @@
                     {{ p.title || '' }}
                   </h3>
                   <p class="text-xs text-gray-500 truncate max-w-100">
-                    @if (activeTab() === 'project') {
+                    @if (activeTab() === 'properties') {
                       {{ p.location || '' }}
-                    } @else if (activeTab() === 'recruitment') {
+                    } @else if (activeTab() === 'jobs') {
                       {{ p.location || '' }}
                     }
                   </p>
                 </td>
 
                 <!-- THÔNG TIN RIÊNG CHO TỪNG TAB -->
-                @if (activeTab() === 'project') {
+                @if (activeTab() === 'properties') {
                   <td class="px-3 py-2">
                     <p class="text-xs text-primary truncate max-w-30">
                       {{ p.developer || '' }}
                     </p>
                   </td>
-                } @else if (activeTab() === 'recruitment') {
+                } @else if (activeTab() === 'jobs') {
                   <td class="px-3 py-2">
                     <p class="text-xs text-primary truncate max-w-30"></p>
                   </td>

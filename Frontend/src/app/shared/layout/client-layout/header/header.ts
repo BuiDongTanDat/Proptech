@@ -25,7 +25,7 @@ export class Header {
     { label: 'Trang chủ', path: '/' },
     { label: 'Dự án', path: '/properties' },
     { label: 'Tin tức', path: '/news' },
-    { label: 'Tuyển dụng', path: '/recruitments' },
+    { label: 'Tuyển dụng', path: '/jobs' },
     { label: 'Về chúng tôi', path: '/about' },
   ]
 

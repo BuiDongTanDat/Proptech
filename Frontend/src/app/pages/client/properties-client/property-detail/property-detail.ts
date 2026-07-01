@@ -93,50 +93,60 @@ export class PropertyDetail implements OnInit, OnDestroy {
     if (iframe && iframe.contentWindow) {
       try {
         const doc = iframe.contentWindow.document;
-        // Tính toán chiều cao ngay lập tức
+
+        // 1. Loại bỏ margin/padding dư thừa và ẩn thanh cuộn bên trong iframe
+        const style = doc.createElement('style');
+        style.textContent = `
+        html, body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          height: auto;
+        }
+      `;
+        doc.head.appendChild(style);
+
         const updateHeight = () => {
-          const height = doc.documentElement.scrollHeight;
+          // 2. Reset độ cao về 0 trước khi đo để trình duyệt tính toán lại chính xác
+          iframe.style.height = '0px';
+
+          // Sử dụng chiều cao của body hoặc documentElement tùy theo cấu trúc nội dung
+          const height = doc.body ? doc.body.scrollHeight : doc.documentElement.scrollHeight;
+
           iframe.style.height = `${height}px`;
-          this.iframeVisible.set(true); // Chỉ hiển thị sau khi đã tính được chiều cao
+          this.iframeVisible.set(true);
         };
 
         const images = Array.from(doc.images);
-
         if (images.length === 0) {
           updateHeight();
           return;
         }
 
         let loadedImages = 0;
+        const onImageLoadOrError = () => {
+          loadedImages++;
+          if (loadedImages === images.length) {
+            updateHeight();
+          }
+        };
 
+        // Theo dõi cả sự kiện load thành công và thất bại của ảnh để tránh treo giao diện
         images.forEach(img => {
           if (img.complete) {
-            loadedImages++;
+            onImageLoadOrError();
           } else {
-            img.addEventListener('load', () => {
-              loadedImages++;
-
-              if (loadedImages === images.length) {
-                updateHeight();
-              }
-            });
+            img.addEventListener('load', onImageLoadOrError);
+            img.addEventListener('error', onImageLoadOrError);
           }
         });
-
-        if (loadedImages === images.length) {
-          updateHeight();
-        }
-
-        doc.addEventListener('click', (e: MouseEvent) => this.handleIframeClick(e, doc));
-        doc.addEventListener('keydown', (e: KeyboardEvent) => this.handleIframeKeyDown(e, doc));
-      } catch (error) {
-        iframe.style.height = '100vh';
+      } catch {
+        // Fallback khi gặp lỗi bảo mật (Cross-Origin) hoặc lỗi biên dịch khác
+        iframe.style.height = 'auto';
         this.iframeVisible.set(true);
       }
     }
   }
-
-  // --- Giữ nguyên các hàm handleIframeClick, handleIframeKeyDown, submitIframeForm ---
   private handleIframeClick(event: MouseEvent, doc: Document): void {
     const target = event.target as HTMLElement;
     const submitButton = target.closest('button[data-action="emit-contact-form"]') as HTMLButtonElement | null;
@@ -149,7 +159,8 @@ export class PropertyDetail implements OnInit, OnDestroy {
   private handleIframeKeyDown(event: KeyboardEvent, doc: Document): void {
     const target = event.target as HTMLElement;
     if ((target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') && target.tagName !== 'TEXTAREA' && event.key === 'Enter') {
-      const formContainer = target.closest('div');
+      // Tìm container chung của form thay vì div gần nhất của input
+      const formContainer = target.closest('[data-form-container="contact"]');
       const submitButton = formContainer?.querySelector('button[data-action="emit-contact-form"]') as HTMLButtonElement | null;
       if (submitButton) {
         event.preventDefault();
@@ -159,7 +170,8 @@ export class PropertyDetail implements OnInit, OnDestroy {
   }
 
   private submitIframeForm(button: HTMLButtonElement, doc: Document): void {
-    const formContainer = button.closest('div');
+    // Tìm container chung chứa toàn bộ form
+    const formContainer = button.closest('[data-form-container="contact"]');
     if (!formContainer) return;
 
     const nameInput = formContainer.querySelector('input[type="text"]') as HTMLInputElement | null;
@@ -173,11 +185,18 @@ export class PropertyDetail implements OnInit, OnDestroy {
       return;
     }
 
-    this.contactsStore.addContact({ name, phone, message: messageInput?.value ?? '', post: this.store.selectedPost()?._id! })
-      .subscribe(() => {
-        if (nameInput) nameInput.value = '';
-        if (phoneInput) phoneInput.value = '';
-        if (messageInput) messageInput.value = '';
+    this.contactsStore.addContact({
+      name,
+      phone,
+      message: messageInput?.value ?? '',
+      post: this.store.selectedPost()?._id!
+    })
+      .subscribe({
+        next: () => {
+          if (nameInput) nameInput.value = '';
+          if (phoneInput) phoneInput.value = '';
+          if (messageInput) messageInput.value = '';
+        }
       });
   }
 }

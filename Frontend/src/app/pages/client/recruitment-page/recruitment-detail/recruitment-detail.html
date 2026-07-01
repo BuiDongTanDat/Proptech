@@ -1,1 +1,91 @@
-<p>recruitments-detail works!</p>
+<div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
+  <!-- Phần đầu trang: Nút quay lại & Tiêu đề bài viết lớn -->
+  <header class="mb-8 border-b border-gray-200 pb-6">
+    <button 
+      type="button"
+      (click)="goBack()" 
+      class="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 cursor-pointer text-sm mb-4 transition-colors duration-200 bg-transparent border-0 p-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+      aria-label="Quay lại danh sách tuyển dụng"
+    >
+     <svg lucideIcon="arrow-left" class="size-4"></svg>
+      <span>Quay lại</span>
+    </button>
+    
+    <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-3 leading-tight">
+      {{ store.selectedPost()?.title }}
+    </h1>
+
+    @if (store.selectedPost()?.createdAt) {
+      <div class="text-sm text-gray-500">
+        <span>Đăng ngày: {{ store.selectedPost()?.createdAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+    }
+  </header>
+
+  <!-- Bố cục 2 cột bằng Tailwind Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Cột bên trái: Chi tiết nội dung -->
+    <main class="lg:col-span-2 min-w-0" aria-label="Nội dung chi tiết bài tuyển dụng">
+      <div 
+        class="transition-opacity duration-300 w-full" 
+        [class.opacity-100]="iframeVisible()" 
+        [class.opacity-0]="!iframeVisible()"
+      >
+        @if (safeHtml()) {
+          <iframe
+            [srcdoc]="safeHtml() | sanitizeHtml"
+            (load)="onIframeLoad($event)"
+            class="w-full border-0 block"
+            scrolling="no"
+            title="Nội dung bài viết chi tiết"
+          ></iframe>
+        } @else {
+          <div class="p-12 text-center text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+            Không có nội dung hiển thị hoặc bài viết đang được tải.
+          </div>
+        }
+      </div>
+    </main>
+
+    <!-- Cột bên phải: Danh sách gợi ý -->
+    <aside class="border-t border-gray-200 pt-8 lg:border-t-0 lg:pt-0 lg:border-l lg:border-gray-200 lg:pl-8" aria-label="Bài viết liên quan">
+      <h2 class="text-lg font-semibold text-gray-900 mb-6 mt-0">Vị trí tuyển dụng khác</h2>
+
+      @if (suggestedLoading()) {
+        <div class="text-sm text-gray-400 text-center py-8" role="status">
+          <span>Đang tải danh sách vị trí gợi ý...</span>
+        </div>
+      } @else {
+        @if (suggestedPosts().length > 0) {
+          <div class="flex flex-col gap-5">
+            @for (post of suggestedPosts(); track post._id) {
+              <a 
+                [routerLink]="['/recruitments', post._id]"
+                class="flex gap-4 cursor-pointer transition-opacity duration-200 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1"
+              >
+                @if (post.cover_picture?.url ) {
+                  <div class="w-24 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+                    <img [src]="post.cover_picture?.url" [alt]="post.title" class="w-full h-full object-cover" />
+                  </div>
+                }
+                
+                <div class="flex flex-col justify-between py-0.5 min-w-0">
+                  <h3 class="text-sm font-medium text-gray-800 m-0 line-clamp-2 leading-snug">
+                    {{ post.title }}
+                  </h3>
+                  <span class="text-xs text-gray-400">
+                    {{ post.createdAt | date:'dd/MM/yyyy' }}
+                  </span>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <div class="text-sm text-gray-400 text-center py-8">
+            Không có vị trí tuyển dụng khác.
+          </div>
+        }
+      }
+    </aside>
+  </div>
+</div>

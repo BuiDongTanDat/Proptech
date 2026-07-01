@@ -1,4 +1,4 @@
-import { LucidePencil, LucideTrash, LucideUser, LucideVariable, LucideDatabase, LucideSettings, LucidePalette, LucideX, LucideUsers, LucideMail, LucideLock, LucideMapPin, LucideGlobe, LucideSave, LucideHash, LucideAtSign, LucidePhone, LucidePhoneCall, LucideShield, LucideSparkle, LucideChevronRight, LucideSearch, LucideArchive, LucideChevronLeft, LucideEye, LucideEyeClosed, LucidePanelRight, LucideLogOut, LucideLogIn, LucideBuilding2, LucideHouse, LucideCheck, LucideTriangleAlert, LucideCircleAlert, LucideChevronDown, LucideChevronUp, LucideCircleUser, LucideDownload, LucideUpload, LucideList, LucideLayoutGrid, LucidePlus, LucidePin, LucideBed, LucideBriefcase, LucideBath, LucideSquare, LucideInfo, LucideCalendar, LucideCamera, LucideArrowRight, LucideWallpaper, LucideColumns3, LucideImage, LucideBlocks, LucideType, LucideCuboid, LucideLayoutTemplate, LucideCopy, LucideTrash2, LucideArrowLeft, LucideSend, LucideLoaderCircle, LucideImagePlay, LucideImagePlus, LucideMessageCircle, LucideBuilding, LucideInbox, LucideFileWarning, LucideMinimize, LucideMaximize, LucideTrendingUp, LucideFileText, LucideCheckCircle, LucideMessageSquare, LucideLoader, LucideClock } from '@lucide/angular';
+import { LucidePencil, LucideTrash, LucideUser, LucideVariable, LucideDatabase, LucideSettings, LucidePalette, LucideX, LucideUsers, LucideMail, LucideLock, LucideMapPin, LucideGlobe, LucideSave, LucideHash, LucideAtSign, LucidePhone, LucidePhoneCall, LucideShield, LucideSparkle, LucideChevronRight, LucideSearch, LucideArchive, LucideChevronLeft, LucideEye, LucideEyeClosed, LucidePanelRight, LucideLogOut, LucideLogIn, LucideBuilding2, LucideHouse, LucideCheck, LucideTriangleAlert, LucideCircleAlert, LucideChevronDown, LucideChevronUp, LucideCircleUser, LucideDownload, LucideUpload, LucideList, LucideLayoutGrid, LucidePlus, LucidePin, LucideBed, LucideBriefcase, LucideBath, LucideSquare, LucideInfo, LucideCalendar, LucideCamera, LucideArrowRight, LucideWallpaper, LucideColumns3, LucideImage, LucideBlocks, LucideType, LucideCuboid, LucideLayoutTemplate, LucideCopy, LucideTrash2, LucideArrowLeft, LucideSend, LucideLoaderCircle, LucideImagePlay, LucideImagePlus, LucideMessageCircle, LucideBuilding, LucideInbox, LucideFileWarning, LucideMinimize, LucideMaximize, LucideTrendingUp, LucideFileText, LucideCheckCircle, LucideMessageSquare, LucideLoader, LucideClock, LucideNewspaper, LucideSlidersHorizontal, LucideBanknote } from '@lucide/angular';
 
 export const LUCIDE_ICON_SET = [
     LucidePencil,
@@ -81,7 +81,9 @@ export const LUCIDE_ICON_SET = [
     LucideMessageSquare,
     LucideLock,
     LucideClock,
-    LucideLoader
-
+    LucideLoader,
+    LucideNewspaper,
+    LucideSlidersHorizontal,
+    LucideBanknote
     
 ];

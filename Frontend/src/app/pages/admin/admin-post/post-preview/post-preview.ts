@@ -28,7 +28,7 @@ export class PostReview implements OnInit, OnDestroy {
   private readonly blobUrl = signal<string | null>(null);
   protected readonly displayUrl = signal<SafeResourceUrl | null>(null);
   protected readonly leftOpen = signal(true);
-  protected readonly postType = signal<PostType>('project');
+  protected readonly postType = signal<PostType>('properties');
 
   // Lấy cấu hình dựa vào loại bài đăng hiện tại
   readonly currentConfig = computed(() => POST_PAGE_CONFIG[this.postType()]);
@@ -98,7 +98,7 @@ export class PostReview implements OnInit, OnDestroy {
     if (isPostType(type)) {
       this.postType.set(type);
       // QUAN TRỌNG: Phải cập nhật type vào Store để loadPostById gọi đúng API type tương ứng
-      this.store.currentType.set(type === 'project' ? 'properties' : type);
+      this.store.currentType.set(type === 'properties' ? 'properties' : type);
     }
 
     // 2. Load dữ liệu bài viết
@@ -120,7 +120,7 @@ export class PostReview implements OnInit, OnDestroy {
 
   protected onEdit(): void {
     const id = this.store.selectedPost()?._id;
-    const type = this.postType() || 'project';
+    const type = this.postType() || 'properties';
     if (id) {
       this.router.navigate(['/admin/post', type, 'editor', id]);
     }

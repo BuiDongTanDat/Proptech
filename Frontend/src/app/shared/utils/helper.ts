@@ -2,62 +2,61 @@ import { AccountStatus, ContactStatus, PropertyStatus, UserRole } from "../../co
 
 // Contact status
 const CONTACT_STATUS_CLASS: Record<ContactStatus, string> = {
-    [ContactStatus.NEW]: 'bg-blue-100 text-blue-600',
-    [ContactStatus.IN_PROGRESS]: 'bg-yellow-100 text-yellow-600',
-    [ContactStatus.RESOLVED]: 'bg-green-100 text-green-600',
-    [ContactStatus.SPAM]: 'bg-red-100 text-red-600',
+  [ContactStatus.NEW]: 'bg-blue-100 text-blue-600',
+  [ContactStatus.IN_PROGRESS]: 'bg-yellow-100 text-yellow-600',
+  [ContactStatus.RESOLVED]: 'bg-green-100 text-green-600',
+  [ContactStatus.SPAM]: 'bg-red-100 text-red-600',
 };
 
 export function getContactStatusClass(status: ContactStatus): string {
-    return CONTACT_STATUS_CLASS[status] ?? 'bg-gray-100 text-gray-500';
+  return CONTACT_STATUS_CLASS[status] ?? 'bg-gray-100 text-gray-500';
 }
 
 // Property/Post status
 const POST_STATUS_CLASS: Record<PropertyStatus, string> = {
-    [PropertyStatus.DRAFT]: 'bg-gray-100 text-gray-600',
-    [PropertyStatus.PENDING_APPROVAL]: 'bg-yellow-100 text-yellow-600',
-    [PropertyStatus.PRIVATE]: 'bg-purple-100 text-purple-600',
-    [PropertyStatus.PUBLISHED]: 'bg-green-100 text-green-600',
-    [PropertyStatus.REJECTED]: 'bg-red-100 text-red-600',
+  [PropertyStatus.DRAFT]: 'bg-gray-100 text-gray-600',
+  [PropertyStatus.PENDING_APPROVAL]: 'bg-yellow-100 text-yellow-600',
+  [PropertyStatus.PRIVATE]: 'bg-purple-100 text-purple-600',
+  [PropertyStatus.PUBLISHED]: 'bg-green-100 text-green-600',
+  [PropertyStatus.REJECTED]: 'bg-red-100 text-red-600',
 };
 
 export function getPostStatusClass(status: PropertyStatus): string {
-    return POST_STATUS_CLASS[status] ?? 'bg-gray-100 text-gray-500';
+  return POST_STATUS_CLASS[status] ?? 'bg-gray-100 text-gray-500';
 }
 
 // User role
 const ROLE_CLASS: Record<UserRole, string> = {
-    [UserRole.MANAGER]: 'bg-orange-100 text-orange-600',
-    [UserRole.STAFF]: 'bg-blue-100 text-blue-600',
-    [UserRole.INTERN]: 'bg-cyan-100 text-cyan-600',
+  [UserRole.MANAGER]: 'bg-orange-100 text-orange-600',
+  [UserRole.STAFF]: 'bg-blue-100 text-blue-600',
+  [UserRole.INTERN]: 'bg-cyan-100 text-cyan-600',
 };
 
 export function getRoleClass(role: UserRole): string {
-    return ROLE_CLASS[role] ?? 'bg-gray-100 text-gray-500';
+  return ROLE_CLASS[role] ?? 'bg-gray-100 text-gray-500';
 }
 
 // Account status text color
 const ACCOUNT_STATUS_CLASS: Record<AccountStatus, string> = {
-    [AccountStatus.ACTIVE]: 'text-green-600',
-    [AccountStatus.PENDING]: 'text-yellow-600',
-    [AccountStatus.INACTIVE]: 'text-red-600',
+  [AccountStatus.ACTIVE]: 'text-green-600',
+  [AccountStatus.PENDING]: 'text-yellow-600',
+  [AccountStatus.INACTIVE]: 'text-red-600',
 };
 
 export function getAccountStatusClass(status: AccountStatus): string {
-    return ACCOUNT_STATUS_CLASS[status] ?? 'text-gray-500';
+  return ACCOUNT_STATUS_CLASS[status] ?? 'text-gray-500';
 }
 
 // Account status background
 const ACCOUNT_STATUS_BG_CLASS: Record<AccountStatus, string> = {
-    [AccountStatus.ACTIVE]: 'bg-green-600',
-    [AccountStatus.PENDING]: 'bg-yellow-600',
-    [AccountStatus.INACTIVE]: 'bg-red-600',
+  [AccountStatus.ACTIVE]: 'bg-green-600',
+  [AccountStatus.PENDING]: 'bg-yellow-600',
+  [AccountStatus.INACTIVE]: 'bg-red-600',
 };
 
 export function getAccountStatusBgClass(status: AccountStatus): string {
-    return ACCOUNT_STATUS_BG_CLASS[status] ?? 'bg-gray-100';
+  return ACCOUNT_STATUS_BG_CLASS[status] ?? 'bg-gray-100';
 }
-
 
 
 export const contactFormTemplate = `
@@ -98,8 +97,9 @@ export const contactFormTemplate = `
       </p>
     </div>
 
-    <!-- Form -->
+    <!-- Form Container được bổ sung thuộc tính data-form-container -->
     <div
+      data-form-container="contact"
       style="
         display: flex;
         flex-wrap: wrap;
@@ -199,106 +199,105 @@ export const contactFormTemplate = `
   </div>
 </div>
 `.trim();
-
 export const contactFormTemplateDesign = {
-    counters: {
-        u_row: 1,
-        u_column: 1,
-        u_content_html: 1,
-    },
-    body: {
-        id: 'contact-form-body',
-        rows: [
-            {
-                id: 'contact-form-row',
-                cells: [1],
-                columns: [
-                    {
-                        id: 'contact-form-column',
-                        contents: [
-                            {
-                                id: 'contact-form-html',
-                                type: 'html',
-                                values: {
-                                    html: contactFormTemplate,
-                                    containerPadding: '0px',
-                                    displayCondition: null,
-                                    _styleGuide: null,
-                                    _meta: {
-                                        htmlID: 'u_content_html_contact_form',
-                                        htmlClassNames: 'u_content_html',
-                                    },
-                                    selectable: true,
-                                    draggable: true,
-                                    duplicatable: true,
-                                    deletable: true,
-                                    hideable: true,
-                                    locked: false,
-                                },
-                            },
-                        ],
-                        values: {
-                            backgroundColor: '',
-                            padding: '0px',
-                            border: {},
-                            borderRadius: '0px',
-                            _meta: {
-                                htmlID: 'u_column_contact_form',
-                                htmlClassNames: 'u_column',
-                            },
-                            deletable: true,
-                            locked: false,
-                        },
-                    },
-                ],
+  counters: {
+    u_row: 1,
+    u_column: 1,
+    u_content_html: 1,
+  },
+  body: {
+    id: 'contact-form-body',
+    rows: [
+      {
+        id: 'contact-form-row',
+        cells: [1],
+        columns: [
+          {
+            id: 'contact-form-column',
+            contents: [
+              {
+                id: 'contact-form-html',
+                type: 'html',
                 values: {
-                    displayCondition: null,
-                    columns: false,
-                    _styleGuide: null,
-                    backgroundColor: '',
-                    columnsBackgroundColor: '',
-                    backgroundImage: {
-                        url: '',
-                        fullWidth: true,
-                        repeat: 'no-repeat',
-                        size: 'custom',
-                        position: 'center',
-                        customPosition: ['50%', '50%'],
-                    },
-                    padding: '0px',
-                    anchor: '',
-                    hideDesktop: false,
-                    _meta: {
-                        htmlID: 'u_row_contact_form',
-                        htmlClassNames: 'u_row',
-                    },
-                    selectable: true,
-                    draggable: true,
-                    duplicatable: true,
-                    deletable: true,
-                    hideable: true,
-                    locked: false,
+                  html: contactFormTemplate,
+                  containerPadding: '0px',
+                  displayCondition: null,
+                  _styleGuide: null,
+                  _meta: {
+                    htmlID: 'u_content_html_contact_form',
+                    htmlClassNames: 'u_content_html',
+                  },
+                  selectable: true,
+                  draggable: true,
+                  duplicatable: true,
+                  deletable: true,
+                  hideable: true,
+                  locked: false,
                 },
+              },
+            ],
+            values: {
+              backgroundColor: '',
+              padding: '0px',
+              border: {},
+              borderRadius: '0px',
+              _meta: {
+                htmlID: 'u_column_contact_form',
+                htmlClassNames: 'u_column',
+              },
+              deletable: true,
+              locked: false,
             },
+          },
         ],
         values: {
-            backgroundColor: '#f8fafc',
-            contentWidth: '600px',
-            fontFamily: {
-                label: 'Arial',
-                value: 'arial,helvetica,sans-serif',
-            },
-            linkStyle: {
-                body: true,
-                linkColor: '#2563eb',
-                linkHoverColor: '#1d4ed8',
-                linkUnderline: true,
-                linkHoverUnderline: true,
-            },
-            _meta: {
-                htmlID: 'u_body_contact_form',
-                htmlClassNames: 'u_body',
-            },
+          displayCondition: null,
+          columns: false,
+          _styleGuide: null,
+          backgroundColor: '',
+          columnsBackgroundColor: '',
+          backgroundImage: {
+            url: '',
+            fullWidth: true,
+            repeat: 'no-repeat',
+            size: 'custom',
+            position: 'center',
+            customPosition: ['50%', '50%'],
+          },
+          padding: '0px',
+          anchor: '',
+          hideDesktop: false,
+          _meta: {
+            htmlID: 'u_row_contact_form',
+            htmlClassNames: 'u_row',
+          },
+          selectable: true,
+          draggable: true,
+          duplicatable: true,
+          deletable: true,
+          hideable: true,
+          locked: false,
         },
+      },
+    ],
+    values: {
+      backgroundColor: '#f8fafc',
+      contentWidth: '600px',
+      fontFamily: {
+        label: 'Arial',
+        value: 'arial,helvetica,sans-serif',
+      },
+      linkStyle: {
+        body: true,
+        linkColor: '#2563eb',
+        linkHoverColor: '#1d4ed8',
+        linkUnderline: true,
+        linkHoverUnderline: true,
+      },
+      _meta: {
+        htmlID: 'u_body_contact_form',
+        htmlClassNames: 'u_body',
+      },
     },
+  },
 };

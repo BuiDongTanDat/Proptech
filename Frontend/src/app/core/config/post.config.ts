@@ -1,6 +1,6 @@
 
 import { Validators } from '@angular/forms';
-export type PostType = 'news' | 'project' | 'recruitment';
+export type PostType = 'news' | 'properties' | 'jobs';
 export type FieldType = 'input' | 'textarea' | 'dropdown' | 'image' | 'date';
 
 export interface DynamicFieldConfig {
@@ -24,7 +24,7 @@ export const REGION_OPTIONS = [
 ];
 
 export function isPostType(value: string | null): value is PostType {
-  return value === 'news' || value === 'project' || value === 'recruitment';
+  return value === 'news' || value === 'properties' || value === 'jobs';
 }
 
 export const POST_PAGE_CONFIG: Record<PostType, {
@@ -38,21 +38,21 @@ export const POST_PAGE_CONFIG: Record<PostType, {
     fields: [
       {
         key: 'title',
-        label: 'Tiêu đề tin tức',
+        label: 'Tiêu đề ',
         type: 'textarea',
-        placeholder: 'Nhập tiêu đề tin tức...',
+        placeholder: 'Nhập tiêu đề ...',
         required: true,
         listVisible: true,
         previewVisible: true,
       },
-      {
-        key: 'summary',
-        label: 'Mô tả ngắn',
-        type: 'textarea',
-        placeholder: 'Nhập mô tả ngắn...',
-        listVisible: true,
-        previewVisible: true,
-      },
+      // {
+      //   key: 'summary',
+      //   label: 'Mô tả ngắn',
+      //   type: 'textarea',
+      //   placeholder: 'Nhập mô tả ngắn...',
+      //   listVisible: true,
+      //   previewVisible: true,
+      // },
       {
         key: 'cover_picture',
         label: 'Ảnh bìa',
@@ -62,7 +62,7 @@ export const POST_PAGE_CONFIG: Record<PostType, {
     ],
   },
 
-  project: {
+  properties: {
     label: 'Dự án',
     description: 'Quản lý dự án',
     fields: [
@@ -116,7 +116,7 @@ export const POST_PAGE_CONFIG: Record<PostType, {
     ],
   },
 
-  recruitment: {
+  jobs: {
     label: 'Tuyển dụng',
     description: 'Quản lý tin tuyển dụng',
     fields: [
@@ -130,34 +130,40 @@ export const POST_PAGE_CONFIG: Record<PostType, {
         previewVisible: true,
       },
       {
-        key: 'department',
-        label: 'Phòng ban',
-        type: 'input',
-        placeholder: 'Nhập phòng ban...',
-        listVisible: true,
+        key: 'cover_picture',
+        label: 'Ảnh bìa',
+        type: 'image',
         previewVisible: true,
       },
-      {
-        key: 'workLocation',
-        label: 'Địa điểm làm việc',
-        type: 'input',
-        placeholder: 'Nhập địa điểm làm việc...',
-        listVisible: true,
-        previewVisible: true,
-      },
-      {
-        key: 'salary',
-        label: 'Mức lương',
-        type: 'input',
-        placeholder: 'Nhập mức lương...',
-        previewVisible: true,
-      },
-      {
-        key: 'deadline',
-        label: 'Hạn nộp hồ sơ',
-        type: 'date',
-        previewVisible: true,
-      },
+      // {
+      //   key: 'department',
+      //   label: 'Phòng ban',
+      //   type: 'input',
+      //   placeholder: 'Nhập phòng ban...',
+      //   listVisible: true,
+      //   previewVisible: true,
+      // },
+      // {
+      //   key: 'workLocation',
+      //   label: 'Địa điểm làm việc',
+      //   type: 'input',
+      //   placeholder: 'Nhập địa điểm làm việc...',
+      //   listVisible: true,
+      //   previewVisible: true,
+      // },
+      // {
+      //   key: 'salary',
+      //   label: 'Mức lương',
+      //   type: 'input',
+      //   placeholder: 'Nhập mức lương...',
+      //   previewVisible: true,
+      // },
+      // {
+      //   key: 'deadline',
+      //   label: 'Hạn nộp hồ sơ',
+      //   type: 'date',
+      //   previewVisible: true,
+      // },
     ],
   },
 };

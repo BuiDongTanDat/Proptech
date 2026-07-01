@@ -110,13 +110,13 @@ export class UnlayerDesign implements OnInit, OnDestroy {
 
   // Unlayer Editor Config 
   readonly editorOptions = {
-    projectId: 286892,
+    propertiesId: 286892,
     displayMode: 'web' as const,
     version: 'latest',
   };
 
   readonly statusOptions = PropertyStatus;
-  readonly postType = signal<PostType>('project');
+  readonly postType = signal<PostType>('properties');
   readonly currentConfig = computed(() => POST_PAGE_CONFIG[this.postType()]);
 
   // Lấy các cấu hình trường không chứa hình ảnh

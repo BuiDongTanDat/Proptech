@@ -1,1 +1,117 @@
-<p>recruitments-list-page works!</p>
+<div class="min-h-screen bg-slate-50/60 pb-16">
+  <!-- HERO BANNER SECTION -->
+  <header class=" relative bg-slate-950 text-white overflow-hidden py-16 md:py-24">
+    <div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
+
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in transition duration-200">
+      <div class="max-w-2xl">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20 backdrop-blur-sm mb-3">
+          <span class="size-1.5 rounded-full bg-blue-400 animate-pulse" aria-hidden="true"></span>
+          Cơ Hội Nghề Nghiệp
+        </span>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-3">
+          Gia Nhập <span class="text-blue-400">Đội Ngũ</span> <br class="hidden sm:inline" /> & Kiến Tạo Tương Lai
+        </h1>
+        <p class="text-slate-300 text-xs md:text-sm max-w-lg leading-relaxed">
+          Khám phá các cơ hội phát triển nghề nghiệp hấp dẫn, môi trường làm việc năng động và lộ trình thăng tiến vượt trội cùng chúng tôi.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+    
+
+    <!-- JOBS GRID -->
+    @if (loading()) {
+      <div class="flex flex-col items-center justify-center min-h-[300px]" role="status" aria-live="polite">
+        <svg lucideIcon="loader-2" class="size-8 animate-spin text-slate-400 mb-3" aria-hidden="true"></svg>
+        <p class="text-slate-500 font-medium text-xs">Đang tải danh sách công việc...</p>
+      </div>
+    } @else if (postStore.filteredPosts()) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        @for (job of postStore.filteredPosts(); track job._id) {
+          <a
+            class="fade-in transtion group flex flex-col justify-between rounded-xl border border-slate-100 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+            [routerLink]="['/jobs', job._id]"
+          >
+            <div>
+              <!-- Department & Deadline Badge -->
+              <div class="flex items-center justify-between gap-2 mb-4">
+                <span
+                  class="rounded bg-blue-50 text-blue-500 px-2 py-1 text-xs font-semibold uppercase tracking-wider border border-blue-100"
+                >
+                  Tuyển dụng
+                </span>
+
+                <span class="text-[11px] text-slate-400 flex items-center gap-1">
+                  <svg lucideIcon="calendar" class="size-3.5" aria-hidden="true"></svg>
+                  Hạn nộp: ---
+                </span>
+              </div>
+
+              <!-- Job Title -->
+              <h3
+                class="text-base font-semibold text-slate-800 group-hover:text-primary transition-colors duration-200 line-clamp-2 leading-snug"
+              >
+                {{ job.title }}
+              </h3>
+
+              <!-- Metadata Info -->
+              <div class="mt-4 space-y-2">
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                  <svg lucideIcon="map-pin" class="size-4 shrink-0 text-slate-400" aria-hidden="true"></svg>
+                  <span>Toà nhà số 122 Nguyễn Hoàng, Phường Bình Trưng, Thành phố Hồ Chí Minh</span>
+                </div>
+
+               
+
+                <div class="flex items-center gap-2 text-xs text-orange-500 font-semibold">
+                  <svg lucideIcon="clock" class="size-4 shrink-0 text-orange-400" aria-hidden="true"></svg>
+                  <span>Toàn thời gian</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Action Footer -->
+            <div
+              class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-[11px] font-semibold text-primary uppercase tracking-wider"
+            >
+              <span>Ứng tuyển ngay</span>
+              <span class="flex items-center justify-center size-6 rounded-full bg-slate-50 text-slate-600 group-hover:bg-primary group-hover:text-white transition-all duration-300" aria-hidden="true">
+                <svg
+                  lucideIcon="arrow-right"
+                  class="size-3 transition-transform group-hover:translate-x-0.5"
+                ></svg>
+              </span>
+            </div>
+          </a>
+        }
+      </div>
+    } @else {
+      <!-- Empty State -->
+      <div class="bg-white rounded-xl p-12 text-center border border-dashed border-slate-200 shadow-sm max-w-md mx-auto">
+        <div class="bg-slate-50 size-12 rounded-xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
+          <svg lucideIcon="briefcase" class="size-6 text-slate-400" aria-hidden="true"></svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-800">Không tìm thấy vị trí tuyển dụng</h3>
+        <p class="text-slate-400 text-xs mt-1.5 max-w-xs mx-auto">
+          Hiện tại không có tin tuyển dụng nào phù hợp với tìm kiếm của bạn. Hãy thử từ khóa khác.
+        </p>
+      </div>
+    }
+
+    <!-- PAGINATION -->
+    @if (postStore.totalPages() > 1) {
+      <nav class="mt-12 flex justify-center" aria-label="Phân trang">
+        <app-pagination
+          [currentPage]="postStore.currentPage()"
+          [totalPages]="postStore.totalPages()"
+          [maxVisible]="5"
+          (pageChange)="onPageChange($event)"
+        />
+      </nav>
+    }
+  </main>
+</div>

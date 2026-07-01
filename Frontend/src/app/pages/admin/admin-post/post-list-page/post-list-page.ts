@@ -51,11 +51,11 @@ export class PostListPage implements OnInit {
   selectedPost = signal<IPost | null>(null);
 
   // Tab hiện hành
-  activeTab = signal<'project' | 'news' | 'recruitment'>('project');
-  tabs: { label: string; value: 'news' | 'project' | 'recruitment' }[] = [
-    { label: 'Dự án', value: 'project' },
+  activeTab = signal<'properties' | 'news' | 'jobs'>('properties');
+  tabs: { label: string; value: 'news' | 'properties' | 'jobs' }[] = [
+    { label: 'Dự án', value: 'properties' },
     { label: 'Tin tức', value: 'news' },
-    { label: 'Tuyển dụng', value: 'recruitment' }
+    { label: 'Tuyển dụng', value: 'jobs' }
   ];
 
 
@@ -68,19 +68,14 @@ export class PostListPage implements OnInit {
   }));
   categoryOptions = signal<{ label: string; value: string }[]>([]);
 
-  // Chỉ hiển thị bộ lọc danh mục khi tab hiện tại là 'Dự án' (project)
+  // Chỉ hiển thị bộ lọc danh mục khi tab hiện tại là 'Dự án' (properties)
   readonly showCategoryDropdown = computed(() => {
-    return this.activeTab() === 'project' && this.categoryStore.categories().length > 0;
+    return this.activeTab() === 'properties' && this.categoryStore.categories().length > 0;
   });
 
   // Tự động lọc danh sách tin hiển thị theo tab đang hoạt động
   readonly displayedPosts = computed(() => {
-    const posts = this.store.filteredPosts();
-    const tab = this.activeTab();
-    return posts.filter(p => {
-      const postType = (p as any).type || 'project';
-      return postType === tab;
-    });
+    return this.store.filteredPosts();
   });
 
   constructor() {
@@ -132,10 +127,10 @@ export class PostListPage implements OnInit {
     this.store.setPage(page);
   }
 
-  onTabChange(tab: 'project' | 'news' | 'recruitment') {
+  onTabChange(tab: 'properties' | 'news' | 'jobs') {
     this.activeTab.set(tab);
     // Cập nhật type trong Store để loadPosts gọi đúng API theo type
-    this.store.currentType.set(tab === 'project' ? 'properties' : tab);
+    this.store.currentType.set(tab === 'properties' ? 'properties' : tab);
     this.store.loadPosts(); // call API lại
   }
 
@@ -148,17 +143,17 @@ export class PostListPage implements OnInit {
   }
 
   // Sửa lỗi điều hướng sử dụng đường dẫn tuyệt đối
-  onAdd(type: 'news' | 'project' | 'recruitment') {
+  onAdd(type: 'news' | 'properties' | 'jobs') {
     this.router.navigate(['/admin/post', type, 'add']);
   }
 
   onEdit(post: IPost) {
-    const type = (post as any).type || this.route.snapshot.paramMap.get('type') || 'project';
+    const type = (post as any).type || this.activeTab() || 'properties';
     this.router.navigate(['/admin/post', type, 'editor', post._id]);
   }
 
   onView(post: IPost) {
-    const type = (post as any).type || this.route.snapshot.paramMap.get('type') || 'project';
+    const type = (post as any).type || this.activeTab()|| 'properties';
     this.router.navigate(['/admin/post', type, 'view', post._id]);
   }
 

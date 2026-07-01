@@ -99,7 +99,8 @@ export class PostStore {
         this.currentPage.set(1);
         this.searchQuery.set('');
         this.selectedStatus.set('all');
-        this.loadPosts();
+        //Sau khi setType, gọi loadPublicPosts để tải lại danh sách bài viết
+        this.loadPublicPosts();
     }
 
     loadPosts() {
@@ -239,13 +240,13 @@ export class PostStore {
             .subscribe({
                 next: res => {
                     this._posts.set(res.data.posts);
-                    this._allRealEstatePosts.set(res.data.posts); // Cập nhật danh sách bài đăng bất động sản công khai
+                    //this._allRealEstatePosts.set(res.data.posts); // Cập nhật danh sách bài đăng bất động sản công khai
                     this.totalPages.set(res.pagination.totalPages);
                 }
             });
     }
 
-    // Dùng tạm khi chưa có API public
+
     loadPublicPostById(id: string) {
         this.loading.set(true);
         this.postService.getPublicPostById(this.currentType(), id)

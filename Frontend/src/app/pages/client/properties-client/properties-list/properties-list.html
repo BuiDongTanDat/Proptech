@@ -1,33 +1,4 @@
 <section class="space-y-6">
-  <!-- SEARCH -->
-  <div class="rounded-md border border-gray-200 bg-white p-4 shadow-sm">
-    <div class="flex items-end gap-3">
-      <div class="flex-1">
-        <label
-          for="property-search"
-          class="flex gap-2 mb-2 text-xs uppercase tracking-widest text-gray-400"
-        >
-          <svg lucideIcon="building-2" class="size-4 text-gray-400"></svg>
-          Tìm kiếm bất động sản
-        </label>
-
-        <app-custom-input
-          id="property-search"
-          variant="outline"
-          placeholder="Tên dự án, vị trí hoặc chủ đầu tư..."
-          [ngModel]="keyword()"
-          (ngModelChange)="keywordChange.emit($event)"
-          (keyup.enter)="search.emit()"
-        />
-      </div>
-
-      <app-button variant="primary" (btnClick)="search.emit()" className="shrink-0">
-        <svg lucideIcon="search" class="size-4"></svg>
-        Tìm kiếm
-      </app-button>
-    </div>
-  </div>
-
   @if (loading()) {
     <div class="relative min-h-96 rounded-3xl border border-gray-200 bg-white">
       <div class="absolute inset-0 flex items-center justify-center">
