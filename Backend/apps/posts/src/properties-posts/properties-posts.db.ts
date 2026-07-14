@@ -1,0 +1,150 @@
+import { InjectModel } from "@nestjs/mongoose";
+import { Post } from "./schemas/create-posts.schema";
+import { Model, Types } from "mongoose";
+import { PostStatusHistory } from "./schemas/status-history.schema";
+import { PostStatus_Stage2, PostStatusValues } from "./schemas/post-status";
+
+export class PropertyPostsDb {
+    constructor(
+        @InjectModel(Post.name)
+        private readonly postModel: Model<Post>,
+
+        @InjectModel(PostStatusHistory.name)
+        private readonly postStatusHistoryModel: Model<PostStatusHistory>
+    ) { }
+
+    create = async (request) => {
+        return await this.postModel.create(request)
+    }
+
+    update = async (_id, request) => {
+        return await this.postModel.findByIdAndUpdate(
+            _id,
+            { $set: request },
+            { new: true },
+        )
+            .populate('category', 'name')
+    }
+
+    updateStatus = async (_id, status) => {
+        return await this.postModel.findByIdAndUpdate(
+            _id,
+            { $set: { status } },
+            { new: true },
+        )
+    }
+
+    findOne = async (_id, token = false) => {
+        if (!Types.ObjectId.isValid(_id))
+            return null;
+
+        const queryOptions = token
+            ? {
+                filter: { _id },
+                select: '',
+            }
+            : {
+                filter: { _id, status: PostStatus_Stage2.PUBLISHED },
+                select: '-authorId',
+            };
+
+        return await this.postModel
+            .findOne(queryOptions.filter)
+            .select(queryOptions.select)
+            .populate('category', 'name');
+    }
+
+    findForElasticsearch = async () => {
+        return await this.postModel
+            .find({ category: '6a169b6722a073de8d0ca587' })
+            .lean()
+    }
+
+    findByIds = async (ids: string[], token = false) => {
+        let select = token
+            ? '-region -createdAt -htmlSource -jsonSource'
+            : '_id title developer location cover_picture status'
+
+        const posts = await this.postModel
+            .find({ _id: { $in: ids } })
+            .select(select)
+            .lean();
+
+        const postMap = new Map(
+            posts.map((post: any) => [String(post._id), post]),
+        );
+
+        return ids
+            .map((id) => postMap.get(String(id)))
+            .filter(Boolean);
+    }
+
+    find = async (skip, limit, token = false, status?, categoryId?) => {
+        const queryOptions = token
+            ? {
+                filter: this.buildPrivateFilter(status, categoryId),
+                select: '-region -createdAt -htmlSource -jsonSource',
+            }
+            : {
+                filter: this.buildPublicFilter(),
+                select: '_id title developer location cover_picture status',
+            };
+
+        let query = this.postModel
+            .find(queryOptions.filter)
+            .select(queryOptions.select)
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 })
+
+        if (token)
+            query = query.populate('category', 'name')
+
+        return await query.lean()
+    }
+
+    count = async (token = false, status?, categoryId?) => {
+        const filter = token
+            ? this.buildPrivateFilter(status, categoryId)
+            : this.buildPublicFilter()
+
+        return await this.postModel.countDocuments(filter)
+    }
+
+    countAllStatus = async () => {
+        const response = await this.postModel.aggregate([
+            {
+                $group: {
+                    _id: '$status',
+                    count: { $sum: 1 }
+                }
+            }
+        ])
+
+        var statusCount = Object.fromEntries(
+            Object.values(PostStatusValues).map(s => [s, 0])
+        )
+
+        response.forEach(s => {
+            statusCount[s._id] = s.count
+        })
+
+        return statusCount
+    }
+
+    /*==========================
+        HELPER FUNCTIONS
+    ============================*/
+    private buildPrivateFilter(status?: string, categoryId?: string) {
+        return {
+            ...(status ? { status } : {}),
+            ...(categoryId ? { category: categoryId } : {}),
+        };
+    }
+
+    private buildPublicFilter() {
+        return {
+            status: PostStatus_Stage2.PUBLISHED
+        };
+    }
+}

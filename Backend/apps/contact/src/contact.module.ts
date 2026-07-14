@@ -1,0 +1,80 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ContactController } from './contact.controller';
+import { ContactService } from './contact.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Message, MessageSchema } from '../schemas/contact.schema';
+import { ContactDb } from './contact.db';
+import { AUTH, POSTS } from 'libs/contracts/constant';
+import { JwtModule } from '@nestjs/jwt';
+import { SignOptions } from 'jsonwebtoken';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: 'apps/contact/.env'
+    }),
+
+    ClientsModule.registerAsync([
+      {
+        name: AUTH,
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get<string>('AUTH_HOST'),
+            port: Number(configService.get<string>('AUTH_PORT')),
+          },
+        }),
+      },
+    ]),
+
+    ClientsModule.registerAsync([
+      {
+        name: POSTS,
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get<string>('POSTS_HOST'),
+            port: Number(configService.get<string>('POSTS_PORT')),
+          },
+        }),
+      },
+    ]),
+
+    MongooseModule.forFeature([
+      {
+        name: Message.name,
+        schema: MessageSchema,
+      },
+    ]),
+
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+        dbName: configService.get<string>('MONGO_DB')
+      })
+    }),
+
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      global: true,
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('SECRET_KEY'),
+        signOptions: {
+          expiresIn: (configService.get<string>('JWT_ACCESS_TOKEN_EXPIRED') || '15m') as SignOptions['expiresIn'],
+        }
+      }),
+      inject: [ConfigService]
+    }),
+  ],
+  controllers: [ContactController],
+  providers: [ContactService, ContactDb],
+})
+export class ContactModule { }
