@@ -1,16 +1,122 @@
+name: ahm-proptech
+
 services:
   frontend:
-    build: 
+    build:
       context: ./Frontend
-      dockerfile: Dockerfile.dev # Dùng file dev mới tạo
+      dockerfile: Dockerfile # Dùng file dev mới tạo
     container_name: protech_frontend
     ports:
-      - "4200:4200" 
+      - "4200:4200"
     volumes:
-      - ./Frontend:/app         # Mount code từ máy thật vào container
-      - /app/node_modules       # Giữ lại node_modules bên trong container (không ghi đè ngược ra máy thật)
+      - ./Frontend:/app # Mount code từ máy thật vào container
+      - /app/node_modules # Giữ lại node_modules bên trong container (không ghi đè ngược ra máy thật)
     environment:
       - CHOKIDAR_USEPOLLING=true # Hỗ trợ watch file tốt hơn trong Docker
-      - CHOKIDAR_INTERVAL=2000     
-      - WATCHPACK_POLLING=true       
+      - CHOKIDAR_INTERVAL=2000
+      - WATCHPACK_POLLING=true
     restart: unless-stopped
+
+  api-gateway:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    command: npx nest start api-gateway --watch
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./Backend/apps/api-gateway/.env
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: 1000
+      WATCHPACK_POLLING: "true"
+      TSC_WATCHFILE: DynamicPriorityPolling
+      TSC_WATCHDIRECTORY: DynamicPriorityPolling
+    volumes:
+      - ./Backend:/apps
+      - /apps/node_modules
+    depends_on:
+      - auth
+      - contact
+      - posts
+    restart: unless-stopped
+
+  analytics:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    command: npx nest start analytics --watch
+    ports:
+      - "4004:4004"
+    env_file:
+      - ./Backend/apps/analytics/.env
+    volumes:
+      - ./Backend:/apps
+      - /apps/node_modules
+    restart: unless-stopped
+
+  auth:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    command: npx nest start auth --watch
+    ports:
+      - "4003:4003"
+    env_file:
+      - ./Backend/apps/auth/.env
+    volumes:
+      - ./Backend:/apps
+      - /apps/node_modules
+    restart: unless-stopped
+
+  contact:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    command: npx nest start contact --watch
+    ports:
+      - "4002:4002"
+    env_file:
+      - ./Backend/apps/contact/.env
+    volumes:
+      - ./Backend:/apps
+      - /apps/node_modules
+    restart: unless-stopped
+
+  posts:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    command: npx nest start posts --watch
+    ports:
+      - "4001:4001"
+    env_file:
+      - ./Backend/apps/posts/.env
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./Backend:/apps
+      - /apps/node_modules
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  elasticsearch-data:

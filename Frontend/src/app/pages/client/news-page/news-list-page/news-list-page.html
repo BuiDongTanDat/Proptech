@@ -1,9 +1,20 @@
-<div class="min-h-screen  pb-16">
+<div class="min-h-screen pb-16">
   <!-- HERO BANNER SECTION -->
   <header class="relative bg-slate-950 text-white overflow-hidden py-16 md:py-24">
-    <div
-      class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/75 to-transparent"
-    ></div>
+    <div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/10 to-transparent">
+      <div
+        class="absolute inset-0 z-0 pointer-events-none"
+        style="
+          background-image: repeating-linear-gradient(
+            45deg,
+            transparent 0,
+            transparent 14px,
+            rgba(255, 255, 255, 0.12) 14px,
+            rgba(255, 255, 255, 0.12) 15px
+          );
+        "
+      ></div>
+    </div>
 
     <div
       class="fade-in transition duration-200 relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
@@ -48,7 +59,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         @for (post of postStore.filteredPosts(); track post._id) {
           <a
-            class="fade-in  group flex flex-col bg-white rounded-xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+            class="fade-in group flex flex-col bg-white rounded-xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer"
             [routerLink]="['/news', post._id]"
           >
             <!-- Image Thumbnail Wrapper -->
@@ -63,7 +74,7 @@
                 <span
                   class="bg-slate-10 text-white text-xs font-bold px-2 py-1 rounded shadow-sm backdrop-blur-sm border border-slate-200/50 uppercase tracking-wider"
                 >
-                 TIN MỚI
+                  TIN MỚI
                 </span>
               </div>
             </div>
@@ -74,12 +85,12 @@
               <div class="flex items-center gap-2 text-[11px] text-slate-400 mb-2">
                 <span class="flex items-center gap-1">
                   <svg lucideIcon="calendar" class="size-3 text-slate-400" aria-hidden="true"></svg>
-                  {{ post.updatedAt| date: 'dd/MM/yyyy' }}
+                  {{ post.updatedAt | date: 'dd/MM/yyyy' }}
                 </span>
                 <span class="w-1 h-1 rounded-full bg-slate-200" aria-hidden="true"></span>
                 <span class="flex items-center gap-1">
                   <svg lucideIcon="user" class="size-3 text-slate-400" aria-hidden="true"></svg>
-                 Ann Home
+                  Ann Home
                 </span>
               </div>
 
@@ -97,7 +108,7 @@
 
               <!-- Footer CTA -->
               <div
-                class="pt-3 border-t border-slate-50 flex items-center justify-between text-primary font-medium text-xs "
+                class="pt-3 border-t border-slate-50 flex items-center justify-between text-primary font-medium text-xs"
               >
                 <span>Xem chi tiết</span>
                 <span

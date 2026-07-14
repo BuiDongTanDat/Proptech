@@ -1,37 +1,72 @@
 <!-- Layout -->
 <div class="min-h-screen pb-16 bg-slate-50/50">
   <!-- HERO BANNER SECTION -->
-  <header class="relative bg-slate-950 text-white overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32">
-    <!-- Background Effect -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.08),transparent_45%)]"></div>
-    <div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/75 to-transparent"></div>
+  <header class="relative bg-slate-950 text-white overflow-hidden py-16 md:py-24">
+    <div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/10 to-transparent">
+      <div
+        class="absolute inset-0 z-0 pointer-events-none"
+        style="
+          background-image: repeating-linear-gradient(
+            45deg,
+            transparent 0,
+            transparent 14px,
+            rgba(255, 255, 255, 0.12) 14px,
+            rgba(255, 255, 255, 0.12) 15px
+          );
+        "
+      ></div>
+    </div>
 
-    <div class="fade-in transition duration-200 relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div
+      class="fade-in transition duration-200 relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+    >
       <div class="max-w-2xl">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20 backdrop-blur-sm mb-4">
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20 backdrop-blur-sm mb-4"
+        >
           <span class="size-1.5 rounded-full bg-blue-400 animate-pulse" aria-hidden="true"></span>
-          Dự án nổi bật 
+          Dự án nổi bật
         </span>
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-3">
           Khám phá <span class="text-blue-400">Dự Án</span> <br class="hidden sm:inline" />
           & Cơ Hội Đầu Tư
         </h1>
         <p class="text-slate-300 text-xs md:text-sm max-w-lg leading-relaxed">
-          Cập nhật nhanh chóng, chính xác các dự án bất động sản nổi bật, cơ hội đầu tư tiềm năng và các hoạt động nổi bật của chúng tôi.
+          Cập nhật nhanh chóng, chính xác các dự án bất động sản nổi bật, cơ hội đầu tư tiềm năng và
+          các hoạt động nổi bật của chúng tôi.
         </p>
       </div>
     </div>
   </header>
 
   <!-- MODERN OVERLAPPING SEARCH BAR -->
-  <div class="fade-in transition duration-200  relative z-20 -mt-10 md:-mt-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/80 border border-slate-100 p-3 sm:p-4">
-      <form (submit)="$event.preventDefault(); store.searchPublic()" class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+  <div
+    class="fade-in transition duration-200 relative z-20 -mt-10 md:-mt-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-xl shadow-slate-200/80 border border-slate-100 p-3 sm:p-4"
+    >
+      <form
+        (submit)="$event.preventDefault(); store.searchPublic()"
+        class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center"
+      >
         <!-- Input wrapper -->
         <div class="relative flex-1">
-          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.602 10.602z" />
+          <div
+            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.602 10.602z"
+              />
             </svg>
           </div>
           <input

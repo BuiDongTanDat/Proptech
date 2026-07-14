@@ -1,8 +1,5 @@
-<!-- ===== SECTION 1: HERO ===== -->
-<section
-  class="relative h-[80vh] w-full flex flex-col justify-center items-center overflow-hidden scroll-reveal"
->
-  <!-- Slides -->
+<!-- ===== SECTION 1: HERO (GIỮ NGUYÊN HOẠT ĐỘNG - TỐI ƯU LAYOUT) ===== -->
+<section class="relative h-[80vh] w-full flex flex-col justify-center items-center overflow-hidden scroll-reveal  s">
   <div class="absolute inset-0 z-0">
     @for (image of heroImages; track $index) {
       <img
@@ -18,19 +15,15 @@
     <div class="absolute inset-0 bg-black/35"></div>
   </div>
 
-  <!-- Nội dung -->
   <div class="relative z-10 text-center text-white mb-12 px-4 scroll-reveal-child">
-    <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-2">
+    <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-2   ">
       Tinh hoa kiến trúc.<br />
       Chuẩn mực sống tinh tuyển.
     </h1>
   </div>
 
-  <!-- Search -->
   <div class="relative z-10 w-full max-w-4xl px-4 scroll-reveal-child-delayed">
-    <div
-      class="backdrop-blur-md bg-white/20 p-3 grid grid-cols-1 md:grid-cols-3 gap-2 items-center"
-    >
+    <div class="backdrop-blur-md bg-white/20 p-3 grid grid-cols-1 md:grid-cols-3 gap-2 items-center rounded-lg">
       <div class="flex items-center text-white px-3 border-r border-white/30">
         <i class="fa-solid fa-location-dot mr-2" aria-hidden="true"></i>
         <input
@@ -58,7 +51,6 @@
     </div>
   </div>
 
-  <!-- Indicator -->
   <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
     @for (image of heroImages; track $index) {
       <button
@@ -72,21 +64,29 @@
   </div>
 </section>
 
-<!-- ===== SECTION 2: PHONG CÁCH SỐNG ===== -->
-<section class="max-w-7xl mx-auto px-6 py-20 scroll-reveal">
+<!-- ===== SECTION: THỐNG KÊ (ĐÃ ĐỒNG BỘ CSS GỐC VÀO TAILWIND) ===== -->
+<section id="thong-ke-wow" class="stat-sweep-container relative overflow-hidden py-10 bg-[#0a8383] text-center  s scroll-reveal">
+  <div class="container relative z-10 w-[92%] max-w-[1100px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5">
+    @for (stat of stats; track stat.value) {
+      <div class="bg-white p-6 sm:p-[25px_20px] rounded-[20px] border border-[#0e8184]/10 shadow-[0_10px_25px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 hover:shadow-[0_15px_35px_rgba(0,0,0,0.2)] transition-all duration-[350ms] flex flex-row sm:flex-col items-center sm:text-center text-left gap-4 sm:gap-0">
+        <span class="stat-number text-[32px] sm:text-[48px] font-black text-[#f58634] leading-none sm:mb-2.5 min-w-[80px] sm:min-w-0 block">{{ stat.value }}</span>
+        <span class="text-sm sm:text-base font-bold text-[#444] leading-snug">{{ stat.label }}</span>
+      </div>
+    }
+
+  </div>
+</section>
+
+<!-- ===== SECTION 2: PHONG CÁCH SỐNG (GIỮ NGUYÊN) ===== -->
+<section class="max-w-7xl mx-auto px-6 py-20 scroll-reveal  s">
   <div class="flex justify-between items-end mb-8 scroll-reveal-child">
     <div>
-      <span class="text-xs uppercase text-gray-400 tracking-widest font-medium"
-        >Lựa chọn phong cách sống</span
-      >
+      <span class="text-xs uppercase text-gray-400 tracking-widest font-medium">Lựa chọn phong cách sống</span>
       <h2 class="text-3xl font-light text-gray-800 mt-1">
         Điểm đến nổi bật<br />dành cho giới tinh hoa.
       </h2>
     </div>
-    <a
-      href="#"
-      class="text-xs uppercase font-semibold border-b border-black pb-1 hover:text-gray-500 transition"
-    >
+    <a href="#" class="text-xs uppercase font-semibold border-b border-black pb-1 hover:text-gray-500 transition">
       Khám phá tất cả thị trường &rarr;
     </a>
   </div>
@@ -101,7 +101,7 @@
       />
       <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
       <div class="absolute bottom-6 left-6 text-white">
-        <h3 class="text-2xl">VINHOME HẢI VÂN BAY</h3>
+        <h3 class="text-2xl   ">VINHOME HẢI VÂN BAY</h3>
         <p class="text-xs tracking-widest text-white/70">
           Siêu dự án “thành phố nghỉ dưỡng” quy mô 512 hecta với tổng vốn đầu tư 44.000 tỷ đồng
         </p>
@@ -118,7 +118,7 @@
         />
         <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
         <div class="absolute bottom-4 left-4 pr-4 text-white">
-          <h3 class="text-lg">Maia Resort Hồ Tràm</h3>
+          <h3 class="text-lg   ">Maia Resort Hồ Tràm</h3>
           <p class="text-xs text-white/70">Hệ Thống Tiện Ích Đẳng Cấp</p>
         </div>
       </div>
@@ -132,7 +132,7 @@
         />
         <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
         <div class="absolute bottom-4 left-4 pr-4 text-white">
-          <h3 class="text-lg">Vinhomes Grand Park</h3>
+          <h3 class="text-lg   ">Vinhomes Grand Park</h3>
           <p class="text-xs text-white/70">
             Dự án Khu đô thị thông minh kiểu mẫu bật nhất tại Việt Nam với quy mô 271 hecta.
           </p>
@@ -142,16 +142,11 @@
   </div>
 </section>
 
-<!-- ===== SECTION 3: DỰ ÁN MỚI ===== -->
-<section class="max-w-7xl mx-auto px-6 py-16 scroll-reveal">
-  <!-- Tiêu đề & Điều hướng -->
-  <div
-    class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 scroll-reveal-child"
-  >
+<!-- ===== SECTION 3: DỰ ÁN MỚI (GIỮ NGUYÊN) ===== -->
+<section class="max-w-7xl mx-auto px-6 py-16 scroll-reveal  s">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 scroll-reveal-child">
     <div>
-      <p class="text-xs uppercase tracking-widest text-gray-400 font-medium">
-        Phong cách sống thượng lưu
-      </p>
+      <p class="text-xs uppercase tracking-widest text-gray-400 font-medium">Phong cách sống thượng lưu</p>
       <h2 class="text-3xl font-light text-gray-800 mt-1">Dự án nổi bật</h2>
     </div>
 
@@ -163,7 +158,6 @@
       >
         &larr;
       </button>
-
       <button
         (click)="nextProject()"
         aria-label="Xem dự án tiếp theo"
@@ -174,7 +168,6 @@
     </div>
   </div>
 
-  <!-- Danh sách Carousel -->
   <div class="overflow-x-hidden overflow-y-visible scroll-reveal-child-delayed py-2">
     <div
       class="flex transition-transform duration-700 ease-out"
@@ -182,76 +175,47 @@
     >
       @for (post of store.allRealEstatePosts(); track post._id) {
         <div class="w-full md:w-1/3 shrink-0 px-3 flex">
-          <!-- Thẻ liên kết ngữ nghĩa sử dụng routerLink chuyển hướng tới chi tiết bài viết -->
           <a
             [routerLink]="['/properties', post._id]"
             class="group block w-full bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 flex flex-col"
           >
-            <!-- Phần ảnh của Card -->
             <div class="relative overflow-hidden h-64 md:h-72 w-full">
               <img
-                [src]="post.cover_picture?.url || 'bg_card.png'"
+                [src]="post.cover_picture.url || 'bg_card.png'"
                 [alt]="post.title"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               />
-
-              <!-- Overlay mờ dịu mắt -->
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-85 group-hover:opacity-95 transition-opacity duration-300"
-              ></div>
-
-              <!-- Nhãn Badge tinh tế -->
-              <span
-                class="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-gray-900 text-[10px] uppercase tracking-widest px-3 py-1 rounded-full font-medium shadow-sm"
-              >
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-85 group-hover:opacity-95 transition-opacity duration-300"></div>
+              <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-gray-900 text-[10px] uppercase tracking-widest px-3 py-1 rounded-full font-medium shadow-sm">
                 Tuyển chọn mới
               </span>
             </div>
 
-            <!-- Phần nội dung chữ -->
             <div class="p-6 flex flex-col min-h-[220px]">
-              <!-- Nhà phát triển (Developer) -->
               @if (post.developer) {
-                <span
-                  class="text-[10px] uppercase tracking-[0.15em] text-amber-700 font-semibold mb-2 block"
-                >
+                <span class="text-[10px] uppercase tracking-[0.15em] text-[#f38d31] font-semibold mb-2 block">
                   {{ post.developer }}
                 </span>
               } @else {
-                <span
-                  class="text-[10px] uppercase tracking-[0.15em] text-gray-400 font-medium mb-2 block"
-                >
+                <span class="text-[10px] uppercase tracking-[0.15em] text-gray-400 font-medium mb-2 block">
                   Nhà phát triển uy tín
                 </span>
               }
 
-              <!-- Tiêu đề bài viết -->
-              <h3
-                class="text-lg font-light text-gray-900 line-clamp-2 leading-snug group-hover:text-amber-800 transition-colors duration-300 flex-grow"
-              >
+              <h3 class="text-lg font-light text-gray-900 line-clamp-2 leading-snug group-hover:text-amber-800 transition-colors duration-300 flex-grow">
                 {{ post.title || 'Chưa có tiêu đề' }}
               </h3>
 
-              <!-- Đường phân cách ngang thanh mảnh -->
               <div class="w-full h-[1px] bg-gray-100 my-4"></div>
 
-              <!-- Vị trí dự án kèm icon chỉ hướng -->
               <div class="flex items-center text-gray-500 text-xs gap-1.5 mb-4">
                 <svg lucideIcon="map-pin" [size]="14" class="text-gray-400 shrink-0"></svg>
-                <span class="line-clamp-1 font-light">{{
-                  post.location || 'Đang cập nhật vị trí'
-                }}</span>
+                <span class="line-clamp-1 font-light">{{ post.location || 'Đang cập nhật vị trí' }}</span>
               </div>
 
-              <!-- CTA nhỏ gợi ý tương tác -->
-              <div
-                class="flex items-center gap-1.5 text-[11px] font-semibold text-gray-900 uppercase tracking-widest group-hover:text-amber-800 transition-colors duration-300 mt-auto"
-              >
+              <div class="flex items-center gap-1.5 text-[11px] font-semibold text-gray-900 uppercase tracking-widest group-hover:text-[#f38d31] transition-colors duration-300 mt-auto">
                 Khám phá chi tiết
-                <span
-                  class="transform group-hover:translate-x-1.5 transition-transform duration-300"
-                  >&rarr;</span
-                >
+                <span class="transform group-hover:translate-x-1.5 transition-transform duration-300">&rarr;</span>
               </div>
             </div>
           </a>
@@ -261,16 +225,134 @@
   </div>
 </section>
 
-<!-- ===== SECTION 4: DI SẢN ===== -->
-<section
-  class="min-h-fit bg-[#001529] text-white p-6 md:p-12 lg:py-24 flex items-center scroll-reveal"
->
+<!-- ===== SECTION: TẦM NHÌN VÀ SỨ MỆNH (ĐÃ ĐỒNG BỘ HOÀN TOÀN GRADIENT + HOVER CỦA FILE GỐC) ===== -->
+<section id="tong-quan-wow" class="relative overflow-hidden py-27.5 bg-vision-pattern">
+  <div class="container relative z-10 w-[90%] max-w-295 mx-auto grid grid-cols-1 md:grid-cols-2 gap-[34px]">
+    
+    <!-- Tầm Nhìn -->
+    <div class=" vision-block group relative overflow-hidden min-h-[370px] p-[56px_48px] rounded-[34px] bg-white border border-transparent shadow-[0_30px_80px_rgba(14,129,132,0.13)] hover:-translate-y-3.5 hover:shadow-[0_42px_95px_rgba(14,129,132,0.2),0_18px_45px_rgba(245,134,52,0.13)] transition duration-450 ease-out scroll-reveal-child">
+      <div class="card-gradient-glow absolute inset-[-2px] opacity-0 group-hover:opacity-100 transition-opacity duration-450 z-0"></div>
+      <div class="orange-radial-glow absolute -right-[80px] -bottom-[80px] w-[210px] h-[210px] rounded-full z-0"></div>
+      
+      <span class="absolute top-6 right-8 text-[86px] leading-none font-black text-[#0E8184]/5 select-none pointer-events-none z-10 font-mono">01</span>
+      
+      <div class="overview-icon relative z-20 w-[66px] h-[66px] grid place-items-center mb-[26px] rounded-[22px] text-white bg-[#0E8184] shadow-[0_12px_24px_rgba(14,129,132,0.2)] group-hover:scale-120 group-hover:rotate-180 group-hover:bg-[#F58634] transition duration-600 ease-bounce">
+        <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+        </svg>
+      </div>
+
+      <h2 class="relative z-20 inline-block m-[0_0_30px] pb-3.5 text-[40px] leading-[1.1] font-black tracking-[-0.8px] bg-gradient-to-r from-[#0E8184] via-[#0E8184] to-[#F58634] bg-clip-text text-transparent    heading-underline">
+        Tầm Nhìn
+      </h2>
+
+      <p class="relative z-20 m-0 text-[17px] leading-[1.85] text-[#344646]">
+        Trở thành hệ sinh thái công nghệ – tài chính – bất động sản hàng đầu,
+        kiến tạo nền tảng kết nối số cho thị trường Việt Nam.
+      </p>
+      
+      <span class="overview-tag relative z-20 inline-flex mt-7.5 px-4 py-2.5 rounded-full text-[#0E8184] text-sm font-extrabold tracking-[0.4px] bg-[#0E8184]/8 border border-[#0E8184]/12">
+        Digital ecosystem for Vietnam
+      </span>
+    </div>
+
+    <!-- Sứ Mệnh -->
+    <div class="mission-block group relative overflow-hidden min-h-[370px] p-[56px_48px] rounded-[34px] bg-white border border-transparent shadow-[0_30px_80px_rgba(14,129,132,0.13)] hover:-translate-y-3.5 hover:shadow-[0_42px_95px_rgba(14,129,132,0.2),_0_18px_45px_rgba(245,134,52,0.13)] transition duration-450 ease-out">
+      <div class="card-gradient-glow absolute inset-[-2px] opacity-0 group-hover:opacity-100 transition-opacity duration-450 z-0"></div>
+      <div class="orange-radial-glow absolute -right-[80px] -bottom-[80px] w-[210px] h-[210px] rounded-full z-0"></div>
+      
+      <span class="absolute top-6 right-8 text-[86px] leading-none font-black text-[#0E8184]/5 select-none pointer-events-none z-10 font-mono">02</span>
+      
+      <div class="overview-icon relative z-20 w-[66px] h-[66px] grid place-items-center mb-[26px] rounded-[22px] text-white bg-[#0E8184] shadow-[0_12px_24px_rgba(14,129,132,0.2)] group-hover:scale-120 group-hover:rotate-180 group-hover:bg-[#F58634] transition duration-600 ease-bounce">
+        <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+        </svg>
+      </div>
+
+      <h2 class="relative z-20 inline-block m-[0_0_30px] pb-3.5 text-[40px] leading-[1.1] font-black tracking-[-0.8px] bg-gradient-to-r from-[#0E8184] via-[#0E8184] to-[#F58634] bg-clip-text text-transparent    heading-underline">
+        Sứ Mệnh
+      </h2>
+
+      <p class="relative z-20 m-0 text-[17px] leading-[1.85] text-[#344646]">
+        TORII mang đến các giải pháp công nghệ và tài chính hiện đại nhằm đơn
+        giản hóa quá trình giao dịch bất động sản, tối ưu trải nghiệm khách hàng
+        và nâng cao hiệu quả kinh doanh cho đối tác.
+      </p>
+      
+      <span class="overview-tag relative z-20 inline-flex mt-7.5 px-4 py-2.5 rounded-full text-[#0E8184] text-sm font-extrabold tracking-[0.4px] bg-[#0E8184]/8 border border-[#0E8184]/12">
+        Smart finance meets real estate
+      </span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== SECTION: GIÁ TRỊ CỐT LÕI (ĐÃ ĐỒNG BỘ HOÀN TOÀN CARD HOVER, BORDER TOP ANIMATION, WATERMARK VÀ TYPOGRAPHY) ===== -->
+<section id="gia-tri-cot-loi" class="py-[90px] bg-white  s scroll-reveal">
+  <div class="container w-[90%] max-w-[1200px] mx-auto">
+    
+    <h2 class="relative inline-block text-[2.4rem] text-[#0a8383] font-black mb-6 pb-4    custom-header-line">
+      Giá Trị Cốt Lõi
+    </h2>
+
+    <p class="max-w-[760px] text-[#5f6b6b] text-[1.08rem] leading-[1.75] font-normal mb-[34px]">
+      Năm giá trị là bộ khung vận hành của TORII: rõ ràng trong niềm tin, linh
+      hoạt trong công nghệ và bền bỉ trong đồng hành.
+    </p>
+
+    <div class="grid-values grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-[22px]">
+      @for (value of coreValues; track value.number) {
+        <div class="value-item group relative bg-white p-[34px_26px] rounded-[22px] border border-[#0a8383]/8 shadow-[0_10px_28px_rgba(0,0,0,0.04)] hover:-translate-y-3 hover:border-[#f38d31]/35 hover:shadow-[0_22px_55px_rgba(10,131,131,0.12)] transition-all duration-[350ms] ease-out overflow-hidden" [attr.data-number]="value.number">
+          <div class="top-orange-line absolute top-0 left-0 h-1 w-full bg-[#f38d31] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-[350ms] ease-out z-10"></div>
+          <span class="absolute top-3.5 left-4 text-[64px] font-black text-[#0a8383]/7 select-none pointer-events-none z-0  s leading-none">{{ value.number }}</span>
+          <div class="icon-watermark absolute -right-[70px] -bottom-[90px] text-[220px] font-black text-[#f38d31]/12 rotate-[-10deg] select-none pointer-events-none z-0 leading-none">✦</div>
+          <h3 class="relative z-10 mt-[42px] mb-3 text-[1.35rem] font-bold text-[#0a8383]">{{ value.title }}</h3>
+          <p class="relative z-10 text-[#5f6b6b] text-base font-normal leading-[1.75]">{{ value.description }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION: MÔ HÌNH KINH DOANH (ĐÃ ĐỒNG BỘ HOÀN TOÀN WATERMARK LOGO BẢN TO VÀ CƠ CẤU BẬC THANG STAIRCASE PILLS) ===== -->
+<section id="mo-hinh-kinh-doanh" class="relative overflow-hidden bg-[#f1f3f5] py-20  s scroll-reveal torii-model-watermark">
+  <div class="container relative z-10 w-[90%] max-w-[1200px] mx-auto">
+    
+    <h2 class="relative inline-block text-[2.4rem] text-[#0a8383] font-extrabold tracking-tight mb-6 pb-3    custom-header-line">
+      Mô Hình Kinh Doanh
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-[50px] items-center">
+      
+      <div class="md:col-span-7 text-[1.1rem]">
+        <p class="text-[#667070] leading-[1.8] mb-[18px]">
+          TORII vận hành mô hình hệ sinh thái Bất động sản – Công nghệ – Tài
+          chính, cung cấp nền tảng kết nối giữa chủ đầu tư, ngân hàng, đại lý và
+          khách hàng.
+        </p>
+        <p class="text-[#667070] leading-[1.8] mb-[18px]">
+          Thông qua các giải pháp công nghệ số, dịch vụ tư vấn tài chính và hệ
+          thống phân phối bất động sản, TORII tạo ra giá trị toàn diện trên cùng
+          một nền tảng.
+        </p>
+      </div>
+
+      <div class="md:col-span-5 flex flex-col gap-4">
+        @for (step of businessModelSteps; track step.text) {
+          <div [class]="step.className">{{ step.text }}</div>
+        }
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 4: DI SẢN (GIỮ NGUYÊN) ===== -->
+<section class="min-h-fit bg-[#001529] text-white p-6 md:p-12 lg:py-24 flex items-center scroll-reveal  s">
   <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center w-full">
     <div class="lg:col-span-5 space-y-6 scroll-reveal-child">
-      <span class="text-[10px] tracking-[0.3em] text-gray-400 uppercase"
-        >Tiêu chuẩn tinh tuyển</span
-      >
-      <h2 class="text-3xl md:text-5xl font-light leading-tight">
+      <span class="text-[10px] tracking-[0.3em] text-gray-400 uppercase">Tiêu chuẩn tinh tuyển</span>
+      <h2 class="text-3xl md:text-5xl font-light leading-tight   ">
         Chúng tôi không bán bất động sản. Chúng tôi gìn giữ di sản.
       </h2>
       <p class="text-gray-400 text-sm max-w-md">
@@ -301,9 +383,7 @@
       </div>
     </div>
 
-    <!-- Right side: Grid ảnh và số liệu -->
     <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6 scroll-reveal-child-delayed">
-      <!-- Cột 1 -->
       <div class="space-y-6 lg:pt-20">
         <div class="aspect-4/5 overflow-hidden rounded-lg">
           <img
@@ -318,10 +398,9 @@
         </div>
       </div>
 
-      <!-- Cột 2 -->
       <div class="space-y-6">
         <div class="p-6 bg-orange-950/40 border border-orange-900/30 rounded-lg">
-          <h3 class="text-4xl font-light">SANG TRỌNG</h3>
+          <h3 class="text-4xl font-light   ">SANG TRỌNG</h3>
           <p class="text-xs opacity-70">Giá trị danh mục</p>
         </div>
         <div class="aspect-4/5 overflow-hidden rounded-lg">
@@ -332,6 +411,240 @@
           />
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION: ĐỐI TÁC CHIẾN LƯỢC (ĐÃ ĐỒNG BỘ MARQUEE CHẠY TRÁI/PHẢI VÀ CARD PARTNERS SANG TRỌNG) ===== -->
+<section id="doi-tac-chien-luoc" class="relative py-[100px] bg-partner-gradient text-center  s overflow-hidden scroll-reveal">
+  <div class="container w-[90%] max-w-[1200px] mx-auto">
+    
+    <h2 class="relative inline-block text-[2.8rem] text-[#0a8383] font-black mb-[65px] pb-5    custom-header-line-center">
+      Sự hợp tác của các bên
+    </h2>
+
+    <!-- NHÓM 1: CHỦ ĐẦU TƯ -->
+    <div class="partner-group group-realestate relative mb-[65px] text-left">
+      <div class="group-watermark absolute -top-[55px] -left-[25px] text-[190px] font-black leading-none text-[#f38d31]/7 select-none pointer-events-none z-0">✦</div> 
+      <h3 class="group-title relative z-10 text-[1.45rem] text-[#0a8383] font-bold mb-2 border-l-4 border-[#f38d31] pl-3">Đối tác Chủ đầu tư Bất động sản</h3>
+      <p class="group-intro relative z-10 text-[0.98rem] text-[#5f6b6b] leading-[1.6] mb-7 pl-3">TORII hiện đang hợp tác phân phối và phát triển kinh doanh cùng nhiều chủ đầu tư uy tín trên thị trường Việt Nam:</p>
+      
+      <div class="marquee-container mask-fade relative w-full overflow-hidden py-3.75 z-10">
+        <div class="marquee-track track-ltr flex w-max">
+          <ul class="logo-list flex items-center gap-5 list-none m-0 p-0 pr-5">
+            @for (partner of realEstatePartners; track partner) {
+              <li class="logo-item flex shrink-0 items-center justify-center bg-white w-[175px] h-[105px] p-[18px] rounded-[18px] border border-[#0a8383]/4 shadow-[0_4px_18px_rgba(10,131,131,0.02)] hover:-translate-y-1.5 hover:border-[#f38d31]/25 hover:shadow-[0_12px_30px_rgba(10,131,131,0.08)] transition-all duration-[350ms] ease-out">
+                <img [src]="partnerLogoUrl" [alt]="partner" class="max-w-full max-h-[52px] object-contain opacity-78 hover:opacity-100 transition-opacity duration-300">
+              </li>
+            }
+          </ul>
+          <ul class="logo-list flex items-center gap-5 list-none m-0 p-0 pr-5" aria-hidden="true">
+            @for (partner of realEstatePartners; track partner) {
+              <li class="logo-item flex shrink-0 items-center justify-center bg-white w-[175px] h-[105px] p-[18px] rounded-[18px] border border-[#0a8383]/4 shadow-[0_4px_18px_rgba(10,131,131,0.02)] hover:-translate-y-1.5 hover:border-[#f38d31]/25 hover:shadow-[0_12px_30px_rgba(10,131,131,0.08)] transition-all duration-[350ms] ease-out">
+                <img [src]="partnerLogoUrl" [alt]="partner" class="max-w-full max-h-[52px] object-contain opacity-78 hover:opacity-100 transition-opacity duration-300">
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- NHÓM 2: NGÂN HÀNG (CĂN PHẢI) -->
+    <div class="partner-group group-banking group-align-right relative mb-[65px] text-right">
+      <div class="group-watermark watermark-right absolute -top-[55px] -right-[25px] text-[190px] font-black leading-none text-[#f38d31]/7 scale-x-[-1] select-none pointer-events-none z-0">✦</div> 
+      <h3 class="group-title relative z-10 text-[1.45rem] text-[#0a8383] font-bold mb-2 border-r-4 border-[#f38d31] pr-3">Đối tác Ngân hàng và Tài chính</h3>
+      <p class="group-intro relative z-10 text-[0.98rem] text-[#5f6b6b] leading-[1.6] mb-7 pr-3">Các đối tác tài chính liên kết triển khai các giải pháp thanh toán, bảo lãnh dự án và hỗ trợ tín dụng linh hoạt:</p>
+      
+      <div class="marquee-container mask-fade relative w-full overflow-hidden py-3.75 z-10">
+        <div class="marquee-track track-rtl flex w-max">
+          <ul class="logo-list flex items-center gap-5 list-none m-0 p-0 pr-5">
+            @for (bank of bankingPartners; track bank) {
+              <li class="logo-item flex shrink-0 items-center justify-center bg-white w-[175px] h-[105px] p-[18px] rounded-[18px] border border-[#0a8383]/4 shadow-[0_4px_18px_rgba(10,131,131,0.02)] hover:-translate-y-1.5 hover:border-[#f38d31]/25 hover:shadow-[0_12px_30px_rgba(10,131,131,0.08)] transition-all duration-[350ms] ease-out">
+                <img [src]="partnerLogoUrl" [alt]="bank" class="max-w-full max-h-[52px] object-contain opacity-78 hover:opacity-100 transition-opacity duration-300">
+              </li>
+            }
+          </ul>
+          <ul class="logo-list flex items-center gap-5 list-none m-0 p-0 pr-5" aria-hidden="true">
+            @for (bank of bankingPartners; track bank) {
+              <li class="logo-item flex shrink-0 items-center justify-center bg-white w-[175px] h-[105px] p-[18px] rounded-[18px] border border-[#0a8383]/4 shadow-[0_4px_18px_rgba(10,131,131,0.02)] hover:-translate-y-1.5 hover:border-[#f38d31]/25 hover:shadow-[0_12px_30px_rgba(10,131,131,0.08)] transition-all duration-[350ms] ease-out">
+                <img [src]="partnerLogoUrl" [alt]="bank" class="max-w-full max-h-[52px] object-contain opacity-78 hover:opacity-100 transition-opacity duration-300">
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- NHÓM 3: CÔNG NGHỆ -->
+    <div class="partner-group group-technology relative mb-[65px] text-left">
+      <div class="group-watermark absolute -top-[55px] -left-[25px] text-[190px] font-black leading-none text-[#f38d31]/7 select-none pointer-events-none z-0">✦</div> 
+      <h3 class="group-title relative z-10 text-[1.45rem] text-[#0a8383] font-bold mb-2 border-l-4 border-[#f38d31] pl-3">Đối tác Công nghệ và Hệ sinh thái</h3>
+      <p class="group-intro relative z-10 text-[0.98rem] text-[#5f6b6b] leading-[1.6] mb-7 pl-3">TORII phát triển và vận hành hệ sinh thái công nghệ thông qua các giải pháp tích hợp hiện đại:</p>
+      
+      <div class="partner-text-grid relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5 mt-5 pl-3">
+        @for (partner of techPartners; track partner) {
+          <div class="partner-card bg-white p-[16px_20px] rounded-2xl border border-[#d4dada] shadow-[0_6px_20px_rgba(10,131,131,0.05)] flex flex-row items-center gap-4 text-left hover:-translate-y-1 hover:border-[#f38d31] hover:shadow-[0_14px_35px_rgba(10,131,131,0.1)] transition-all duration-300">
+            <div class="partner-card-logo shrink-0 w-[58px] h-[58px] bg-[#fdfefe] rounded-xl flex items-center justify-center border border-[#e0e4e4] overflow-hidden">
+              <img [src]="partnerLogoUrl" [alt]="partner" class="max-w-[80%] max-h-[80%] object-contain">
+            </div>
+            <div class="partner-card-info flex-grow text-left">
+              <span class="text-base text-[#1a2c2c] font-semibold leading-normal">{{ partner }}</span>
+            </div>
+          </div>
+        }
+      </div>
+      <p class="group-conclusion relative z-10 text-[0.98rem] text-[#5f6b6b] leading-[1.6] mt-6 pl-3">Nhóm đối tác này giúp TORII xây dựng nền tảng quản lý khách hàng, giao dịch và dữ liệu tài chính một cách đồng bộ và an toàn.</p>
+    </div>
+
+    <!-- NHÓM 4: DU LỊCH & TIỆN ÍCH SỐ (CĂN PHẢI) -->
+    <div class="partner-group group-digital group-align-right relative mb-0 text-right">
+      <div class="group-watermark watermark-right absolute -top-[55px] -right-[25px] text-[190px] font-black leading-none text-[#f38d31]/7 scale-x-[-1] select-none pointer-events-none z-0">✦</div> 
+      <h3 class="group-title relative z-10 text-[1.45rem] text-[#0a8383] font-bold mb-2 border-r-4 border-[#f38d31] pr-3">Đối tác Du lịch và Dịch vụ số</h3>
+      <p class="group-intro relative z-10 text-[0.98rem] text-[#5f6b6b] leading-[1.6] mb-7 pr-3">Mở rộng trải nghiệm khách hàng với các dịch vụ đa dạng và tiện ích số linh hoạt:</p>
+      
+      <div class="partner-text-grid relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 pr-3">
+        @for (partner of digitalPartners; track partner) {
+          <div class="partner-card bg-white p-[16px_20px] rounded-2xl border border-[#d4dada] shadow-[0_6px_20px_rgba(10,131,131,0.05)] flex flex-row items-center gap-4 text-left hover:-translate-y-1 hover:border-[#f38d31] hover:shadow-[0_14px_35px_rgba(10,131,131,0.1)] transition-all duration-300">
+            <div class="partner-card-logo shrink-0 w-[58px] h-[58px] bg-[#fdfefe] rounded-xl flex items-center justify-center border border-[#e0e4e4] overflow-hidden">
+              <img [src]="partnerLogoUrl" [alt]="partner" class="max-w-[80%] max-h-[80%] object-contain">
+            </div>
+            <div class="partner-card-info flex-grow text-left">
+              <span class="text-base text-[#1a2c2c] font-semibold leading-normal">{{ partner }}</span>
+            </div>
+          </div>
+        }
+      </div>
+      <p class="group-conclusion relative z-10 text-[0.98rem] text-[#5f6b6b] leading-[1.6] mt-6 pr-3">Các đối tác này hỗ trợ TORII phát triển các dịch vụ du lịch, truyền thông và tiện ích số toàn diện trên nền tảng Mini App.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== SECTION: ĐỘI NGŨ NHÂN SỰ (ĐÃ ĐỒNG BỘ NỀN GLOW HOÀN TOÀN + GRADIENT CHO TỪNG THẺ KHÁC BIỆT) ===== -->
+<section id="doi-ngu-pro" class="relative overflow-hidden py-[120px] bg-gradient-to-b from-[#fdf8f4] to-[#fffaf6] text-center  s scroll-reveal">
+  <!-- Glow Elements -->
+  <div class="absolute -top-[120px] -left-[120px] w-[350px] h-[350px] bg-[#0a8383] rounded-full filter blur-[80px] opacity-25 pointer-events-none"></div>
+  <div class="absolute -bottom-[100px] -right-[100px] w-[300px] h-[300px] bg-[#f38d31] rounded-full filter blur-[80px] opacity-25 pointer-events-none"></div>
+  
+  <div class="container relative z-10 w-[92%] max-w-[1400px] mx-auto">
+    <h2 class="text-[32px] sm:text-[40px] md:text-[48px] font-black text-[#0a8383] mb-3 tracking-tight">Đội Ngũ Nhân Sư</h2>
+    <div class="total text-lg text-[#667070] mb-[60px]">
+      <strong class="text-[#f38d31] text-[22px] font-bold">100+</strong> thành viên chuyên nghiệp
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 scroll-reveal-child">
+      @for (card of teamCards; track card.title) {
+        <div class="card group relative overflow-hidden p-[38px_24px] rounded-[24px] border border-white/40 shadow-[0_15px_40px_rgba(10,131,131,0.08),_0_4px_12px_rgba(0,0,0,0.03)] hover:-translate-y-2.5 hover:shadow-[0_30px_60px_rgba(10,131,131,0.15),_0_10px_25px_rgba(0,0,0,0.08)] transition-all duration-[450ms] ease-out flex flex-col justify-between h-[250px] text-left" [ngClass]="card.wrapperClass">
+          <div class="card-circle absolute top-[-70px] right-[-70px] w-[180px] h-[180px] rounded-full pointer-events-none" [ngClass]="card.circleClass"></div>
+          <div class="text-desc relative z-10" [ngClass]="card.descriptionClass">{{ card.title }}</div>
+          <div class="percent text-[52px] sm:text-[56px] md:text-[64px] font-black tracking-tighter leading-none relative z-10" [ngClass]="card.percentClass">{{ card.percent }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION: HOẠT ĐỘNG NỔI BẬT (ĐÃ ĐỒNG BỘ HOÀN TOÀN MASONRY LAYOUT THÁC NƯỚC CHUẨN GỐC) ===== -->
+<section id="hoat-dong-cong-ty" class="py-[60px] bg-[#f8fbfb] overflow-hidden  s scroll-reveal">
+  <div class="container w-[95%] max-w-[1400px] mx-auto">
+    
+    <h2 class="relative inline-block text-[2rem] text-[#0a8383] font-black mb-10 pb-3    custom-header-line">
+      Hoạt Động Nổi Bật
+    </h2>
+
+    <div class="media-grid columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-[15px] scroll-reveal-child">
+      
+      <!-- 1. HÌNH ẢNH -->
+      <div class="media-card bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRL-HUReinSaCMmmEdW0hFf4fI-Gz0RsYmhBGwgzlYbrA&s=10"
+          alt="Torii Activity"
+          class="w-full block border-none"
+        />
+      </div>
+
+      <!-- 2. FACEBOOK REEL -->
+      <div class="media-card aspect-[9/16] max-h-[550px] bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <iframe
+          src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1671333807255476%2F&show_text=false&width=267&t=0"
+          class="w-full h-full block border-none"
+          scrolling="no"
+          allowfullscreen="true"
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share;"
+        >
+        </iframe>
+      </div>
+
+      <!-- 3. YOUTUBE VIDEO -->
+      <div class="media-card aspect-[16/9] bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <iframe
+          class="w-full h-full block border-none"
+          src="https://www.youtube.com/embed/ZEKqxQWuBwU?si=zCd5cahZnwL0jHox"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <!-- 4. FACEBOOK POST -->
+      <div class="media-card bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <iframe
+          src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fphoto.php%3Ffbid%3D1540916111062263%26set%3Da.1289656702854873%26type%3D3&show_text=true&width=350"
+          height="450"
+          class="w-full block border-none"
+          scrolling="no"
+          allowfullscreen="true"
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share;"
+        >
+        </iframe>
+      </div>
+
+      <!-- 5. FACEBOOK REEL -->
+      <div class="media-card aspect-[9/16] max-h-[550px] bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <iframe
+          src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F2292978664844748%2F&show_text=false&width=267&t=0"
+          class="w-full h-full block border-none"
+          scrolling="no"
+          allowfullscreen="true"
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share;"
+        >
+        </iframe>
+      </div>
+
+      <!-- 6. YOUTUBE VIDEO -->
+      <div class="media-card aspect-[16/9] bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <iframe
+          class="w-full h-full block border-none"
+          src="https://www.youtube.com/embed/ZEKqxQWuBwU?si=zCd5cahZnwL0jHox"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <!-- 7. HÌNH ẢNH -->
+      <div class="media-card bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <img
+          src="https://torii.vn/wp-content/uploads/2023/11/z4886657154564_6b9e2b17f5f2a1b1a1a1a1a1a1a1a1a1.jpg"
+          class="w-full block border-none"
+          onerror="this.style.display = 'none'"
+        />
+      </div>
+
+      <!-- 8. FACEBOOK REEL -->
+      <div class="media-card aspect-[9/16] max-h-[550px] bg-white rounded-xl mb-[15px] break-inside-avoid overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-black/3 hover:-translate-y-1.25 transition-transform duration-300">
+        <iframe
+          src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F27205534552390171%2F&show_text=false&width=267&t=0"
+          class="w-full h-full block border-none"
+          scrolling="no"
+          allowfullscreen="true"
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share;"
+        >
+        </iframe>
+      </div>
+
     </div>
   </div>
 </section>

@@ -1,26 +1,18 @@
-# ====== Build Angular ======
-FROM node:20-alpine AS build 
+FROM node:20-alpine
 
 WORKDIR /app
 
+# Chỉ cài package trước để tận dụng cache của Docker
 COPY package*.json ./
 RUN npm install
 
+# Copy toàn bộ code
 COPY . .
 
-RUN npm run build
+# Mở port 4200 (port mặc định Angular)
+EXPOSE 4200
 
-RUN ls -R dist
 
-# ====== Nginx serve ======
-FROM nginx:alpine
-
-# Copy nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copy build output
-COPY --from=build /app/dist/Protech/browser /usr/share/nginx/html
-
-EXPOSE 8080
-
-CMD ["nginx", "-g", "daemon off;"]
+# --host 0.0.0.0: 
+# --poll 2000: Giúp Docker biết thay đổi
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--poll", "2000"]
