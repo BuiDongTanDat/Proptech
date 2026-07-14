@@ -12,12 +12,18 @@
     "start:dev": "nest start --watch",
     "docker:debug": "docker compose -f docker-compose.yml -f docker-compose.debug.yml up --build",
     "start:prod": "node dist/apps/ahm-real-estate/main",
+    
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/ahm-real-estate/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/ahm-real-estate/test/jest-e2e.json",
+    
+    "start:gateway:prod": "node dist/apps/api-gateway/main.js",
+    "start:auth:prod": "node dist/apps/auth/main.js",
+    "start:posts:prod": "node dist/apps/posts/main.js",
+    "start:contact:prod": "node dist/apps/contact/main.js"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.13.1",
