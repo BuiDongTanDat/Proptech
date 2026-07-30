@@ -7,7 +7,7 @@ Dự án được phát triển theo kiến trúc **Microservices** cho backend 
 
 ## 🔗 Demo
 
-- Frontend (Vercel): **[https://your-vercel-demo.vercel.app](https://ahpmfrontend.vercel.app/)**
+- Frontend (Vercel): **[https://ahpmfrontend.vercel.app](https://ahpmfrontend.vercel.app/)**
 
 ## 📌 Tính năng chính
 
@@ -201,4 +201,4 @@ Trong VS Code:
 
 ### Frontend (Vercel)
 Có thể chạy riêng Backend trên Docker và truy cập Frontend qua vercel
-- Demo: **[https://your-vercel-demo.vercel.app](https://ahpmfrontend.vercel.app/)**
+- Demo: **[https://ahpmfrontend.vercel.app](https://ahpmfrontend.vercel.app/)**
