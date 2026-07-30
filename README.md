@@ -7,19 +7,13 @@ Dự án được phát triển theo kiến trúc **Microservices** cho backend 
 
 ## 🔗 Demo
 
-- Frontend (Vercel): **https://your-vercel-demo.vercel.app**
-- API Base URL (production): **https://your-api-domain.com/api**
-- Swagger (nếu public): **https://your-api-domain.com/api/docs**
-
-> Thay các link trên bằng link thật của bạn.
-
----
+- Frontend (Vercel): **[https://your-vercel-demo.vercel.app](https://ahpmfrontend.vercel.app/)**
 
 ## 📌 Tính năng chính
 
-- Đăng ký / đăng nhập / refresh token
-- Quản lý tài khoản người dùng
-- Quản lý bài đăng bất động sản
+- Đăng nhập / refresh token
+- Quản lý tài khoản người dùng (Nhân viên).
+- Quản lý bài đăng (Tin tức, Tin Bất động sản, Tin tuyển dụng).
 - Quản lý danh mục bài đăng
 - Quản lý yêu cầu tư vấn (contact)
 - API documentation bằng Swagger
@@ -50,6 +44,7 @@ Dự án được phát triển theo kiến trúc **Microservices** cho backend 
 ### Frontend
 - Angular
 - HTML/CSS/TypeScript
+- Tailwind CSS
 
 ### Backend
 - NestJS (TypeScript)
@@ -113,11 +108,9 @@ Ví dụ:
 - `Backend/apps/contact/.env`
 - `Frontend/.env` (nếu dự án frontend có dùng)
 
-> Gợi ý: tạo sẵn file `.env.example` trong từng thư mục để team dễ onboard.
-
 ---
 
-## 3) Chạy Backend bằng Docker
+## 3) Chạy Frontend và Backend bằng Docker
 
 ```bash
 cd Backend
@@ -125,7 +118,7 @@ docker compose up --build -d
 ```
 
 Backend sau khi chạy:
-- API: `http://localhost:3000/api`
+- API (cổng chính): `http://localhost:3000/api`
 - Swagger: `http://localhost:3000/api/docs`
 
 Dừng dịch vụ:
@@ -139,14 +132,6 @@ docker compose down -v
 ```
 
 ---
-
-## 4) Chạy Frontend
-
-```bash
-cd Frontend
-npm install
-npm run start
-```
 
 Frontend mặc định (tuỳ config):
 - `http://localhost:4200`
@@ -215,34 +200,5 @@ Trong VS Code:
 ## 🌍 Deploy
 
 ### Frontend (Vercel)
-- Demo: **https://your-vercel-demo.vercel.app**
-
-### Backend
-- Có thể deploy lên VPS / Render / Railway / Fly.io / Azure / AWS
-- Cần cấu hình:
-  - CORS cho domain frontend
-  - Biến môi trường production
-  - MongoDB Atlas whitelist/IP rules
-
----
-
-## 🗺️ Roadmap (đề xuất)
-
-- [ ] Tích hợp phân quyền chi tiết theo role (RBAC)
-- [ ] Upload media (Cloudinary/S3)
-- [ ] Tìm kiếm + lọc nâng cao cho bài đăng
-- [ ] Unit test / e2e test
-- [ ] CI/CD pipeline tự động
-
----
-
-## 👤 Tác giả
-
-- **Bùi Đông Tấn Đạt**  
-  GitHub: [https://github.com/BuiDongTanDat](https://github.com/BuiDongTanDat)
-
----
-
-## 📄 License
-
-MIT (hoặc license bạn đang sử dụng)
+Có thể chạy riêng Backend trên Docker và truy cập Frontend qua vercel
+- Demo: **[https://your-vercel-demo.vercel.app](https://ahpmfrontend.vercel.app/)**
