@@ -8,6 +8,7 @@ Dự án được phát triển theo kiến trúc **Microservices** cho backend 
 ## 🔗 Demo
 
 - Frontend (Vercel): **[https://ahpmfrontend.vercel.app](https://ahpmfrontend.vercel.app/)**
+- Video Demo: **[Youtube_Demo_Video](https://youtu.be/QEuLngxevEM)**
 
 ## 📌 Tính năng chính
 
